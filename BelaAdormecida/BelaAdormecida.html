@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bela Adormecida</title>
+    <link rel="stylesheet" href="../contos.css">
+</head>
+<body>
+    <h6>ContosEmoj: 😻👶🏾👸🏾 💤</h6>
+    
+    <div class="slide active">
+        <h5>Há muito tempo atrás, em um reino muito distante, nasceu um linda bebê princesa.</h5>
+        <p><span>🤌🤌</span> <span>🔙⌛</span>, <span>👑🏰</span> <span>🤌🤌</span> <span>🛣️📏⬛</span>, <span>🤰🤱</span> <span>😻👶🏾👸🏾</span>.</p>
+    </div>
+    
+    <div class="slide">
+        <h5>Eles convidaram todos do reino para a festa, fada verde e a fada azul, mas eles não convidaram a fada vermelha.</h5>
+        <p><span>👉🏾🤴🏾👸🏾</span> <span>🎫</span> <span>👤👤👤</span> <span>👑🏰</span> <span>🫱🏾</span> <span>🥳🎉</span>, <span>🧚‍♀️🟢</span> <span>🧚‍♀️🔵</span>, <span>👉🏾🤴🏾👸🏾</span> <span>❌🎫</span> <span>🧚‍♀️🔴</span>.</p>
+    </div>
+    
+    <div class="slide">
+        <h5>A fada vermelha ficou brava, ela foi na festa e ela gritou: lançou uma maldição.</h5>
+        <p><span>🧚‍♀️🔴</span> <span>😡</span> ➡️ <span>🥳🎉</span>. <span>🧚‍♀️🔴🗯️</span>: <span>👿🪄</span> <span>👶🏾👸🏾</span>:  🔮 <span>⌛1️⃣5️⃣🎂</span> <span>☝🏾🪡</span> <span>🫳🏾🍂</span> <span>🩸</span> <span>💀</span> 🔮.</p>
+    </div>
+    
+    <div class="slide">
+        <h5>A fada disse: Ela não morrera no e sim entrara em um sono profundo.</h5>
+        <p><span>🧚‍♀️🟢💬</span>: 👉🏾👶🏾👸🏾 <span>❌💀</span> <span>↔️</span> <span>✅🛌💤➿</span>.</p>
+    </div>
+    
+    <div class="slide">
+        <h5>No aniversário de 15 anos, a princesa tocou na agulha, caiu uma gota de sangue e entrou em um sono profundo.</h5>
+        <p><span>⌛1️⃣5️⃣🎂</span> <span>👧🏾👸🏾</span> <span>☝🏾🪡</span> <span>🫳🏾🍂</span> <span>🩸</span> <span>🛌💤➿</span>.</p>
+    </div>
+    
+    <div class="slide">
+        <h5>Um príncipe encontrou a princesa em sono profundo, ele deu um beijo de amor na princesa e a despertou.</h5>
+        <p><span>👦🏾🤴🏾</span> <span>👀🔍</span> <span>👧🏾👸🏾</span> <span>🛌💤➿</span>. <span>👉🏾🤴🏾</span> <span>💋💏</span> <span>👧🏾👸🏾</span> <span>🛌⏰</span>.</p>
+    </div>
+    
+    <div class="slide">
+        <h5>A princesa e o príncipe se casaram.</h5>
+        <p><span>👧🏾👸🏾</span> <span>👦🏾🤴🏾</span>, <span>👰🏾🤵🏾💍</span>.</p>
+    </div>
+    
+    <div class="slide">
+        <p><span>🏁</span> <span>FIM</span></p>
+    </div>
+	
+	<div class="slide">
+        <h4>🤌🤌: muito.</h4> 
+		<h4>👤👤👤: Todos.</h4>
+		<h4>👑🏰: Reino.</h4>
+		<h4>👰🏾🤵🏾💍: Casar.</h4>
+		<h4>🥳🎉: Festa.</h4>
+		<h4>🤰🤱: Nascer.</h4>
+	</div>
+    
+    <div class="navigation">
+        <button onclick="changeSlide(-1)">↩</button>
+        <button onclick="changeSlide(1)">⏭</button>
+    </div>
+    
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function changeSlide(direction) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + direction + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+    </script>
+</body>
+</html>
