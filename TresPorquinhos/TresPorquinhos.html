@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Os Três Porquinhos</title>
+    <link rel="stylesheet" href="../contos.css">
+</head>
+
+<body>
+    <h6>ContosEmoj: 📖 🐷🐷🐷</h6>
+
+    <div class="slide active">
+        <h5>Era uma vez três porquinhos.</h5>
+        <p>🔙⌛️ <span>🐷🐷🐷</span></p>
+    </div>
+
+    <div class="slide">
+        <h5>O primeiro porquino construiu sua casa de palha.</h5>
+        <p><span>🥇🐷</span> <span>👷🏾‍♂️🏗</span> <span>🏠🌾</span></p>
+    </div>
+	<div class="slide">
+        <h5>O segundo porquino construiu sua casa de madeira.</h5>
+        <p><span>🥈🐷</span> <span>👷🏾‍♂️🏗</span> <span>🏠🪵</span></p>
+    </div>
+	<div class="slide">
+        <h5>O terceiro porquino construiu sua casa de tijolo.</h5>
+        <p><span>🥉🐷</span> <span>👷🏾‍♂️🏗</span> <span>🏠🧱</span></p>
+    </div>	
+    <div class="slide">
+        <h5>O lobo mau chegou.</h5>
+        <p><span>🐺😈</span> 🚶‍♂️➡️ <span>🏠🌾</span></p>
+    </div>
+
+    <div class="slide">
+        <h5>Ele soprou a casa de palha. A casa caiu!</h5>
+        <p><span>🐺😈</span> 🌬️ <span>🏠🌾</span> <span>🫳🍂</span></p>
+    </div>
+
+    <div class="slide">
+        <h5>O porquinho correu para a casa de madeira.</h5>
+        <p>🐷 🏃➡️<span>🏠🪵</span></p>
+    </div>
+
+    <div class="slide">
+        <h5>O lobo soprou a casa de madeira. A casa caiu!</h5>
+        <p><span>🐺😈</span> 🌬️<span>🏠🪵</span> <span>🫳🍂</span></p>
+    </div>
+
+    <div class="slide">
+        <h5>Os dois porquinhos correram para a casa de tijolos.</h5>
+        <p><span>🐷🐷</span> 🏃➡️<span>🏠🧱</span> </p>
+    </div>
+
+    <div class="slide">
+        <h5>O lobo soprou, mas a casa não caiu.</h5>
+        <p><span>🐺😈</span> 🌬️<span>🏠🧱</span> <span>❌🫳🍂</span></p>
+    </div>
+
+    <div class="slide">
+        <h5>O lobo tentou entrar pela chaminé.</h5>
+        <p><span>🐺😈</span> <span>📤♨️</span> <span>🏠🧱</span></p>
+    </div>
+
+    <div class="slide">
+        <h5>Os porquinhos colocaram um caldeirão quente.</h5>
+        <p><span>🐷🐷🐷</span> <span>🍲🔥</span> <span>📤♨️</span></p>
+    </div>
+
+    <div class="slide">
+        <h5>O lobo caiu no caldeirão e fugiu!</h5>
+        <p><span>🐺😈</span> <span>🫳🍂</span> <span>🍲🔥</span> 🏃💨</p>
+    </div>
+
+    <div class="slide">
+        <p>🎬 FIM</p>
+    </div>
+	
+	<div class="slide">
+        <h4>👷🏾‍♂️🏗: construir.</h4> 
+		<h4>🫳🍂: cair.</h4>
+		<h4>📤♨️: Chaminé.</h4>
+		<h4>🍲🔥: calderão quente.</h4>
+		<h4>🏃➡️: correr para.</h4>
+		<h4>🏃💨: Fujir.</h4>
+	</div>
+
+    <div class="navigation">
+        <button onclick="changeSlide(-1)">↩</button>
+        <button onclick="changeSlide(1)">⏭</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function changeSlide(direction) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + direction + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+    </script>
+</body>
+
+</html>
