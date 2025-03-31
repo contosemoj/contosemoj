@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contos Emoji</title>
+	<link rel="icon" href="IconeContos.png" type="image/png">
+    <style>
+		@font-face {
+			font-family: 'Noto Color Emoji';
+			src: url('font/NotoColorEmoji.ttf') format('truetype');}
+        body {
+            font-family: 'Noto Color Emoji', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #f4f4f4;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+        }
+        .sidebar button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: none;
+            background-color: #ddd;
+            cursor: pointer;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            margin-left: 220px;
+        }
+        .contos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .contos a {
+            display: inline-block;
+            padding: 20px;
+            background-color: #ffc;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            font-size: 24px;
+        }
+        .mobile-menu {
+            display: none;
+            background-color: #f4f4f4;
+            padding: 10px;
+            text-align: center;
+        }
+        .mobile-menu button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            background-color: #ddd;
+            cursor: pointer;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .mobile-menu {
+                display: flex;
+                justify-content: space-around;
+            }
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <button onclick="showSection('contos')">📖 Contos Emoji</button>
+        <button onclick="showSection('dicionario')">📕 Dicionário</button>
+        <button onclick="showSection('informacoes')">ℹ Informações</button>
+    </div>
+    <div class="mobile-menu">
+        <button onclick="showSection('contos')">📖 Contos Emoj</button>
+        <button onclick="showSection('dicionario')">📕 Dicionário</button>
+        <button onclick="showSection('informacoes')">ℹ Informações</button>
+    </div>
+    <div class="content">
+        <div id="contos" class="section">
+            <h2>Contos Emoji</h2>
+            <div class="contos">
+                <a href="BrancaNeveHTML/BrancaNeve.html">📖 👧🏻👸🏻</a>
+                <a href="ChapeuzinhoHTML/ChapeuzinhoVermelho.html">📖 👧🏻👒🔴</a>
+				<a href="tartarugalebre/tartarugalebre.html">📖 🐢🆚🐇⚡️</a>
+				<a href="BelaAdormecida/BelaAdormecida.html">📖 😻👸🏾 🛌💤</a>
+				<a href="JoaoMaria/JoaoMaria.html">📖 👦👧</a>
+				<a href="TresPorquinhos/TresPorquinhos.html">📖 🐷🐷🐷</a>
+            </div>
+        </div>
+        <div id="dicionario" class="section" style="display: none;">
+            <h2>Dicionário</h2>
+            <p>Conteúdo do dicionário...</p>
+        </div>
+        <div id="informacoes" class="section" style="display: none;">
+            <h2>Informações</h2>
+            <p>O projeto <strong>Contos Emoji</strong> busca contar os principais contos de fadas utilizando uma linguagem visual baseada em emojis. Nesta linguagem, não há verbos de ligação, artigos ou conjunções, tornando a comunicação mais direta e acessível.</p>
+            <p>O objetivo principal é criar uma forma de leitura compacta e de rápida compreensão, especialmente pensada para indivíduos com pouca consciência fonológica e dificuldades na alfabetização. No entanto, qualquer pessoa que queira transmitir ideias de forma simples e rápida pode utilizar essa linguagem.</p>
+            <p><strong>Autor:</strong> Lécio de Oliveira Arantes </p>
+            <p><strong>Dedicado a:</strong> Diana Viana Arantes </p>
+        </div>
+    </div>
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+        }
+    </script>
+</body>
+</html>
