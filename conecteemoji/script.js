@@ -1,31 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Lista Completa de Todos os Pares ---
+    // --- ATUALIZADO: Adicionamos a propriedade "video" com o nome do arquivo ---
     const allPairs = [
-        { id: 'queijo', item: '🐀', target: '🧀' },
-        { id: 'peixe', item: '🐧', target: '🐟' },
-        { id: 'banana', item: '🐒', target: '🍌' },
-        { id: 'osso', item: '🐶', target: '🦴' },
-        { id: 'cenoura', item: '🐰', target: '🥕' },
-        { id: 'mel', item: '🐝', target: '🍯' },
-        { id: 'mamadeira', item: '👶', target: '🍼' },
-        { id: 'estrada', item: '🚗', target: '🛣️' },
-        { id: 'naoestrada', item: '👧', target: '🚫🛣' },
-        { id: 'cadeado', item: '🔑', target: '🔒' },
-        { id: 'dormir', item: '😴', target: '🛌💤' },
-        { id: 'voou', item: '✈', target: '🛫' },
-        { id: 'basquete', item: '🏀', target: '⛹️‍♀️' },
-        { id: 'dente', item: '🪥', target: '🦷' },
-        { id: 'praia', item: '​👙​', target: '🏖️' }
+        { id: 'queijo', item: '🐀', target: '🧀', video: 'rato-queijo.mp4' },
+        { id: 'peixe', item: '🐧', target: '🐟', video: 'pinguim-peixe.mp4' },
+        { id: 'banana', item: '🐒', target: '🍌', video: 'macaco-banana.mp4' },
+        { id: 'osso', item: '🐶', target: '🦴', video: 'cao-osso.mp4' },
+        { id: 'cenoura', item: '🐰', target: '🥕', video: 'coelho-cenoura.mp4' },
+        { id: 'mel', item: '🐝', target: '🍯', video: 'abelha-mel.mp4' },
+        { id: 'mamadeira', item: '👶', target: '🍼', video: 'bebe-mamadeira.mp4' },
+        { id: 'estrada', item: '🚗', target: '🛣️', video: 'carro-estrada.mp4' },
+        { id: 'naoestrada', item: '👧', target: '🚫🛣', video: 'menina-naoestrada.mp4' },
+        { id: 'cadeado', item: '🔑', target: '🔒', video: 'chave-cadeado.mp4' },
+        { id: 'dormir', item: '😴', target: '🛌💤', video: 'sono-dormir.mp4' },
+        { id: 'voou', item: '✈', target: '🛫', video: 'aviao-voou.mp4' },
+        { id: 'basquete', item: '🏀', target: '⛹️‍♀️', video: 'bola-basquete.mp4' },
+        { id: 'dente', item: '🪥', target: '🦷', video: 'escova-dente.mp4' },
+        { id: 'praia', item: '​👙​', target: '🏖️', video: 'biquine-praia.mp4' }
     ];
 
     // --- Elementos do DOM ---
-    const gameArea = document.querySelector('.game-area'); // Adicionado para referência de posicionamento
+    const gameArea = document.querySelector('.game-area');
     const leftSide = document.querySelector('.left-side');
     const rightSide = document.querySelector('.right-side');
     const feedback = document.getElementById('feedback');
     const correctSound = document.getElementById('correctSound');
     const wrongSound = document.getElementById('wrongSound');
     const videoOverlay = document.getElementById('video-overlay');
+    // --- NOVO: Referência para o player de vídeo único ---
+    const videoPlayer = document.getElementById('video-player');
     const restartButton = document.getElementById('restart-button');
     const finalScoreOverlay = document.getElementById('final-score-overlay');
     const starRating = document.getElementById('star-rating');
@@ -38,8 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let correctPairsInRound = 0;
     const pairsPerRound = 3;
     let totalWrongAttempts = 0;
-
-    // --- NOVO: Variáveis para o arraste visual ---
     let touchClone = null;
     let currentDropZone = null;
 
@@ -102,9 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return zone;
     }
 
-    // --- LÓGICA DE EVENTOS (DRAG & DROP E TOQUE) ---
     function addDragAndDropListeners() {
-        // Eventos de MOUSE (Desktop)
         document.querySelectorAll('.item').forEach(item => {
             item.addEventListener('dragstart', handleDragStart);
             item.addEventListener('dragend', handleDragEnd);
@@ -114,17 +112,13 @@ document.addEventListener('DOMContentLoaded', () => {
             zone.addEventListener('dragleave', handleDragLeave);
             zone.addEventListener('drop', handleDrop);
         });
-
-        // Eventos de TOQUE (Mobile/iPad)
         document.querySelectorAll('.item').forEach(item => {
             item.addEventListener('touchstart', handleTouchStart, { passive: false });
         });
-        // Listeners de move e end são adicionados ao documento para melhor controle
         document.addEventListener('touchmove', handleTouchMove, { passive: false });
         document.addEventListener('touchend', handleTouchEnd);
     }
 
-    // --- Handlers de MOUSE ---
     function handleDragStart(e) {
         draggedItem = e.target;
         setTimeout(() => e.target.style.opacity = '0.5', 0);
@@ -151,21 +145,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- ATUALIZADO: Handlers de TOQUE com Arraste Visual ---
     function handleTouchStart(e) {
         if (e.target.classList.contains('item')) {
             draggedItem = e.target;
-            draggedItem.style.opacity = '0.5'; // Deixa o original transparente
-
-            // Cria o clone para arrastar
+            draggedItem.style.opacity = '0.5';
             touchClone = draggedItem.cloneNode(true);
             touchClone.style.position = 'absolute';
-            touchClone.style.pointerEvents = 'none'; // Impede que o clone intercepte eventos de toque
+            touchClone.style.pointerEvents = 'none';
             touchClone.style.zIndex = '1000';
-            touchClone.style.transform = 'scale(1.1)'; // Aumenta um pouco para dar feedback
+            touchClone.style.transform = 'scale(1.1)';
             gameArea.appendChild(touchClone);
-
-            // Posiciona o clone no local do toque
             const touch = e.touches[0];
             moveClone(touch.clientX, touch.clientY);
         }
@@ -173,18 +162,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleTouchMove(e) {
         if (!draggedItem || !touchClone) return;
-        e.preventDefault(); // Previne o scroll da página
-
+        e.preventDefault();
         const touch = e.touches[0];
-        moveClone(touch.clientX, touch.clientY); // Move o clone
-
-        // Encontra o que está sob o dedo
-        touchClone.style.display = 'none'; // Esconde o clone temporariamente para ver o que está abaixo
+        moveClone(touch.clientX, touch.clientY);
+        touchClone.style.display = 'none';
         const elementUnder = document.elementFromPoint(touch.clientX, touch.clientY);
-        touchClone.style.display = ''; // Mostra o clone de novo
-        
+        touchClone.style.display = '';
         const dropZoneUnder = elementUnder ? elementUnder.closest('.drop-zone') : null;
-
         if (currentDropZone && currentDropZone !== dropZoneUnder) {
             currentDropZone.classList.remove('hovering');
         }
@@ -196,20 +180,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleTouchEnd(e) {
         if (!draggedItem) return;
-
         if (currentDropZone) {
             currentDropZone.classList.remove('hovering');
             if (draggedItem.dataset.targetId === currentDropZone.dataset.matchId) {
                 handleCorrectMatch(draggedItem, currentDropZone);
             } else {
                 handleWrongMatch();
-                draggedItem.style.opacity = '1'; // Se errou, o original volta a aparecer
+                draggedItem.style.opacity = '1';
             }
         } else {
-            draggedItem.style.opacity = '1'; // Se soltou fora, o original volta a aparecer
+            draggedItem.style.opacity = '1';
         }
-
-        // Limpa tudo
         if (touchClone) {
             touchClone.remove();
         }
@@ -217,39 +198,56 @@ document.addEventListener('DOMContentLoaded', () => {
         touchClone = null;
         currentDropZone = null;
     }
-    
-    // --- NOVO: Função auxiliar para mover o clone ---
+
     function moveClone(x, y) {
         if (!touchClone) return;
-        // Centraliza o clone no dedo
         touchClone.style.left = `${x - (touchClone.offsetWidth / 2)}px`;
         touchClone.style.top = `${y - (touchClone.offsetHeight / 2)}px`;
     }
 
-    // --- Lógica de Resultado (sem alterações) ---
+    // --- ATUALIZADO: Função de acerto agora usa o player de vídeo único ---
     function handleCorrectMatch(item, zone) {
         correctSound.play();
         feedback.textContent = '✅';
         item.classList.add('hidden');
         zone.classList.add('hidden');
-        item.style.opacity = '1'; // Garante que a opacidade seja restaurada antes de sumir
+        item.style.opacity = '1';
 
-        const videoId = 'video-' + zone.dataset.matchId;
-        const video = document.getElementById(videoId);
-        if (!video) {
-            checkRoundCompletion();
+        // 1. Encontra o par correspondente para obter o nome do arquivo do vídeo
+        const correctPair = allPairs.find(p => p.id === zone.dataset.matchId);
+
+        if (!correctPair || !correctPair.video) {
+            console.error(`Vídeo não configurado para o id: ${zone.dataset.matchId}`);
+            checkRoundCompletion(); // Continua o jogo mesmo se o vídeo falhar
             return;
         }
+
         setTimeout(() => {
             videoOverlay.style.display = 'flex';
-            video.style.display = 'block';
-            video.currentTime = 0;
-            video.play();
-            video.addEventListener('ended', () => {
-                video.style.display = 'none';
+            videoPlayer.style.display = 'block';
+
+            // 2. Define o arquivo de vídeo a ser tocado
+            videoPlayer.src = correctPair.video;
+            videoPlayer.load(); // Carrega o novo vídeo
+
+            // 3. Toca o vídeo e adiciona um listener para quando ele terminar
+            const playPromise = videoPlayer.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.error("Erro ao tocar o vídeo:", error);
+                    // Se houver erro (ex: autoplay bloqueado), esconde o overlay e continua o jogo
+                    videoPlayer.style.display = 'none';
+                    videoOverlay.style.display = 'none';
+                    checkRoundCompletion();
+                });
+            }
+
+            videoPlayer.addEventListener('ended', () => {
+                videoPlayer.style.display = 'none';
                 videoOverlay.style.display = 'none';
                 checkRoundCompletion();
-            }, { once: true });
+            }, { once: true }); // {once: true} remove o listener após ser executado
+
         }, 400);
     }
 
