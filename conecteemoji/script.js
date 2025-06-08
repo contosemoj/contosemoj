@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const wrongSound = document.getElementById('wrongSound');
     const videoOverlay = document.getElementById('video-overlay');
     const restartButton = document.getElementById('restart-button');
-    // --- NOVOS ELEMENTOS DO PLACAR FINAL ---
     const finalScoreOverlay = document.getElementById('final-score-overlay');
     const starRating = document.getElementById('star-rating');
     const totalCorrectSpan = document.getElementById('total-correct');
@@ -38,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let draggedItem = null;
     let correctPairsInRound = 0;
     const pairsPerRound = 3;
-    let totalWrongAttempts = 0; // <-- NOVA VARIÁVEL para contar erros totais
+    let totalWrongAttempts = 0;
 
     // --- Funções do Jogo ---
 
@@ -51,8 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startNewGame() {
         availablePairs = [...allPairs];
-        totalWrongAttempts = 0; // <-- RESETAR erros no início
-        finalScoreOverlay.style.display = 'none'; // <-- Esconder placar
+        totalWrongAttempts = 0;
+        finalScoreOverlay.style.display = 'none';
         startRound();
     }
 
@@ -70,13 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const currentPairs = availablePairs.splice(0, pairsPerRound);
             setupRoundUI(currentPairs);
         } else {
-            // --- MODIFICADO: Chama a função para mostrar o placar final ---
             showFinalScore();
         }
     }
     
-    // Nenhuma alteração necessária nas funções:
-    // setupRoundUI, createDraggableItem, createDropZone, addDragAndDropListeners
     function setupRoundUI(pairs) {
         const items = pairs.map(pair => createDraggableItem(pair));
         const targets = pairs.map(pair => createDropZone(pair));
@@ -105,7 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return zone;
     }
     
+    // --- LÓGICA DE EVENTOS (MODIFICADA) ---
     function addDragAndDropListeners() {
+        // --- Eventos de MOUSE (para Desktop) ---
         document.querySelectorAll('.item').forEach(item => {
             item.addEventListener('dragstart', handleDragStart);
             item.addEventListener('dragend', handleDragEnd);
@@ -116,10 +114,71 @@ document.addEventListener('DOMContentLoaded', () => {
             zone.addEventListener('dragleave', handleDragLeave);
             zone.addEventListener('drop', handleDrop);
         });
+
+        // --- NOVO: Eventos de TOQUE (para iPad/Celular) ---
+        let currentDropZone = null;
+
+        document.querySelectorAll('.item').forEach(item => {
+            // Quando o usuário toca no item
+            item.addEventListener('touchstart', (e) => {
+                draggedItem = e.target.closest('.item');
+                // Simula o efeito visual do dragstart
+                setTimeout(() => {
+                    if (draggedItem) draggedItem.style.opacity = '0.5';
+                }, 0);
+            }, { passive: true });
+
+            // Quando o usuário arrasta o dedo na tela
+            item.addEventListener('touchmove', (e) => {
+                if (!draggedItem) return;
+                
+                // Evita que a página role
+                e.preventDefault();
+
+                // Encontra o que está sob o dedo
+                const touch = e.targetTouches[0];
+                const elementUnder = document.elementFromPoint(touch.clientX, touch.clientY);
+                const dropZoneUnder = elementUnder ? elementUnder.closest('.drop-zone') : null;
+
+                // Remove o realce da zona anterior se nos movermos para fora
+                if (currentDropZone && currentDropZone !== dropZoneUnder) {
+                    currentDropZone.classList.remove('hovering');
+                }
+
+                // Adiciona o realce na nova zona
+                if (dropZoneUnder) {
+                    dropZoneUnder.classList.add('hovering');
+                }
+                
+                currentDropZone = dropZoneUnder;
+            }, { passive: false });
+
+            // Quando o usuário solta o item
+            item.addEventListener('touchend', (e) => {
+                if (!draggedItem) return;
+
+                // Restaura o visual do item
+                draggedItem.style.opacity = '1';
+
+                // Se soltou sobre uma zona de drop válida
+                if (currentDropZone) {
+                    currentDropZone.classList.remove('hovering');
+                    // Verifica se o par está correto
+                    if (draggedItem.dataset.targetId === currentDropZone.dataset.matchId) {
+                        handleCorrectMatch(draggedItem, currentDropZone);
+                    } else {
+                        handleWrongMatch();
+                    }
+                }
+                // Limpa as variáveis de estado
+                draggedItem = null;
+                currentDropZone = null;
+            });
+        });
     }
     
     // --- Funções de Evento (Handlers) ---
-    // Nenhuma alteração necessária aqui
+
     function handleDragStart(e) {
         draggedItem = e.target;
         setTimeout(() => e.target.style.opacity = '0.5', 0);
@@ -150,8 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
             handleWrongMatch();
         }
     }
-    
-    // Nenhuma alteração necessária em handleCorrectMatch
+
     function handleCorrectMatch(item, zone) {
         correctSound.play();
         feedback.textContent = '✅';
@@ -181,22 +239,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }, { once: true });
         }, 400);
     }
-    
-    // --- MODIFICADO: handleWrongMatch agora conta os erros ---
+
     function handleWrongMatch() {
         wrongSound.play();
         feedback.textContent = '❌';
-        totalWrongAttempts++; // <-- Incrementa o contador de erros
+        totalWrongAttempts++;
         setTimeout(() => feedback.textContent = '', 1500);
     }
     
-    // Nenhuma alteração necessária em checkRoundCompletion
     function checkRoundCompletion() {
         correctPairsInRound++;
-        const totalPairsInThisRound = Array.from(rightSide.children).filter(child => !child.classList.contains('hidden')).length;
-        const totalItemsInThisRound = Array.from(leftSide.children).filter(child => !child.classList.contains('hidden')).length;
         const totalPairsOnScreen = leftSide.children.length;
-
 
         if (correctPairsInRound >= totalPairsOnScreen) {
             feedback.textContent = '👏​👍';
@@ -206,27 +259,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- NOVA FUNÇÃO: Para calcular e mostrar o placar final ---
     function showFinalScore() {
         let stars = '';
         if (totalWrongAttempts === 0) {
-            stars = '⭐⭐⭐⭐⭐'; // 5 estrelas
+            stars = '⭐⭐⭐⭐⭐';
         } else if (totalWrongAttempts <= 2) {
-            stars = '⭐⭐⭐⭐'; // 4 estrelas
+            stars = '⭐⭐⭐⭐';
         } else if (totalWrongAttempts <= 4) {
-            stars = '⭐⭐⭐'; // 3 estrelas
+            stars = '⭐⭐⭐';
         } else if (totalWrongAttempts <= 6) {
-            stars = '⭐⭐'; // 2 estrelas
+            stars = '⭐⭐';
         } else {
-            stars = '⭐'; // 1 estrela
+            stars = '⭐';
         }
-
-        // Atualiza o conteúdo do placar
         starRating.textContent = stars;
-        totalCorrectSpan.textContent = allPairs.length; // O total de acertos é sempre o total de pares
+        totalCorrectSpan.textContent = allPairs.length;
         totalWrongSpan.textContent = totalWrongAttempts;
-
-        // Exibe o placar
         finalScoreOverlay.style.display = 'flex';
     }
 
