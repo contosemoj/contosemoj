@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     // --- Elementos do DOM ---
+    const gameArea = document.querySelector('.game-area'); // Adicionado para referência de posicionamento
     const leftSide = document.querySelector('.left-side');
     const rightSide = document.querySelector('.right-side');
     const feedback = document.getElementById('feedback');
@@ -31,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalCorrectSpan = document.getElementById('total-correct');
     const totalWrongSpan = document.getElementById('total-wrong');
 
-
     // --- Variáveis de Estado do Jogo ---
     let availablePairs = [];
     let draggedItem = null;
@@ -39,8 +39,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const pairsPerRound = 3;
     let totalWrongAttempts = 0;
 
-    // --- Funções do Jogo ---
+    // --- NOVO: Variáveis para o arraste visual ---
+    let touchClone = null;
+    let currentDropZone = null;
 
+    // --- Funções Principais do Jogo (sem alterações) ---
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -72,15 +75,13 @@ document.addEventListener('DOMContentLoaded', () => {
             showFinalScore();
         }
     }
-    
+
     function setupRoundUI(pairs) {
         const items = pairs.map(pair => createDraggableItem(pair));
         const targets = pairs.map(pair => createDropZone(pair));
         shuffleArray(targets);
-
         items.forEach(item => leftSide.appendChild(item));
         targets.forEach(target => rightSide.appendChild(target));
-
         addDragAndDropListeners();
     }
 
@@ -100,109 +101,49 @@ document.addEventListener('DOMContentLoaded', () => {
         zone.innerHTML = pair.target;
         return zone;
     }
-    
-    // --- LÓGICA DE EVENTOS (MODIFICADA) ---
+
+    // --- LÓGICA DE EVENTOS (DRAG & DROP E TOQUE) ---
     function addDragAndDropListeners() {
-        // --- Eventos de MOUSE (para Desktop) ---
+        // Eventos de MOUSE (Desktop)
         document.querySelectorAll('.item').forEach(item => {
             item.addEventListener('dragstart', handleDragStart);
             item.addEventListener('dragend', handleDragEnd);
         });
-
         document.querySelectorAll('.drop-zone').forEach(zone => {
             zone.addEventListener('dragover', handleDragOver);
             zone.addEventListener('dragleave', handleDragLeave);
             zone.addEventListener('drop', handleDrop);
         });
 
-        // --- NOVO: Eventos de TOQUE (para iPad/Celular) ---
-        let currentDropZone = null;
-
+        // Eventos de TOQUE (Mobile/iPad)
         document.querySelectorAll('.item').forEach(item => {
-            // Quando o usuário toca no item
-            item.addEventListener('touchstart', (e) => {
-                draggedItem = e.target.closest('.item');
-                // Simula o efeito visual do dragstart
-                setTimeout(() => {
-                    if (draggedItem) draggedItem.style.opacity = '0.5';
-                }, 0);
-            }, { passive: true });
-
-            // Quando o usuário arrasta o dedo na tela
-            item.addEventListener('touchmove', (e) => {
-                if (!draggedItem) return;
-                
-                // Evita que a página role
-                e.preventDefault();
-
-                // Encontra o que está sob o dedo
-                const touch = e.targetTouches[0];
-                const elementUnder = document.elementFromPoint(touch.clientX, touch.clientY);
-                const dropZoneUnder = elementUnder ? elementUnder.closest('.drop-zone') : null;
-
-                // Remove o realce da zona anterior se nos movermos para fora
-                if (currentDropZone && currentDropZone !== dropZoneUnder) {
-                    currentDropZone.classList.remove('hovering');
-                }
-
-                // Adiciona o realce na nova zona
-                if (dropZoneUnder) {
-                    dropZoneUnder.classList.add('hovering');
-                }
-                
-                currentDropZone = dropZoneUnder;
-            }, { passive: false });
-
-            // Quando o usuário solta o item
-            item.addEventListener('touchend', (e) => {
-                if (!draggedItem) return;
-
-                // Restaura o visual do item
-                draggedItem.style.opacity = '1';
-
-                // Se soltou sobre uma zona de drop válida
-                if (currentDropZone) {
-                    currentDropZone.classList.remove('hovering');
-                    // Verifica se o par está correto
-                    if (draggedItem.dataset.targetId === currentDropZone.dataset.matchId) {
-                        handleCorrectMatch(draggedItem, currentDropZone);
-                    } else {
-                        handleWrongMatch();
-                    }
-                }
-                // Limpa as variáveis de estado
-                draggedItem = null;
-                currentDropZone = null;
-            });
+            item.addEventListener('touchstart', handleTouchStart, { passive: false });
         });
+        // Listeners de move e end são adicionados ao documento para melhor controle
+        document.addEventListener('touchmove', handleTouchMove, { passive: false });
+        document.addEventListener('touchend', handleTouchEnd);
     }
-    
-    // --- Funções de Evento (Handlers) ---
 
+    // --- Handlers de MOUSE ---
     function handleDragStart(e) {
         draggedItem = e.target;
         setTimeout(() => e.target.style.opacity = '0.5', 0);
     }
-
     function handleDragEnd(e) {
         e.target.style.opacity = '1';
         draggedItem = null;
     }
-
     function handleDragOver(e) {
         e.preventDefault();
         e.target.closest('.drop-zone').classList.add('hovering');
     }
-
     function handleDragLeave(e) {
         e.target.closest('.drop-zone').classList.remove('hovering');
     }
-
     function handleDrop(e) {
         e.preventDefault();
         const dropZone = e.target.closest('.drop-zone');
         dropZone.classList.remove('hovering');
-
         if (draggedItem && draggedItem.dataset.targetId === dropZone.dataset.matchId) {
             handleCorrectMatch(draggedItem, dropZone);
         } else {
@@ -210,28 +151,100 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- ATUALIZADO: Handlers de TOQUE com Arraste Visual ---
+    function handleTouchStart(e) {
+        if (e.target.classList.contains('item')) {
+            draggedItem = e.target;
+            draggedItem.style.opacity = '0.5'; // Deixa o original transparente
+
+            // Cria o clone para arrastar
+            touchClone = draggedItem.cloneNode(true);
+            touchClone.style.position = 'absolute';
+            touchClone.style.pointerEvents = 'none'; // Impede que o clone intercepte eventos de toque
+            touchClone.style.zIndex = '1000';
+            touchClone.style.transform = 'scale(1.1)'; // Aumenta um pouco para dar feedback
+            gameArea.appendChild(touchClone);
+
+            // Posiciona o clone no local do toque
+            const touch = e.touches[0];
+            moveClone(touch.clientX, touch.clientY);
+        }
+    }
+
+    function handleTouchMove(e) {
+        if (!draggedItem || !touchClone) return;
+        e.preventDefault(); // Previne o scroll da página
+
+        const touch = e.touches[0];
+        moveClone(touch.clientX, touch.clientY); // Move o clone
+
+        // Encontra o que está sob o dedo
+        touchClone.style.display = 'none'; // Esconde o clone temporariamente para ver o que está abaixo
+        const elementUnder = document.elementFromPoint(touch.clientX, touch.clientY);
+        touchClone.style.display = ''; // Mostra o clone de novo
+        
+        const dropZoneUnder = elementUnder ? elementUnder.closest('.drop-zone') : null;
+
+        if (currentDropZone && currentDropZone !== dropZoneUnder) {
+            currentDropZone.classList.remove('hovering');
+        }
+        if (dropZoneUnder) {
+            dropZoneUnder.classList.add('hovering');
+        }
+        currentDropZone = dropZoneUnder;
+    }
+
+    function handleTouchEnd(e) {
+        if (!draggedItem) return;
+
+        if (currentDropZone) {
+            currentDropZone.classList.remove('hovering');
+            if (draggedItem.dataset.targetId === currentDropZone.dataset.matchId) {
+                handleCorrectMatch(draggedItem, currentDropZone);
+            } else {
+                handleWrongMatch();
+                draggedItem.style.opacity = '1'; // Se errou, o original volta a aparecer
+            }
+        } else {
+            draggedItem.style.opacity = '1'; // Se soltou fora, o original volta a aparecer
+        }
+
+        // Limpa tudo
+        if (touchClone) {
+            touchClone.remove();
+        }
+        draggedItem = null;
+        touchClone = null;
+        currentDropZone = null;
+    }
+    
+    // --- NOVO: Função auxiliar para mover o clone ---
+    function moveClone(x, y) {
+        if (!touchClone) return;
+        // Centraliza o clone no dedo
+        touchClone.style.left = `${x - (touchClone.offsetWidth / 2)}px`;
+        touchClone.style.top = `${y - (touchClone.offsetHeight / 2)}px`;
+    }
+
+    // --- Lógica de Resultado (sem alterações) ---
     function handleCorrectMatch(item, zone) {
         correctSound.play();
         feedback.textContent = '✅';
-        
         item.classList.add('hidden');
         zone.classList.add('hidden');
-        
+        item.style.opacity = '1'; // Garante que a opacidade seja restaurada antes de sumir
+
         const videoId = 'video-' + zone.dataset.matchId;
         const video = document.getElementById(videoId);
-
         if (!video) {
-            console.error(`ERRO: Vídeo não encontrado! Verifique se existe uma tag de vídeo com id="${videoId}" no seu HTML.`);
             checkRoundCompletion();
             return;
         }
-
         setTimeout(() => {
             videoOverlay.style.display = 'flex';
             video.style.display = 'block';
             video.currentTime = 0;
             video.play();
-
             video.addEventListener('ended', () => {
                 video.style.display = 'none';
                 videoOverlay.style.display = 'none';
@@ -246,11 +259,10 @@ document.addEventListener('DOMContentLoaded', () => {
         totalWrongAttempts++;
         setTimeout(() => feedback.textContent = '', 1500);
     }
-    
+
     function checkRoundCompletion() {
         correctPairsInRound++;
-        const totalPairsOnScreen = leftSide.children.length;
-
+        const totalPairsOnScreen = leftSide.querySelectorAll('.item:not(.hidden)').length + correctPairsInRound;
         if (correctPairsInRound >= totalPairsOnScreen) {
             feedback.textContent = '👏​👍';
             setTimeout(startRound, 2000);
@@ -261,17 +273,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showFinalScore() {
         let stars = '';
-        if (totalWrongAttempts === 0) {
-            stars = '⭐⭐⭐⭐⭐';
-        } else if (totalWrongAttempts <= 2) {
-            stars = '⭐⭐⭐⭐';
-        } else if (totalWrongAttempts <= 4) {
-            stars = '⭐⭐⭐';
-        } else if (totalWrongAttempts <= 6) {
-            stars = '⭐⭐';
-        } else {
-            stars = '⭐';
-        }
+        if (totalWrongAttempts === 0) stars = '⭐⭐⭐⭐⭐';
+        else if (totalWrongAttempts <= 2) stars = '⭐⭐⭐⭐';
+        else if (totalWrongAttempts <= 4) stars = '⭐⭐⭐';
+        else if (totalWrongAttempts <= 6) stars = '⭐⭐';
+        else stars = '⭐';
         starRating.textContent = stars;
         totalCorrectSpan.textContent = allPairs.length;
         totalWrongSpan.textContent = totalWrongAttempts;
@@ -279,7 +285,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     restartButton.addEventListener('click', startNewGame);
-
-    // --- Inicia o Jogo ---
     startNewGame();
 });
