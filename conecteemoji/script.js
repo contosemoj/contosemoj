@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'mel', item: '🐝', target: '🍯', video: 'abelha-mel.mp4' },
         { id: 'mamadeira', item: '👶', target: '🍼', video: 'bebe-mamadeira.mp4' },
         { id: 'estrada', item: '🚗', target: '🛣️', video: 'carro-estrada.mp4' },
-        { id: 'naoestrada', item: '👧', target: '🚫🛣', video: 'menina-naoestrada.mp4' },
+        { id: 'ovo', item: '🐔', target: '🥚', video: 'galinha-ovo.mp4' },
         { id: 'cadeado', item: '🔑', target: '🔒', video: 'chave-cadeado.mp4' },
         { id: 'dormir', item: '😴', target: '🛌💤', video: 'sono-dormir.mp4' },
         { id: 'voou', item: '✈', target: '🛫', video: 'aviao-voou.mp4' },
