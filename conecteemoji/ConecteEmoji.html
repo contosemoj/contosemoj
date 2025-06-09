@@ -7,8 +7,16 @@
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="game-area">
-        <div class="container">
+    <div id="start-screen-overlay">
+        <div class="start-screen-modal">
+            <h1>ConecteEmoji</h1>
+            <p class="creator-info">Criado por: Lécio O. Arantes</p>
+            <p class="dedication-info">Dedicado a: Diana V. Arantes</p>
+            <button id="start-button">Iniciar</button>
+        </div>
+    </div>
+
+    <div class="game-area" style="display: none;"> <div class="container">
             <div class="left-side"></div>
             <div class="right-side"></div>
         </div>
@@ -27,10 +35,15 @@
 
 <div id="video-overlay" style="display: none;">
     <video id="video-player" class="video" playsinline></video>
+    <p id="video-caption"></p>
 </div>
 
     <audio id="correctSound" src="correct.mp3"></audio>
     <audio id="wrongSound" src="wrong.mp3"></audio>
+	
+	<audio id="star3Sound" src="3-estrelas.mp3"></audio>	
+    <audio id="star4Sound" src="4-estrelas.mp3"></audio>
+    <audio id="star5Sound" src="5-estrelas.mp3"></audio>
 
     <script src="script.js"></script>
 </body>
