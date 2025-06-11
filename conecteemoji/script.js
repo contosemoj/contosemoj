@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'mel', item: '🐝', target: '🍯', video: 'abelha-mel.mp4', caption: '🐝 👄🍯' },
         { id: 'mamadeira', item: '👶', target: '🍼', video: 'bebe-mamadeira.mp4', caption: '👶 ​🫴​ 🍼' },
         { id: 'estrada', item: '🚗', target: '🛣️', video: 'carro-estrada.mp4', caption: '🚗 🚶‍♀️​ 🛣️' },
-        { id: 'ovo', item: '🐔', target: '🥚', video: 'galinha-ovo.mp4', caption: '🐔 🫳​ 🥚' },
+        { id: 'ovo', item: '🐔', target: '🥚', video: 'galinha-ovo.mp4', caption: '🐔 📥 🥚' },
         { id: 'cadeado', item: '🔑', target: '🔒', video: 'chave-cadeado.mp4', caption: '🔑 🔐​🔓 🔒' },
         { id: 'dormir', item: '😴', target: '🛌💤', video: 'sono-dormir.mp4', caption: '😴 🫴​ 🛌💤' },
         { id: 'voou', item: '✈', target: '🛫', video: 'aviao-voou.mp4', caption: '✈️ 🛫' },
