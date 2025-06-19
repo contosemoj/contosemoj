@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Alfabetização com IA</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        :root {
+            --bg-color: #f0f7ff;
+            --card-bg: #ffffff;
+            --primary-color: #007bff;
+            --secondary-color: #ffc107;
+            --correct-color: #28a745;
+            --wrong-color: #dc3545;
+            --text-color: #333;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --font-family: 'Poppins', sans-serif;
+        }
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+        #game-container {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            background: var(--card-bg);
+            padding: clamp(1rem, 5vw, 2rem);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            position: relative;
+        }
+        h1 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: clamp(1.5rem, 5vw, 2.2rem);
+        }
+        #progress-indicator {
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #555;
+            min-height: 2.5em;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #display-area {
+            min-height: 320px;
+            padding: 20px;
+            border: 2px dashed var(--primary-color);
+            border-radius: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            padding-top: 40px;
+            width: 90%;
+            max-width: 280px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            animation: fadeIn 0.5s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .card .syllable {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: clamp(1.8em, 4vw, 2.2em);
+            font-weight: 700;
+            color: white;
+            background-color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
+        }
+        .card .emoji {
+            font-size: clamp(4em, 10vw, 5em);
+            line-height: 1;
+            margin-bottom: 15px;
+            margin-top: 30px;
+            text-shadow: 2px 2px 5px var(--shadow-color);
+        }
+        .card .word {
+            font-size: clamp(1.8em, 4vw, 2em);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        #navigation {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        button {
+            font-family: var(--font-family);
+            padding: 15px 10px;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        button:active { transform: scale(0.95); }
+        #prev-btn { background-color: #6c757d; color: white; }
+        #prev-btn:disabled { background-color: #cdd2d6; cursor: not-allowed; }
+        #next-btn { background-color: var(--primary-color); color: white; }
+        #next-btn.completed { background-color: var(--correct-color); }
+        #read-button { background-color: var(--secondary-color); color: #212529; }
+        #gemini-story-btn { background: linear-gradient(45deg, #2196F3, #673AB7); color: white; }
+        .hidden { display: none !important; }
+
+        /* Estilos do Minijogo */
+        #mini-game-view { display: flex; justify-content: space-around; align-items: flex-start; width: 100%; max-width: 600px; animation: fadeIn 0.5s ease; gap: 20px; }
+        .mini-game-column { display: flex; flex-direction: column; gap: 15px; width: 45%; }
+        .choice { background: #fff; border: 2px solid #ddd; border-radius: 15px; padding: clamp(10px, 3vw, 20px); font-size: clamp(2rem, 5vw, 3rem); transition: all 0.2s ease; box-shadow: 0 4px 10px var(--shadow-color); display: flex; align-items: center; justify-content: center; min-height: 80px; }
+        .syllable-choice { cursor: grab; font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 700; }
+        .syllable-choice:active { cursor: grabbing; }
+        .emoji-choice.drag-over { border-color: var(--primary-color); background-color: #e7f3ff; transform: scale(1.05); }
+        .choice.dragging { opacity: 0.5; }
+        .choice.correct { animation: correct-vanish 0.5s forwards; pointer-events: none; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes correct-vanish { to { opacity: 0; transform: scale(0.8); } }
+
+        /* --- Gemini Features --- */
+        #suggest-words-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 2rem; cursor: pointer; color: var(--secondary-color); text-shadow: 0 2px 4px var(--shadow-color); padding: 5px; line-height: 1; }
+        .loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); display: flex; justify-content: center; align-items: center; z-index: 100; border-radius: 20px; }
+        .loader { border: 8px solid #f3f3f3; border-radius: 50%; border-top: 8px solid var(--primary-color); width: 60px; height: 60px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 200; padding: 1rem; box-sizing: border-box; }
+        .modal-content { background: white; padding: 2rem; border-radius: 15px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; text-align: left; position: relative; }
+        .modal-content h3 { color: var(--primary-color); margin-top: 0; }
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 2rem; font-weight: bold; cursor: pointer; color: #aaa; }
+        .suggestion-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .suggestion-item { text-align: center; background: #f8f9fa; padding: 1rem; border-radius: 10px; }
+        .suggestion-item .emoji { font-size: 2.5rem; }
+        .suggestion-item .word { font-weight: 600; margin-top: 0.5rem; }
+
+        /* --- REGRAS DE RESPONSIVIDADE --- */
+        @media (min-width: 768px) {
+            #game-container { max-width: 700px; padding: 35px; }
+            #display-area { min-height: 400px; }
+            .card { max-width: 320px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <!-- Loading Spinner -->
+        <div id="loading-overlay" class="loading-overlay hidden"><div class="loader"></div></div>
+        <!-- Modal for Gemini Features -->
+        <div id="modal" class="hidden">
+            <div class="modal-content">
+                <span class="modal-close">&times;</span>
+                <div id="modal-body"></div>
+            </div>
+        </div>
+
+        <h1>🔠🕹</h1>
+        <p id="subtitle">Ouça e aprenda as sílabas!</p>
+        <div id="progress-indicator">A carregar...</div>
+        <div id="display-area"></div>
+        <div id="navigation">
+            <button id="prev-btn">⏮</button>
+            <button id="read-button">🗣</button>
+            <button id="next-btn">⏭</button>
+            <button id="gemini-story-btn" class="hidden">✨ Criar História</button>
+        </div>
+    </div>
+
+    <script>
+        const gameData = [
+            // Data from the original script...
+            { letter: 'A', family: 'A', cards: [{ word: 'Abelha', syllable: 'A', emoji: '🐝' }] },
+            { letter: 'B', family: 'B', cards: [
+                { word: 'Bala', syllable: 'Ba', emoji: '🍬' }, { word: 'Beijo', syllable: 'Be', emoji: '😘' },
+                { word: 'Biquíni', syllable: 'Bi', emoji: '👙' }, { word: 'Bola', syllable: 'Bo', emoji: '🏀' },
+                { word: 'Buraco', syllable: 'Bu', emoji: '🕳️' }
+            ]},
+            { letter: 'C', family: 'C', cards: [
+                { word: 'Casa', syllable: 'Ca', emoji: '🏠' }, { word: 'Cebola', syllable: 'Ce', emoji: '🧅' },
+                { word: 'Cinema', syllable: 'Ci', emoji: '📽️' }, { word: 'Coração', syllable: 'Co', emoji: '❤️' },
+                { word: 'Curativo', syllable: 'Cu', emoji: '🩹' }
+            ]},
+            { letter: 'D', family: 'D', cards: [
+                { word: 'Dado', syllable: 'Da', emoji: '🎲' }, { word: 'Dente', syllable: 'De', emoji: '🦷' },
+                { word: 'Dinossauro', syllable: 'Di', emoji: '🦕' }, { word: 'Doce', syllable: 'Do', emoji: '🧁' },
+                { word: 'Ducha', syllable: 'Du', emoji: '🚿' }
+            ]},
+             { letter: 'E', family: 'E', cards: [{ word: 'Elefante', syllable: 'E', emoji: '🐘' }] },
+            { letter: 'F', family: 'F', cards: [
+                { word: 'Fada', syllable: 'Fa', emoji: '🧚' }, { word: 'Feijão', syllable: 'Fe', emoji: '🫘' },
+                { word: 'Fita', syllable: 'Fi', emoji: '🎀' }, { word: 'Folha', syllable: 'Fo', emoji: '🍃' },
+                { word: 'Futebol', syllable: 'Fu', emoji: '⚽' }
+            ]},
+            { letter: 'G', family: 'G', cards: [
+                { word: 'Gato', syllable: 'Ga', emoji: '🐈' }, { word: 'Gelo', syllable: 'Ge', emoji: '🧊' },
+                { word: 'Girassol', syllable: 'Gi', emoji: '🌻' }, { word: 'Gota', syllable: 'Go', emoji: '💧' },
+                { word: 'Gude', syllable: 'Gu', emoji: '🔴' }
+            ]},
+            { letter: 'H', family: 'H', cards: [
+                { word: 'Hambúrguer', syllable: 'Ha', emoji: '🍔' }, { word: 'Helicóptero', syllable: 'He', emoji: '🚁' },
+                { word: 'Hipopótamo', syllable: 'Hi', emoji: '🦛' }, { word: 'Hospital', syllable: 'Ho', emoji: '🏥' },
+                { word: 'Humano', syllable: 'Hu', emoji: '🧑' }
+            ]},
+            { letter: 'I', family: 'I', cards: [{ word: 'Ilha', syllable: 'I', emoji: '🏝️' }] },
+            { letter: 'J', family: 'J', cards: [
+                { word: 'Jacaré', syllable: 'Ja', emoji: '🐊' }, { word: 'Jegue', syllable: 'Je', emoji: '🐴' },
+                { word: 'Jipe', syllable: 'Ji', emoji: '🚙' }, { word: 'Joaninha', syllable: 'Jo', emoji: '🐞' },
+                { word: 'Juiz', syllable: 'Ju', emoji: '🧑‍⚖️' }
+            ]},
+            { letter: 'L', family: 'L', cards: [
+                { word: 'Lápis', syllable: 'La', emoji: '✏️' }, { word: 'Leite', syllable: 'Le', emoji: '🥛' },
+                { word: 'Livro', syllable: 'Li', emoji: '📚' }, { word: 'Lobo', syllable: 'Lo', emoji: '🐺' },
+                { word: 'Lua', syllable: 'Lu', emoji: '🌙' }
+            ]},
+            { letter: 'M', family: 'M', cards: [
+                { word: 'Maçã', syllable: 'Ma', emoji: '🍎' }, { word: 'Meia', syllable: 'Me', emoji: '🧦' },
+                { word: 'Milho', syllable: 'Mi', emoji: '🌽' }, { word: 'Morango', syllable: 'Mo', emoji: '🍓' },
+                { word: 'Muro', syllable: 'Mu', emoji: '🧱' }
+            ]},
+            { letter: 'N', family: 'N', cards: [
+                { word: 'Navio', syllable: 'Na', emoji: '🚢' }, { word: 'Neve', syllable: 'Ne', emoji: '❄️' },
+                { word: 'Ninho', syllable: 'Ni', emoji: '🪹' }, { word: 'Noite', syllable: 'No', emoji: '🌃' },
+                { word: 'Nuvem', syllable: 'Nu', emoji: '☁️' }
+            ]},
+            { letter: 'O', family: 'O', cards: [{ word: 'Olho', syllable: 'O', emoji: '👁️' }] },
+            { letter: 'P', family: 'P', cards: [
+                { word: 'Pão', syllable: 'Pa', emoji: '🍞' }, { word: 'Peixe', syllable: 'Pe', emoji: '🐠' },
+                { word: 'Pipoca', syllable: 'Pi', emoji: '🍿' }, { word: 'Porco', syllable: 'Po', emoji: '🐷' },
+                { word: 'Pudim', syllable: 'Pu', emoji: '🍮' }
+            ]},
+            { letter: 'Q', family: 'Q', cards: [
+                { word: 'Quadro', syllable: 'Qua', emoji: '🖼️' }, { word: 'Queijo', syllable: 'Que', emoji: '🧀' },
+                { word: 'Quiabo', syllable: 'Qui', emoji: '🥬' }
+            ]},
+            { letter: 'R', family: 'R', cards: [
+                { word: 'Rato', syllable: 'Ra', emoji: '🐀' }, { word: 'Relógio', syllable: 'Re', emoji: '⏰' },
+                { word: 'Rio', syllable: 'Ri', emoji: '🏞️' }, { word: 'Robô', syllable: 'Ro', emoji: '🤖' },
+                { word: 'Rua', syllable: 'Ru', emoji: '🛣️' }
+            ]},
+            { letter: 'S', family: 'S', cards: [
+                { word: 'Sapo', syllable: 'Sa', emoji: '🐸' }, { word: 'Sereia', syllable: 'Se', emoji: '🧜‍♀️' },
+                { word: 'Sino', syllable: 'Si', emoji: '🔔' }, { word: 'Sol', syllable: 'So', emoji: '☀️' },
+                { word: 'Suco', syllable: 'Su', emoji: '🧃' }
+            ]},
+            { letter: 'T', family: 'T', cards: [
+                { word: 'Taça', syllable: 'Ta', emoji: '🏆' }, { word: 'Tesoura', syllable: 'Te', emoji: '✂️' },
+                { word: 'Tigre', syllable: 'Ti', emoji: '🐅' }, { word: 'Tomate', syllable: 'To', emoji: '🍅' },
+                { word: 'Tubarão', syllable: 'Tu', emoji: '🦈' }
+            ]},
+            { letter: 'U', family: 'U', cards: [{ word: 'Urso', syllable: 'U', emoji: '🐻' }] },
+            { letter: 'V', family: 'V', cards: [
+                { word: 'Vaca', syllable: 'Va', emoji: '🐄' }, { word: 'Vela', syllable: 'Ve', emoji: '🕯️' },
+                { word: 'Violino', syllable: 'Vi', emoji: '🎻' }, { word: 'Vovó', syllable: 'Vo', emoji: '👵' },
+                { word: 'Vulcão', syllable: 'Vu', emoji: '🌋' }
+            ]},
+            { letter: 'X', family: 'X', cards: [
+                { word: 'Xadrez', syllable: 'Xa', emoji: '♟️' }, { word: 'Xerife', syllable: 'Xe', emoji: '🤠' },
+                { word: 'Xícara', syllable: 'Xi', emoji: '☕' }, { word: 'Xodó', syllable: 'Xo', emoji: '🥰' },
+                { word: 'Xampu', syllable: 'Xu', emoji: '🧴' }
+            ]},
+            { letter: 'Z', family: 'Z', cards: [
+                { word: 'Zangado', syllable: 'Za', emoji: '😡' }, { word: 'Zebra', syllable: 'Ze', emoji: '🦓' },
+                { word: 'Zíper', syllable: 'Zi', emoji: '🤐' }, { word: 'Zoológico', syllable: 'Zo', emoji: '🏞️🐧🐒' },
+                { word: 'Zumbi', syllable: 'Zu', emoji: '🧟' }
+            ]}
+        ];
+
+        const letterDataMap = new Map(gameData.map(item => [item.family, item]));
+
+        function setCookie(name, value, days) { let expires = ""; if (days) { const date = new Date(); date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); expires = "; expires=" + date.toUTCString(); } document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax"; }
+        function getCookie(name) { const nameEQ = name + "="; const ca = document.cookie.split(';'); for (let i = 0; i < ca.length; i++) { let c = ca[i]; while (c.charAt(0) == ' ') c = c.substring(1, c.length); if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length); } return null; }
+        function eraseCookie(name) { document.cookie = name + '=; Max-Age=-99999999;'; }
+
+        // Game State Variables
+        let gameState = 'LEARNING';
+        let currentLevelIndex = 0;
+        let currentStepInSequence = 0;
+        let sequence = [];
+        let currentCardIndex = 0;
+        
+        // Minigame Variables
+        let pairsToMatch = 0;
+        let totalRounds = 0;
+        let currentRound = 0;
+        let availablePairsForMinigame = [];
+
+        // DOM Elements
+        const displayArea = document.getElementById('display-area');
+        const progressIndicator = document.getElementById('progress-indicator');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const readButton = document.getElementById('read-button');
+        const geminiStoryBtn = document.getElementById('gemini-story-btn');
+        const navigation = document.getElementById('navigation');
+        const subtitle = document.getElementById('subtitle');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const modal = document.getElementById('modal');
+        const modalBody = document.getElementById('modal-body');
+        const modalClose = document.querySelector('.modal-close');
+        
+        // Audio & Speech
+        let audioCtx;
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function playTone(freq, type, duration = 0.1) { if (!audioCtx) return; const osc = audioCtx.createOscillator(); osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime); osc.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration); }
+        const speech = {
+            instance: window.speechSynthesis, enabled: !!window.speechSynthesis, voice: null, voicesLoaded: false,
+            init() { if (!this.enabled || this.voicesLoaded) return; this.voice = this.instance.getVoices().find(v => v.lang === 'pt-BR' && v.name.includes('Female')) || this.instance.getVoices().find(v => v.lang === 'pt-BR'); this.voicesLoaded = true; },
+            speak(text1, text2) { if (!this.enabled) return; this.instance.cancel(); const u1 = new SpeechSynthesisUtterance(text1); u1.lang = 'pt-BR'; u1.rate = 0.9; if (this.voice) u1.voice = this.voice; u1.onend = () => { if (text2) setTimeout(() => { const u2 = new SpeechSynthesisUtterance(text2); u2.lang = 'pt-BR'; u2.rate = 0.9; if (this.voice) u2.voice = this.voice; this.instance.speak(u2); }, 350); }; this.instance.speak(u1); }
+        };
+        if (speech.enabled) speech.instance.onvoiceschanged = () => speech.init();
+
+        // --- Gemini API Functions ---
+        async function callGemini(prompt, jsonSchema = null) {
+            loadingOverlay.classList.remove('hidden');
+            let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+            const payload = { contents: chatHistory };
+             if (jsonSchema) {
+                payload.generationConfig = {
+                    responseMimeType: "application/json",
+                    responseSchema: jsonSchema
+                };
+            }
+            const apiKey = ""; // Canvas will provide the key
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.statusText}`);
+                }
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    return text;
+                } else {
+                    throw new Error("Resposta da API inválida.");
+                }
+            } catch (error) {
+                console.error("Erro ao chamar a API Gemini:", error);
+                showModal("<h3>Erro de IA</h3><p>Não foi possível gerar o conteúdo. Por favor, tente novamente mais tarde.</p>");
+                return null;
+            } finally {
+                loadingOverlay.classList.add('hidden');
+            }
+        }
+
+        async function generateStory() {
+            const learnedWords = gameData.slice(0, currentLevelIndex + 1).flatMap(g => g.cards.map(c => c.word));
+            const uniqueWords = [...new Set(learnedWords)].slice(-10); // Use up to 10 recent unique words
+            const prompt = `Crie uma história infantil muito curta, simples e feliz em português do Brasil para uma criança de 5 anos. A história deve ter no máximo 4 frases. Use algumas destas palavras: ${uniqueWords.join(', ')}.`;
+            const story = await callGemini(prompt);
+            if (story) {
+                const storyHtml = `<h3>✨ Uma Nova História!</h3><p style="font-size: 1.2rem; line-height: 1.6;">${story.replace(/\n/g, '<br>')}</p><button id="read-story-btn">Ler para Mim</button>`;
+                showModal(storyHtml);
+                document.getElementById('read-story-btn').addEventListener('click', () => speech.speak(story));
+            }
+        }
+
+        async function suggestWords() {
+            const card = letterDataMap.get(sequence[currentStepInSequence]).cards[currentCardIndex];
+            const syllable = card.syllable;
+            const prompt = `Sugira 3 palavras novas, simples e comuns em português do Brasil que comecem com a sílaba "${syllable}". Não inclua a palavra "${card.word}". Para cada palavra, forneça um único emoji que a represente.`;
+            const schema = {
+                type: "ARRAY",
+                items: {
+                    type: "OBJECT",
+                    properties: { "palavra": { "type": "STRING" }, "emoji": { "type": "STRING" } },
+                    required: ["palavra", "emoji"]
+                }
+            };
+            const suggestionsJson = await callGemini(prompt, schema);
+            if(suggestionsJson) {
+                try {
+                    const suggestions = JSON.parse(suggestionsJson);
+                    let suggestionHtml = `<h3>✨ Mais palavras com "${syllable}"</h3><div class="suggestion-grid">`;
+                    suggestions.forEach(item => {
+                        suggestionHtml += `<div class="suggestion-item"><div class="emoji">${item.emoji}</div><div class="word">${item.palavra}</div></div>`;
+                    });
+                    suggestionHtml += `</div>`;
+                    showModal(suggestionHtml);
+                } catch(e) {
+                     console.error("Erro ao processar sugestões JSON:", e);
+                     showModal("<h3>Erro</h3><p>Não foi possível processar as sugestões.</p>");
+                }
+            }
+        }
+        
+        function showModal(content) {
+            modalBody.innerHTML = content;
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            modalBody.innerHTML = '';
+        }
+        modalClose.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+
+        // --- Game Logic Functions ---
+        function saveProgress() { setCookie('alfabetizacaoProgress', JSON.stringify({level: currentLevelIndex, step: currentStepInSequence, card: currentCardIndex}), 365); }
+        function loadProgress() {
+            const savedProgress = getCookie('alfabetizacaoProgress');
+            if (savedProgress) {
+                try {
+                    const p = JSON.parse(savedProgress);
+                    currentLevelIndex = p.level || 0; currentStepInSequence = p.step || 0; currentCardIndex = p.card || 0;
+                    return true;
+                } catch (e) { return false; }
+            }
+            return false;
+        }
+
+        function generateSequence(level) {
+            if (level === 0) return [gameData[0].family];
+            const prevSeq = generateSequence(level - 1);
+            return [...prevSeq, gameData[level].family, ...prevSeq];
+        }
+        
+        function displayCurrentCard() {
+            geminiStoryBtn.classList.add('hidden');
+            const familyData = letterDataMap.get(sequence[currentStepInSequence]);
+            const card = familyData.cards[currentCardIndex];
+            displayArea.innerHTML = `<div class="card"><div class="syllable">${card.syllable}</div><div class="emoji">${card.emoji}</div><div class="word">${card.word}</div><button id="suggest-words-btn">✨</button></div>`;
+            document.getElementById('suggest-words-btn').addEventListener('click', suggestWords);
+            updateProgress();
+            saveProgress();
+        }
+
+        function updateProgress() {
+            if (gameState === 'LEARNING') {
+                const familyData = letterDataMap.get(sequence[currentStepInSequence]);
+                progressIndicator.innerHTML = `Nível: <strong>${gameData[currentLevelIndex].letter}</strong> (Passo ${currentStepInSequence + 1}/${sequence.length} | Carta ${currentCardIndex + 1}/${familyData.cards.length})`;
+            } else if (gameState === 'MINI_GAME') {
+                progressIndicator.innerHTML = `Minijogo: <strong>Rodada ${currentRound} de ${totalRounds}</strong>`;
+            }
+        }
+
+        function nextStep() {
+            const familyData = letterDataMap.get(sequence[currentStepInSequence]);
+            currentCardIndex++;
+            if (currentCardIndex >= familyData.cards.length) {
+                currentCardIndex = 0;
+                currentStepInSequence++;
+                if (currentStepInSequence >= sequence.length) {
+                    switchToMiniGame();
+                    return;
+                }
+            }
+            displayCurrentCard();
+        }
+
+        function previousStep() {
+            if (currentCardIndex > 0) currentCardIndex--;
+            else if (currentStepInSequence > 0) {
+                currentStepInSequence--;
+                const prevFamilyData = letterDataMap.get(sequence[currentStepInSequence]);
+                currentCardIndex = prevFamilyData.cards.length - 1;
+            }
+            displayCurrentCard();
+        }
+        
+        function switchToMiniGame() {
+            gameState = 'MINI_GAME';
+            subtitle.textContent = "Arraste a sílaba até a figura!";
+            navigation.classList.add('hidden');
+            const totalLearnedSyllables = gameData.slice(0, currentLevelIndex + 1).flatMap(g => g.cards).length;
+            if (totalLearnedSyllables <= 5) totalRounds = 1; else if (totalLearnedSyllables <= 11) totalRounds = 2; else totalRounds = 3;
+            currentRound = 1;
+            availablePairsForMinigame = [...gameData.slice(0, currentLevelIndex + 1).flatMap(g => g.cards)].sort(() => 0.5 - Math.random());
+            setupMiniGameRound();
+        }
+
+        function setupMiniGameRound() {
+            updateProgress();
+            const selectedPairs = availablePairsForMinigame.splice(0, 3);
+            if(selectedPairs.length === 0) {
+                handleMiniGameCompletion();
+                return;
+            }
+            pairsToMatch = selectedPairs.length;
+            const shuffle = arr => arr.sort(() => 0.5 - Math.random());
+            const emojis = shuffle(selectedPairs.map(p => ({ emoji: p.emoji, word: p.word })));
+            const syllables = shuffle(selectedPairs.map(p => ({ syllable: p.syllable, word: p.word })));
+            displayArea.innerHTML = `<div id="mini-game-view"><div id="syllable-column" class="mini-game-column">${syllables.map((s, i) => `<div id="syllable-${i}" class="choice syllable-choice" draggable="true" data-word="${s.word}">${s.syllable}</div>`).join('')}</div><div id="emoji-column" class="mini-game-column">${emojis.map(e => `<div class="choice emoji-choice" data-word="${e.word}">${e.emoji}</div>`).join('')}</div></div>`;
+            addDragDropListeners();
+        }
+        
+        function handleRoundCompletion() {
+            currentRound++;
+            if (currentRound <= totalRounds && availablePairsForMinigame.length > 0) {
+                setTimeout(setupMiniGameRound, 1000);
+            } else {
+                handleMiniGameCompletion();
+            }
+        }
+        
+        function handleMiniGameCompletion() {
+             displayArea.innerHTML = `<div class="card" style="width: auto;"><div class="syllable">🏆</div><div class="emoji">🎉</div><div class="word">Nível Completo!</div></div>`;
+             progressIndicator.textContent = "Muito bem!";
+             navigation.classList.remove('hidden');
+             geminiStoryBtn.classList.remove('hidden');
+             nextBtn.textContent = 'Próximo Nível';
+        }
+
+        function addDragDropListeners() {
+            document.querySelectorAll('.syllable-choice').forEach(el => {
+                el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', e.target.id); setTimeout(() => e.target.classList.add('dragging'), 0); });
+                el.addEventListener('dragend', e => e.target.classList.remove('dragging'));
+            });
+            document.querySelectorAll('.emoji-choice').forEach(el => {
+                el.addEventListener('dragover', e => { e.preventDefault(); e.target.classList.add('drag-over'); });
+                el.addEventListener('dragleave', e => e.target.classList.remove('drag-over'));
+                el.addEventListener('drop', e => {
+                    e.preventDefault(); initAudio(); e.target.classList.remove('drag-over');
+                    const draggedId = e.dataTransfer.getData('text/plain');
+                    const draggedEl = document.getElementById(draggedId);
+                    if (draggedEl.dataset.word === e.target.dataset.word) {
+                        playTone(600, 'sine');
+                        draggedEl.classList.add('correct');
+                        e.target.classList.add('correct');
+                        pairsToMatch--;
+                        if (pairsToMatch === 0) handleRoundCompletion();
+                    } else { playTone(200, 'square', 0.2); }
+                });
+            });
+        }
+        
+        function returnToLearning() {
+            currentLevelIndex++;
+            if (currentLevelIndex >= gameData.length) {
+                endGame();
+                return;
+            }
+            gameState = 'LEARNING';
+            subtitle.textContent = "Ouça e aprenda as sílabas!";
+            navigation.classList.remove('hidden');
+            geminiStoryBtn.classList.add('hidden');
+            nextBtn.textContent = '⏭';
+            currentStepInSequence = 0;
+            currentCardIndex = 0;
+            sequence = generateSequence(currentLevelIndex);
+            displayCurrentCard();
+        }
+
+        function endGame() {
+            displayArea.innerHTML = `<div class="card" style="width: auto;"><div class="syllable">Fim</div><div class="emoji">🎉</div><div class="word">Parabéns!</div></div>`;
+            progressIndicator.textContent = "FIM🎬";
+            nextBtn.textContent = 'Recomeçar';
+            nextBtn.classList.add('completed');
+            prevBtn.disabled = true;
+            geminiStoryBtn.classList.add('hidden');
+            navigation.classList.remove('hidden');
+            eraseCookie('alfabetizacaoProgress');
+            currentLevelIndex = -1;
+        }
+
+        function startGame() {
+            gameState = 'LEARNING';
+            subtitle.textContent = "Ouça e aprenda as sílabas!";
+            navigation.classList.remove('hidden');
+            if (!loadProgress()) {
+                currentLevelIndex = 0; currentStepInSequence = 0; currentCardIndex = 0;
+            }
+            sequence = generateSequence(currentLevelIndex);
+            if (currentStepInSequence >= sequence.length) {
+                currentStepInSequence = 0; currentCardIndex = 0;
+            }
+            displayCurrentCard();
+        }
+
+        let firstInteraction = false;
+        function handleInteraction() {
+            initAudio();
+            speech.init();
+            if(!firstInteraction) {
+                triggerSpeech();
+                firstInteraction = true;
+            }
+        }
+        
+        function triggerSpeech() {
+            if (gameState === 'LEARNING') {
+                const card = letterDataMap.get(sequence[currentStepInSequence]).cards[currentCardIndex];
+                speech.speak(card.syllable, card.word);
+            }
+        }
+        
+        nextBtn.addEventListener('click', () => {
+            handleInteraction();
+            if (nextBtn.textContent === 'Próximo Nível') {
+                 returnToLearning();
+                 return;
+            }
+            if (currentLevelIndex === -1) {
+                firstInteraction = false;
+                eraseCookie('alfabetizacaoProgress');
+                currentLevelIndex = 0;
+                currentStepInSequence = 0;
+                currentCardIndex = 0;
+                startGame();
+            } else {
+                nextStep();
+                if(gameState === 'LEARNING') triggerSpeech();
+            }
+        });
+        prevBtn.addEventListener('click', () => { handleInteraction(); previousStep(); triggerSpeech(); });
+        readButton.addEventListener('click', () => { handleInteraction(); triggerSpeech(); });
+        geminiStoryBtn.addEventListener('click', generateStory);
+        
+        startGame();
+    </script>
+</body>
+</html>
