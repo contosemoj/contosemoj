@@ -122,7 +122,7 @@
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.1s ease;
             -webkit-tap-highlight-color: transparent;
         }
         button:active { transform: scale(0.95); }
@@ -330,7 +330,11 @@
         function playTone(freq, type, duration = 0.1) { if (!audioCtx) return; const osc = audioCtx.createOscillator(); osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime); osc.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration); }
         const speech = {
             instance: window.speechSynthesis, enabled: !!window.speechSynthesis, voice: null, voicesLoaded: false,
-            init() { if (!this.enabled || this.voicesLoaded) return; this.voice = this.instance.getVoices().find(v => v.lang === 'pt-BR' && v.name.includes('Female')) || this.instance.getVoices().find(v => v.lang === 'pt-BR'); this.voicesLoaded = true; },
+            init() {
+    if (!this.enabled || this.voicesLoaded) return;
+    // A linha que selecionava a voz foi removida para usar o padrão do sistema.
+    this.voicesLoaded = true;
+			},
             speak(text1, text2) { if (!this.enabled) return; this.instance.cancel(); const u1 = new SpeechSynthesisUtterance(text1); u1.lang = 'pt-BR'; u1.rate = 0.9; if (this.voice) u1.voice = this.voice; u1.onend = () => { if (text2) setTimeout(() => { const u2 = new SpeechSynthesisUtterance(text2); u2.lang = 'pt-BR'; u2.rate = 0.9; if (this.voice) u2.voice = this.voice; this.instance.speak(u2); }, 350); }; this.instance.speak(u1); }
         };
         if (speech.enabled) speech.instance.onvoiceschanged = () => speech.init();
