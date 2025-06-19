@@ -4,65 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contos Emoji</title>
-	<link rel="icon" href="IconeContos.png" type="image/png">
+    <link rel="icon" href="IconeContos.png" type="image/png">
     <style>
-		@font-face {
-			font-family: 'Noto Color Emoji';
-			src: url('font/NotoColorEmoji.ttf') format('truetype');}
+        @font-face {
+            font-family: 'Noto Color Emoji';
+            src: url('font/NotoColorEmoji.ttf') format('truetype');
+        }
         body {
-            font-family: 'Noto Color Emoji', sans-serif;
+            font-family: 'Noto Color Emoji', 'Segoe UI', 'Arial', sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
             height: 100vh;
+            background-color: #fff;
         }
         .sidebar {
-            width: 200px;
+            width: 220px;
             background-color: #f4f4f4;
             padding: 20px;
             height: 100vh;
             position: fixed;
+            border-right: 1px solid #ddd;
         }
         .sidebar button {
             display: block;
             width: 100%;
             margin-bottom: 10px;
-            padding: 10px;
-            border: none;
-            background-color: #ddd;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
             cursor: pointer;
+            text-align: left;
+            font-size: 16px;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+        .sidebar button:hover {
+            background-color: #e9e9e9;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         .content {
             flex-grow: 1;
             padding: 20px;
-            margin-left: 220px;
+            margin-left: 240px;
         }
-        .contos {
+        .section h2 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 0;
+            color: #333;
+        }
+        .contos, .jogos {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 15px;
         }
-        .contos a {
+        .contos a, .jogos a {
             display: inline-block;
             padding: 20px;
-            background-color: #ffc;
-            border: 1px solid #ccc;
+            background-color: #fff8e1;
+            border: 1px solid #ffecb3;
+            border-radius: 8px;
             text-decoration: none;
             font-size: 24px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .contos a:hover, .jogos a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         .mobile-menu {
             display: none;
             background-color: #f4f4f4;
             padding: 10px;
             text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            border-top: 1px solid #ddd;
+            z-index: 100;
         }
         .mobile-menu button {
             padding: 10px;
-            margin: 5px;
+            margin: 0 5px;
             border: none;
-            background-color: #ddd;
+            background-color: transparent;
             cursor: pointer;
+            font-size: 24px;
         }
+
         @media (max-width: 768px) {
             .sidebar {
                 display: none;
@@ -73,6 +103,7 @@
             }
             .content {
                 margin-left: 0;
+                padding-bottom: 70px;
             }
         }
     </style>
@@ -80,45 +111,66 @@
 <body>
     <div class="sidebar">
         <button onclick="showSection('contos')">📖 Contos Emoji</button>
-        <button onclick="showSection('dicionario')">📕 Dicionário</button>
+        <!-- Botão atualizado para ligar ao dicionario.html -->
+        <button onclick="window.location.href='dicionario.html'">📕 Dicionário</button>
+        <button onclick="showSection('jogos')">🕹 Jogos</button>
         <button onclick="showSection('informacoes')">ℹ Informações</button>
     </div>
+
     <div class="mobile-menu">
-        <button onclick="showSection('contos')">📖 Contos Emoj</button>
-        <button onclick="showSection('dicionario')">📕 Dicionário</button>
-        <button onclick="showSection('informacoes')">ℹ Informações</button>
+        <button onclick="showSection('contos')">📖</button>
+        <!-- Botão atualizado para ligar ao dicionario.html -->
+        <button onclick="window.location.href='dicionario.html'">📕</button>
+        <button onclick="showSection('jogos')">🕹</button>
+        <button onclick="showSection('informacoes')">ℹ</button>
     </div>
+
     <div class="content">
         <div id="contos" class="section">
             <h2>Contos Emoji</h2>
             <div class="contos">
-                	<a href="BrancaNeveHTML/BrancaNeve.html">📖 👧🏻👸🏻</a>
-                	<a href="ChapeuzinhoHTML/ChapeuzinhoVermelho.html">📖 👧🏻👒🔴</a>
-			<a href="tartarugalebre/TartarugaLebre.html">📖 🐢🆚🐇⚡️</a>
-			<a href="BelaAdormecida/BelaAdormecida.html">📖 😻👸🏾 🛌💤</a>
-			<a href="JoaoMaria/JoaoMaria.html">📖 👦👧</a>
-			<a href="TresPorquinhos/TresPorquinhos.html">📖 🐷🐷🐷</a>
+                <a href="BrancaNeveHTML/BrancaNeve.html">📖 👧🏻👸🏻</a>
+                <a href="ChapeuzinhoHTML/ChapeuzinhoVermelho.html">📖 👧🏻👒🔴</a>
+                <a href="TartarugaLebre/TartarugaLebre.html">📖 🐢🆚🐇⚡️</a>
+                <a href="BelaAdormecida/BelaAdormecida.html">📖 😻👸🏾 🛌💤</a>
+                <a href="JoaoMaria/JoaoMaria.html">📖 👦👧</a>
+                <a href="TresPorquinhos/TresPorquinhos.html">📖 �🐷🐷</a>
             </div>
         </div>
-        <div id="dicionario" class="section" style="display: none;">
-            <h2>Dicionário</h2>
-            <p>Conteúdo do dicionário...</p>
-        </div>
+
+        <div id="jogos" class="section" style="display: none;">
+            <h2>Jogos</h2>
+            <div class="jogos">
+                <a href="conecteemoji/ConecteEmoji.html">Jogo para conectar emojis: 🔗😀</a>
+                <a href="ABACABAEMOJI/abacabaemoji.html">Jogo ABACABA Emoji: 🅰️🐝🅰️</a>
+            </div>
+        </div>  
+        
         <div id="informacoes" class="section" style="display: none;">
             <h2>Informações</h2>
             <p>O projeto <strong>Contos Emoji</strong> busca contar os principais contos de fadas utilizando uma linguagem visual baseada em emojis. Nesta linguagem, não há verbos de ligação, artigos ou conjunções, tornando a comunicação mais direta e acessível.</p>
             <p>O objetivo principal é criar uma forma de leitura compacta e de rápida compreensão, especialmente pensada para indivíduos com pouca consciência fonológica e dificuldades na alfabetização. No entanto, qualquer pessoa que queira transmitir ideias de forma simples e rápida pode utilizar essa linguagem.</p>
-            <p><strong>Autor:</strong> Lécio de Oliveira Arantes </p>
-            <p><strong>Dedicado a:</strong> Diana Viana Arantes </p>
+            <p><strong>Autor:</strong> Lécio de Oliveira Arantes</p>
+            <p><strong>Dedicado a:</strong> Diana Viana Arantes</p>
         </div>
     </div>
+    
     <script>
+        // Função para mostrar/ocultar secções
         function showSection(sectionId) {
             document.querySelectorAll('.section').forEach(section => {
                 section.style.display = 'none';
             });
-            document.getElementById(sectionId).style.display = 'block';
+            const activeSection = document.getElementById(sectionId);
+            if (activeSection) {
+                activeSection.style.display = 'block';
+            }
         }
+
+        // Garante que a secção de contos é mostrada ao carregar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('contos');
+        });
     </script>
 </body>
 </html>
