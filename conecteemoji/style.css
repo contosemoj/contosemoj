@@ -1,0 +1,203 @@
+@font-face {
+  font-family: 'NotoColorEmoji';
+  /* O caminho agora aponta para a pasta 'fonts' */
+  src: url('fonts/NotoColorEmoji.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  /* Usando a fonte que definimos. As aspas são importantes. */
+  font-family: 'NotoColorEmoji', Arial, sans-serif;
+  margin: 0;
+  background-color: #f0f0f0;
+  overflow: hidden;
+}
+
+/* O restante do seu CSS continua aqui sem alterações... */
+
+/* Estilos para a Tela Inicial */
+#start-screen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.start-screen-modal {
+    background-color: white;
+    padding: 40px 60px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    color: #333;
+}
+
+.start-screen-modal h1 {
+    font-size: 3em;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.start-screen-modal p {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+#start-button {
+    font-size: 1.5em;
+    padding: 15px 40px;
+    cursor: pointer;
+    border-radius: 10px;
+    border: none;
+    background-color: #28a745;
+    color: white;
+    margin-top: 30px;
+    transition: background-color 0.3s;
+}
+
+#start-button:hover {
+    background-color: #218838;
+}
+
+
+.game-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    display: flex;
+    gap: 420px;
+    margin-bottom: 20px;
+}
+
+.left-side, .right-side {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    min-height: 580px;
+}
+
+.item, .drop-zone {
+    width: 250px;
+    height: 150px;
+    font-size: 5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 4px dashed #ccc;
+    background-color: #fff;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 15px;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.9);
+    transition: transform 1s, opacity 1s;
+}
+
+.item { cursor: grab; }
+.item:active { cursor: grabbing; }
+
+.drop-zone { border: 4px solid #bbb; }
+.drop-zone.hovering { border-color: #007bff; background-color: #e9f5ff; }
+
+.item.hidden, .drop-zone.hidden {
+    transform: scale(0);
+    opacity: 0;
+}
+
+#feedback {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #4CAF50;
+    height: 50px;
+}
+
+#video-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.video {
+	display: none;
+    max-width: 40%;
+    max-height: 40%;
+    border-radius: 15px;
+}
+
+#video-caption {
+    font-size: 4em;
+    color: white;
+    margin-top: 20px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+}
+
+/* Estilos para a Tela de Pontuação Final */
+#final-score-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.final-score-modal {
+    background-color: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    font-size: 1.8em;
+    color: #333;
+}
+
+.final-score-modal h2 {
+    font-size: 2.5em;
+    margin-top: 0;
+    color: #007bff;
+}
+
+#star-rating {
+    font-size: 3em;
+    color: #ffc107;
+    margin-bottom: 20px;
+}
+
+#restart-button {
+    font-size: 1.2em;
+    padding: 15px 30px;
+    cursor: pointer;
+    border-radius: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+#restart-button:hover {
+    background-color: #0056b3;
+}
