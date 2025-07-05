@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contos Emoji</title>
-    <link rel="icon" href="IconeContos.png" type="image/png">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <style>
         @font-face {
             font-family: 'Noto Color Emoji';
@@ -53,6 +53,12 @@
             padding-bottom: 10px;
             margin-top: 0;
             color: #333;
+        }
+        .section h3 {
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: #555;
+            font-weight: bold;
         }
         .contos, .jogos {
             display: flex;
@@ -111,7 +117,6 @@
 <body>
     <div class="sidebar">
         <button onclick="showSection('contos')">📖 Contos Emoji</button>
-        <!-- Botão atualizado para ligar ao dicionario.html -->
         <button onclick="window.location.href='dicionario.html'">📕 Dicionário</button>
         <button onclick="showSection('jogos')">🕹 Jogos</button>
         <button onclick="showSection('informacoes')">ℹ Informações</button>
@@ -119,7 +124,6 @@
 
     <div class="mobile-menu">
         <button onclick="showSection('contos')">📖</button>
-        <!-- Botão atualizado para ligar ao dicionario.html -->
         <button onclick="window.location.href='dicionario.html'">📕</button>
         <button onclick="showSection('jogos')">🕹</button>
         <button onclick="showSection('informacoes')">ℹ</button>
@@ -128,13 +132,31 @@
     <div class="content">
         <div id="contos" class="section">
             <h2>Contos Emoji</h2>
+            
+            <h3>Contos Clássicos</h3>
             <div class="contos">
-                <a href="BrancaNeveHTML/BrancaNeve.html">📖 👧🏻👸🏻</a>
-                <a href="ChapeuzinhoHTML/ChapeuzinhoVermelho.html">📖 👧🏻👒🔴</a>
-                <a href="TartarugaLebre/TartarugaLebre.html">📖 🐢🆚🐇⚡️</a>
-                <a href="BelaAdormecida/BelaAdormecida.html">📖 😻👸🏾 🛌💤</a>
-                <a href="JoaoMaria/JoaoMaria.html">📖 👦👧</a>
-                <a href="TresPorquinhos/TresPorquinhos.html">📖 �🐷🐷</a>
+                <a href="contos/contos.html?conto=branca_de_neve">📖 👧🏻👸🏻</a>
+                <a href="contos/contos.html?conto=chapeuzinho_vermelho">📖 👧🏻👒🔴</a>
+                <a href="contos/contos.html?conto=tartaruga_lebre">📖 🐢🆚🐇⚡️</a>
+                <a href="contos/contos.html?conto=bela_adormecida">📖 😻👸🏾 🛌💤</a>
+                <a href="contos/contos.html?conto=joao_maria">📖 👦👧</a>
+                <a href="contos/contos.html?conto=tres_porquinhos">📖 🐷🐷🐷</a>
+                <a href="contos/contos.html?conto=cinderela">📖 👧🏻👠✨</a>
+                <a href="contos/contos.html?conto=patinho_feio">📖🦆🦢</a>
+                <a href="contos/contos.html?conto=rapunzel">📖👩‍🦰🗼</a>
+                <a href="contos/contos.html?conto=pequena_sereia">📖🧜‍♀️❤️</a>
+                <a href="contos/contos.html?conto=pinoquio">📖🤥👃</a>
+                <a href="contos/contos.html?conto=aladdin">📖🧞‍♂️🪔</a>
+            </div>
+
+            <h3>Folclore Brasileiro</h3>
+            <div class="contos">
+                <a href="contos/contos.html?conto=saci_perere">📖👦🏿🌪️</a>
+                <a href="contos/contos.html?conto=caipora">📖👩‍🦰멧돼지</a>
+                <a href="contos/contos.html?conto=iara">📖🧜‍♀️🎶</a>
+                <a href="contos/contos.html?conto=curupira">📖👦🏻👣</a>
+                <a href="contos/contos.html?conto=boitata">📖🐍🔥</a>
+                <a href="contos/contos.html?conto=mula_sem_cabeca">📖🐴🔥</a>
             </div>
         </div>
 
@@ -156,7 +178,6 @@
     </div>
     
     <script>
-        // Função para mostrar/ocultar secções
         function showSection(sectionId) {
             document.querySelectorAll('.section').forEach(section => {
                 section.style.display = 'none';
@@ -167,7 +188,6 @@
             }
         }
 
-        // Garante que a secção de contos é mostrada ao carregar a página
         document.addEventListener('DOMContentLoaded', function() {
             showSection('contos');
         });
