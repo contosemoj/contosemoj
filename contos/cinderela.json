@@ -1,0 +1,59 @@
+{
+  "title": "Cinderela",
+  "storyParts": [
+    { "emoji": "🔙⌛️, 😻👧🏻 🪪🔤 👧🏻👠✨", "text": "Era uma vez, uma linda menina chamada Cinderela." },
+    { "emoji": "👧🏻👠✨ 🏡 👉👨‍🍼​, 👉👨‍🍼​ 🤒 💀", "text": "Cinderela morava com pai dela, mas ele ficou doente e morreu." },
+    { "emoji": "👉👧🏻 🏡 👩😈 👧👧😈", "text": "A menina ficou morando com a madrasta e duas irmãs malvadas." },
+    { "emoji": "👧🏻👠✨ 💪⚒️ 🤌🤌, 🧹🏠, 🧼👚 🍳🥘", "text": "Cinderela trabalhava muito, limpava a casa, lavava a roupa e cozinhava." },
+    { "emoji": "👦🏻🤴 👑🏰 🗣📢 ⬛ 💃🕺✨ 🏰", "text": "O príncipe do reino anunciou um grande baile no castelo." },
+    { "emoji": "👩😈 👧👧😈 🎫 💃🕺✨", "text": "A madrasta e as irmãs foram convidadas para o baile." },
+    { "emoji": "👧🏻👠✨ 🫴 ➡ 💃🕺✨, 👩😈 🙅‍♀️", "text": "Cinderela queria ir ao baile, mas a madrasta não deixou." },
+    { "emoji": "👧🏻👠✨ 😢 1️⃣👈 🏠", "text": "Cinderela ficou triste e sozinha em casa." },
+    { "emoji": "️🫥​😐​ 🧚‍♀️", "text": "Apareceu uma fada madrinha." },
+    { "emoji": "🧚‍♀️ 🎃 🪄➡ 🛒🐎", "text": "A fada transformou uma abóbora em carruagem." },
+    { "emoji": "🐭🐭 🪄➡️ 🐎🐎, 👗✨ 🫥​😐", "text": "Ratinhos viraram cavalos e um vestido lindo apareceu." },
+    { "emoji": "🧚‍♀️ 🫳​🎁 👧🏻👠✨  👠💎", "text": "A fada deu a Cinderela sapatinhos de cristal." },
+    { "emoji": "🧚‍♀️💬: ↩️ ​⏮️​ 🕛", "text": "A fada avisou: volte antes da meia-noite." },
+    { "emoji": "👧🏻👠✨ ➡ 💃🕺✨", "text": "Cinderela foi ao baile." },
+    { "emoji": "👦🏻🤴 💘 👧🏻👠✨", "text": "O príncipe se apaixonou por Cinderela." },
+    { "emoji": "⌛️ ⏰🕛, 👧🏻👠✨ 🏃‍♀️💨", "text": "Quando o relógio bateu meia-noite, Cinderela saiu correndo." },
+    { "emoji": "👉👧🏻 🫳🍂 👠💎 🪜", "text": "Ela perdeu um sapatinho de cristal na escada." },
+    { "emoji": "👦🏻🤴 👀🔍 👠💎", "text": "O príncipe encontrou o sapatinho de cristal." },
+    { "emoji": "👦🏻🤴 👀🔍 👑🏰 🚩👠💎", "text": "O príncipe procurou em todo o reino a dona do sapatinho." },
+    { "emoji": "👧👧😈 🦶👠💎, ❌✅", "text": "As irmãs tentaram calçar o sapatinho, mas não servia." },
+    { "emoji": "👧🏻👠✨ 🦶👠💎, ✅", "text": "Cinderela experimentou o sapatinho e serviu perfeitamente." },
+    { "emoji": "👦🏻🤴 👀🔍 👧🏻👠✨, 💍❓", "text": "O príncipe reconheceu Cinderela e pediu para se casar com ela." },
+    { "emoji": "👧🏻👠✨ 👰‍♀️🤵💍 👦🏻🤴, 👶↗️👵 😀➿", "text": "Cinderela casou com o príncipe e viveram felizes para sempre." },
+    { "emoji": "🎬 FIM", "text": "" }
+  ],
+  "quizQuestions": [
+    {
+      "emoji_question": " 🤷‍♀️📦 🧚‍♀ 🪄➡️ 🛒🐎❓",
+      "question": "O que a fada madrinha transformou em carruagem?",
+      "options": ["🐭🐭", "🎃", "👗✨"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "🤷‍♀️📦 👧🏻👠✨ 🫳🍂 🪜❓",
+      "question": "O que a Cinderela perdeu na escada?",
+      "options": ["🛒🐎", "👗✨", "👠💎"],
+      "correct": 2
+    },
+    {
+      "emoji_question": "🤷‍♀️👤 ✋ 👧🏻👠✨❓",
+      "question": "Quem ajudou a Cinderela a ir ao baile?",
+      "options": ["👩😈", "🧚‍♀️", "👦🏻🤴"],
+      "correct": 1
+    }
+  ],
+  "glossary": [
+    { "emoji": "🪪🔤", "definition": "Nome / chamada" },
+    { "emoji": "💪⚒️", "definition": "Trabalhar" },
+    { "emoji": "👑🏰", "definition": "Reino" },
+    { "emoji": "💃🕺✨", "definition": "Baile" },
+    { "emoji": "1️⃣👈", "definition": "Sozinha" },
+    { "emoji": "🫴", "definition": "Querer" },
+    { "emoji": "👶↗️👵", "definition": "Viver" },
+    { "emoji": "😀➿", "definition": "Felizes para sempre" }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "title": "Caipora",
+  "storyParts": [
+    { "emoji": "🌳🌳🌳🇧🇷, 👩‍🦰🏹🛡️.", "text": "Na mata brasileira, vive a Caipora, a protetora dos animais." },
+    { "emoji": "👉👩‍🦰 🦰🔥, 🏇🐗", "text": "Ela é uma índia com cabelos de fogo e monta em um porco do mato." },
+    { "emoji": "🎯: 🛡️🌳, 🆚 🧑🏹👿.", "text": "Sua missão é proteger a natureza contra os maus caçadores." },
+    { "emoji": "🫱​😵 🧑🏹, 👉👩‍🦰 🪄 🎶🤥​.", "text": "Para confundir os caçadores, ela cria sons falsos." },
+    { "emoji": "🧑🏹😇 👍, 🫳​🎁 🍓 🍯​​ 👉👩‍🦰.", "text": "Caçadores bons deixam frutas e mel de presente para ela." },
+    { "emoji": "👉👩‍🦰 😠 🧑🏹 👿.", "text": "Ela não gosta de quem caça por maldade." },
+    { "emoji": "👩‍🦰🏹🛡️ ✅ ☯️🌳.", "text": "A Caipora garante o equilíbrio da vida na floresta." },
+    { "emoji": "🗣️👂 😙🎶 🌳🌳🌳, ⚠️: 👩‍🦰🏹🛡️ 🤏.", "text": "Ouvir seu assobio na mata é um aviso de que ela está por perto." },
+    { "emoji": "🎬 FIM", "text": "" }
+  ],
+  "quizQuestions": [
+    {
+      "emoji_question": "🤷‍♀️👤 👩‍🦰🏹🛡️ 🛡️❓",
+      "question": "A Caipora é a protetora de quem?",
+      "options": ["🏹", "🌳", "🏡"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "🤷‍♀️🐎 👩‍🦰🏹🛡️ 🏇❓",
+      "question": "Em qual animal a Caipora costuma montar?",
+      "options": ["🐎", "🐆", "🐗"],
+      "correct": 2
+    },
+    {
+      "emoji_question": "🤷‍♀️🎁 🏹😇 🫱❓",
+      "question": "O que os caçadores bons oferecem a ela?",
+      "options": ["🍬", "🍓🍯", "💰"],
+      "correct": 1
+    }
+  ],
+  "glossary": [
+    { "emoji": "👩‍🦰🏹🛡️", "definition": "Caipora" },
+    { "emoji": "🛡️", "definition": "Protetora" },
+    { "emoji": "🐗", "definition": "Porco do mato" },
+    { "emoji": "🏹", "definition": "Caçador" },
+    { "emoji": "🍓🍯", "definition": "Frutas e mel" },
+    { "emoji": "😙🎶", "definition": "Assobio" }
+  ]
+}

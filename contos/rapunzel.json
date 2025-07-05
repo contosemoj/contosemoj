@@ -1,0 +1,48 @@
+{
+  "title": "Rapunzel",
+  "storyParts": [
+    { "emoji": "🔙⌛️, 👫 🫴 🤌🤌 👶. ▪🛣 🏡️🚩👫 🧙‍♀️😈 🏞✨", "text": "Era uma vez, um casal que desejava muito ter um bebê. Perto da casa do casal, uma bruxa má em um jardim mágico." },
+    { "emoji": "🤰 👀 🥬✨, 👉🤰 🫴 👄🥬✨.", "text": "A esposa gravida viu alface mágico, ela queria comer o alface mágico." },
+    { "emoji": "👨 ✊ 🥬✨, 🧙‍♀️ 👁️🔭 👉👨. 👨️ 🤝 🫳🎁 👶 🫱 🧙‍♀️.", "text": "O homem foi pegar, mas a bruxa viu ele. Ele prometeu entregar seu futuro bebê para a bruxa." },
+    { "emoji": "👶👧🏻 🤰🤱 🪪🔤 👩‍🦰🗼. 🧙‍♀️ 🔗🔒 👉👩‍🦰 ↗🗼, ❌🚪, ❌🪜.", "text": "Uma menina nasceu e foi chamada de Rapunzel. A bruxa prendeu ela em uma torre alta, sem portas ou escadas." },
+    { "emoji": "👩‍🦰🗼 🦰⬛️💪. 🔼🗼 🧙‍♀️ 🗣️🗯️: 👩‍🦰🗼 🫳🍂 ⛓🦰.", "text": "Rapunzel tinha o cabelo grande e forte. Para subir, a bruxa gritava: Rapunzel joge suas tranças." },
+    { "emoji": "🤴 🏇 🌳🌳🌳, 🗣️👂 👩‍🦰🗼 🗣️🎶. 👉🤴 👁️🔭 🧙‍♀️ 🩵🔼 🗼.", "text": "Um príncipe, cavalgando pela floresta, ouviu o canto de Rapunzel. Ele viu como a bruxa subia na torre." },
+    { "emoji": "🤴 🗣️🗯️: 👩‍🦰🗼 🫳🍂 ⛓🦰. "👉👩‍🦰🤴 👩‍❤️‍👨.", "text": "O príncipe gritou: Rapunzel jonge suas tranças, ela jogou e eles se apaixonaram." },
+    { "emoji": "🧙‍♀️ 👁️🔭 🤴. 👉🧙‍♀️ ️💇‍♀ 👩‍🦰🗼, 🚶‍♀️➡️ 🏜️.", "text": "A bruxa viu o principe. Ela cortou o cabelo de Rapunzel e a expulsou para um deserto." },
+    { "emoji": "🧙‍♀️ 🫸➡️ 🤴 🗼, 👉🤴 🫳🍂 🌵 🩸👁️ 🦯, 🚶‍♂️😥 🌍.", "text": "A bruxa enganou o príncipe. Ele caiu da torre, ficou cego por espinhos e vagou triste pelo mundo." },
+    { "emoji": "⌛ 🤌🤌 🎂, 🤴 🗣️👂 👩‍🦰🗼 🗣️🎶, 👀🔎 👉👩‍🦰.", "text": "Depois de muitos anos, o príncipe ouviu Rapunzel cantando e a encontrou." },
+    { "emoji": "🥲 🫳🍂 👁️, ❤️‍🩹👁️ ❌🦯.", "text": "As lágrimas de alegria de Rapunzel caíram nos olhos dele e o curaram." },
+    { "emoji": "👉🤴👩‍🦰 ️➡️ 👑🏰, 👫 👶↗️👵 😀➿.", "text": "Ele a levou para seu reino e eles viveram felizes para sempre." },
+    { "emoji": "🎬 FIM", "text": "" }
+  ],
+  "quizQuestions": [
+    {
+      "emoji_question": "🤷‍♀️🩵 🧙‍♀️ 🔼 🗼❓",
+      "question": "Como a bruxa subia na torre?",
+      "options": ["🪜", "⛓🦰", "🪄"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "🤷‍♀️ 🤴 🫳🍂 🗼❓",
+      "question": "O que aconteceu com o príncipe quando ele caiu da torre?",
+      "options": ["💀", "🩸👁️", "🏃💨"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "🤴✨ ✅👀✨ ❓",
+      "question": "Como a visão do príncipe foi curada?",
+      "options": ["🥲", "🍎", "💋"],
+      "correct": 0
+    }
+  ],
+  "glossary": [
+    { "emoji": "👫", "definition": "Casal" },
+    { "emoji": "🗼", "definition": "Torre" },
+    { "emoji": "👩‍🦰🗼", "definition": "Rapunzuel" },
+    { "emoji": "🗣️🗯️", "definition": "Gritar / Chamar" },
+    { "emoji": "⛓🦰", "definition": "Tranças" },
+    { "emoji": "🦯", "definition": "Cego" },
+    { "emoji": "🥲", "definition": "Lágrimas de alegria" },
+    { "emoji": "👑🏰", "definition": "Reino" }
+  ]
+}

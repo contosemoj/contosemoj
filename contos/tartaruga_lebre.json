@@ -1,0 +1,38 @@
+{
+  "title": "A Tartaruga e a Lebre",
+  "storyParts": [
+    { "emoji": "🔙⌛️, 🐢 🐇⚡️.", "text": "Era uma vez, a tartaruga e a lebre." },
+    { "emoji": "🏃‍♀️🏆: 🐢🆚🐇⚡️", "text": "Corrida: Tartaruga contra Lebre." },
+    { "emoji": "🐇⚡️ 💬: 🐇👈 🏃‍♀️➕⚡️ 🫵 🐢, 🐢 🫵 ▶️🥇.", "text": "A lebre disse: Eu corro mais rapido que você tartaruga, você começa em primeiro." },
+    { "emoji": "🐢 🏃‍♀️🐌, 🐇⚡️ 😌⛱️.", "text": "A tartaruga correu lentamente, a lebre ficou descansando." },
+    { "emoji": "🐢 ➿🏃‍♀️🐌, 🐇⚡️ ➿😌⛱️ 🛌💤", "text": "A tartaruga continuou correndo lentamente, a lebre continuou descansando e dormiu." },
+    { "emoji": "⌛️ 🐇⚡️ 🛌⏰, 🐢 🤏🏁.", "text": "Quando a lebre acordou, a tartaruga estava próxima da linha de chegada." },
+    { "emoji": "🐇⚡️ 🏃‍♀️⚡️, 🐢 ➿🏃‍♀️🐌.", "text": "A lebre correu rápido, mas a tartaruga continuou lentamente." },
+    { "emoji": "🐢 🏁🥇, 🐇⚡️ 🏁🥈.", "text": "A tartaruga chegou em primeiro, a lebre chegou em segundo." },
+    { "emoji": "🐢 🏆 🐇⚡️.", "text": "A tartaruga venceu a lebre." },
+    { "emoji": "FIM🎬.", "text": "" }
+  ],
+  "quizQuestions": [
+    {
+      "emoji_question": "🤷‍♀️👤 🏆 🏃‍♀️🏆❓",
+      "question": "Quem venceu a corrida?",
+      "options": ["🐇⚡️", "🐢", "🏁"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "🤷‍♀️🏗 🐢 🏆 🏃‍♀️🏆❓",
+      "question": "O que fez a lebre perder a corrida?",
+      "options": ["🏃‍♀️⚡️", "➿🏃‍♀️", "😌⛱️"],
+      "correct": 1
+    }
+  ],
+  "glossary": [
+    { "emoji": "🏃‍♀️🏆", "definition": "Corrida" },
+    { "emoji": "▶️🥇", "definition": "Começar em primeiro" },
+    { "emoji": "🏃‍♀️🐌", "definition": "Correr lentamente" },
+    { "emoji": "🏃‍♀️⚡️", "definition": "Correr rápido" },
+    { "emoji": "🛌💤", "definition": "Dormir" },
+    { "emoji": "🛌⏰", "definition": "Acordar" },
+    { "emoji": "😌⛱️", "definition": "Descansar" }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "title": "A Pequena Sereia",
+  "storyParts": [
+    { "emoji": "🌊📉, 🏡 🧜‍♀️ 🪪🔤 Ariel.", "text": "No fundo do mar, morava uma jovem sereia chamada Ariel." },
+    { "emoji": "👉🧜‍♀️ 💭💤 👁🔭 🌍🟤.", "text": "Ariel sonhava em conhecer o mundo da superfície." },
+    { "emoji": "⛈️, 🧜‍♀️ ✋🆘 🤴 Eric 🚢📉, 👩‍❤️‍👨", "text": "Durante uma tempestade, Ariel salvou o Príncipe Eric de um naufrágio e se apaixonou." },
+    { "emoji": "🙏 👀🔎 🤴, 🧜‍♀️ ➡️ 🐙🧙‍♀️.", "text": "Para reencontrar o príncipe, Ariel procurou Úrsula, a bruxa do mar." },
+    { "emoji": "🐙🧙‍♀️ 💬: '🤝 🫳🎁 🦵🦵 ↔️ 🎶🗣️🚩🧜‍♀.'", "text": "Úrsula propôs um acordo: daria pernas a Ariel em troca de sua voz." },
+    { "emoji": "☑ 3️⃣📅 🫱 💋👩‍❤️‍👨, ✖ 🪄➡️ 🔗🔒🐙🧙‍♀️.", "text": "Ariel teria três dias para conseguir um beijo de amor, ou se tornaria prisioneira de Úrsula." },
+    { "emoji": "✅🦵🦵, ❌🗣️, 🧜‍♀️ 👀🔎 🤴.", "text": "Com pernas, mas sem poder falar, Ariel encontrou o Príncipe Eric." },
+    { "emoji": "🐙🧙‍♀️ 🥸, 🎶🗣️🚩🧜‍♀, 🪄✨ 🤴.", "text": "Úrsula, disfarçada e usando a voz de Ariel, enfeitiçou o príncipe." },
+    { "emoji": "🐠🦀🐦 💥💍🚩🐙🧙‍♀️.", "text": "Os amigos de Ariel destruiram o anel mágico de Úrsula." },
+    { "emoji": "🎶🗣️🚩🧜‍♀ ↩️ 🧜‍♀️, 🪄✨ ⛓️‍💥.", "text": "A voz de Ariel voltou e o encanto do príncipe foi quebrado." },
+    { "emoji": "🐙🧙‍♀️😡 🪄➡️ 🐙⬛. 🤴 🏆 🐙⬛.", "text": "Furiosa, Úrsula virou um monstro gigante, mas o Príncipe Eric a derrotou." },
+    { "emoji": "🧜‍♂️👑  🧜‍♀️ 🪄➡️ 🧍‍♀️. 👰‍♀️🤵💍.", "text": "O Rei Tritão transformou Ariel em humana e ela se casou com o príncipe." },
+    { "emoji": "🎬 FIM", "text": "" }
+  ],
+  "quizQuestions": [
+    {
+      "emoji_question": "🤷‍♀️📦 🧜‍♀️ 🫱 🐙🧙‍♀️ ↔️ 🦵🦵❓",
+      "question": "O que Ariel deu para Úrsula em troca de pernas?",
+      "options": ["🔱", "🎶🗣️", "🦀"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "🤷‍♀️📅 🧜‍♀️ 🫱 💋👩‍❤️‍👨❓",
+      "question": "Quantos dias Ariel tinha para receber um beijo de amor verdadeiro?",
+      "options": ["1️⃣", "7️⃣", "3️⃣"],
+      "correct": 2
+    },
+    {
+      "emoji_question": "🤷‍♀️👤 🏆 🐙⬛❓",
+      "question": "Quem derrotou a Úrsula gigante?",
+      "options": ["🧜‍♂️👑", "🤴✨", "🧜‍♀️"],
+      "correct": 1
+    }
+  ],
+  "glossary": [
+    { "emoji": "🧜‍♀️", "definition": "Sereia" },
+    { "emoji": "🤴", "definition": "Príncipe" },
+    { "emoji": "🐙🧙‍♀️", "definition": "Bruxa do Mar" },
+    { "emoji": "🎶🗣️", "definition": "Canto" },
+    { "emoji": "🦵🦵", "definition": "Pernas" },
+    { "emoji": "💋👩‍❤️‍👨", "definition": "Beijo de amor" },
+    { "emoji": "🚢", "definition": "Navio" },
+    { "emoji": "🧜‍♂️👑", "definition": "Rei Tritão" }
+  ]
+}

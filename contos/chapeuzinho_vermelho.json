@@ -1,0 +1,48 @@
+{
+  "title": "Chapeuzinho Vermelho",
+  "storyParts": [
+    { "emoji": "🔙⌛️ 👧🏻👒🔴", "text": "Era uma vez Chapeuzinho Vermelho." },
+    { "emoji": "🎼 🛣️ 👧🏻👈 ➡️ 1️⃣👈, 📩 🍭🍬🍰 🫳👵🏻. 👉👵🏻 🏡 🛣️📏⬛️, 🛣️❌👤, 🐺😈 🛣️📏◾.", "text": "Pela estrava fora eu vou tão sozinha, levar esses doces para a vovozinha, ela mora longe o caminho é deserto, tem o lobo mau por perto." },
+    { "emoji": "👧🏻👒🔴 🚶‍♀️ 🌳🌳🌳", "text": "Chapeuzinho vermelho andava pela floresta." },
+    { "emoji": "👉👧🏻 📩 🧺🍭🍬🍰 🫳👵🏻", "text": "Ela levava uma cesta de doces para a vovó." },
+    { "emoji": "🐺😈 👁️🔭 👉👧🏻, 👉🐺 ➡️ 🏠👵🏻.", "text": "O lobo mau viu ela, ele foi ate a casa da vovó." },
+    { "emoji": "🐺😈 👄👵🏻, 👉🐺 🥸👵🏻", "text": "Ele comeu a vovó, ele se disfarçou de vovó." },
+    { "emoji": "⌛️ 👧🏻👒🔴 🏠👉👵🏻", "text": "Quando chapeuzinho vermelho chegou na casa da vovó." },
+    { "emoji": "👉👧🏻 👁️🔭 🐺👿 🥸👵🏻 🛌👉👵🏻.", "text": "Ela viu o lobo mau disfarçado de vovó na cama dela." },
+    { "emoji": "👧🏻💬: 👵🏻 👀⬛️ 🫵🚩.", "text": "A menina disse: Vovó que olhos grandes você tem." },
+    { "emoji": "🐺💬: 👁️🔭 🫵🥇, 👧🏻👒🔴.", "text": "O lobo disse: é para te ver melhor, chapeuzinho vermelho." },
+    { "emoji": "👧🏻💬: 👵🏻 👂⬛️ 🫵🚩.", "text": "A menina disse: Vovó que orelhas grandes você tem." },
+    { "emoji": "🐺💬: 🗣️👂 🫵🥇, 👧🏻👒🔴.", "text": "O lobo disse: é para te escultar melhor, chapeuzinho vermelho." },
+    { "emoji": "👧🏻💬: 👵🏻 👃⬛️ 🫵🚩.", "text": "A menina disse: Vovó que nariz grande você tem." },
+    { "emoji": "🐺💬: 👃🫵🥇, 👧🏻👒🔴.", "text": "O lobo disse: é para te cheirar melhor, chapeuzinho vermelho." },
+    { "emoji": "👧🏻💬: 👵🏻 👄⬛️ 🫵🚩.", "text": "A menina disse: Vovó que boca grande você tem." },
+    { "emoji": "🐺💬: 👄🫵❗", "text": "É pra te comer!" },
+    { "emoji": "🐺👿 🏃 👉 👧🏻👒🔴.", "text": "O lobo mau correu atrás de chapeuzinho vermelho." },
+    { "emoji": "🧔🏻‍♂️🏹 🗣️👂 👧🏻👒🔴 🗯: 🆘❗", "text": "O caçador ouviu chapeuzinho vermelho gritando: Socorro!" },
+    { "emoji": "👉🧔🏻‍♂⚔️ 🐺👿, 👉🧔🏻‍♂🏆 🐺.", "text": "Ele lutou com o lobo mau, ele venceu o lobo." },
+    { "emoji": "👉🧔🏻‍♂📤 👵🏻 🩻🐺", "text": "Ele tirou a vovó de dentro do lobo." },
+    { "emoji": "🎬 FIM", "text": "" }
+  ],
+  "quizQuestions": [
+    {
+      "emoji_question": "🤷‍♀️👤 🥸👵🏻❓",
+      "question": "Quem se disfarçou de vovó?",
+      "options": ["🧔🏻‍♂️🏹", "🐺😈", "👧🏻👒🔴"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "🤷‍♀️👤 ✋ 👧🏻👒🔴❓",
+      "question": "Quem ajudou a Chapeuzinho Vermelho?",
+      "options": ["🧔🏻‍♂️🏹", "🌳🌳🌳", "👵🏻"],
+      "correct": 0
+    }
+  ],
+  "glossary": [
+    { "emoji": "🌳🌳🌳", "definition": "Floresta" },
+    { "emoji": "🛣️📏⬛️", "definition": "Longe" },
+    { "emoji": "🛣️📏◾", "definition": "Perto" },
+    { "emoji": "🫵🚩", "definition": "Você tem / Seu" },
+    { "emoji": "👁️🔭", "definition": "Ver" },
+    { "emoji": "1️⃣👈", "definition": "Sozinha" }
+  ]
+}

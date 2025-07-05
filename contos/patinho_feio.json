@@ -1,0 +1,40 @@
+{
+  "title": "O Patinho Feio",
+  "storyParts": [
+    { "emoji": "🔙⌛️, 🤱🦆 ⏳ 🥚🥚🥚 🥚🐣.", "text": "Era uma vez, uma mamãe pata que esperava seus ovos chocarem." },
+    { "emoji": "⌛️ 🥚🐣 😻 🐥🦆▪️. ↔️ 1️⃣🥚⬛, ❌🥚🐣.", "text": "Quando os ovos se choraram nasceram lindos pequenos patinhos. Mas um ovo grande, não chocou." },
+    { "emoji": "⌛️ 🥚⬛🐣, 🐥🦆⬛, 🙅‍♀️🐥🦆▪️.", "text": "Quando finalmente abriu, saiu um patinho grande, cinzento e diferente dos pequenos." },
+    { "emoji": "🐥🦆▪️ 😂 👉 🐥🦆⬛, 🐥🦆💔!'", "text": "Os patinhos pequenos riam dele: 'Que pato feio!'" },
+    { "emoji": "😢 1️⃣👈, 🐥🦆💔 🏃💨 🏡.", "text": "Triste e sozinho, o patinho feio fugiu de casa." },
+    { "emoji": "⌛️❄️. 🦆💔 🥶 🖤🍽️.", "text": "O inverno chegou. O patinho sentia muito frio e fome." },
+    { "emoji": "⌛🌷️. 🦆💔 👁️🔭 😻 🦢🦢🦢 🏞️, 🦆💔 ️➡️ 🦢🦢🦢 😨.", "text": "A primavera chegou. Ele viu lindos cisnes brancos em um lago e se aproximou, com medo." },
+    { "emoji": "👀 👤💧😲.", "text": "Ele olhou seu reflexo na água e teve uma grande surpresa." },
+    { "emoji": "❌🦆💔, ✅😻🦢!", "text": "Ele não era mais um pato feio, mas um lindo cisne branco!" },
+    { "emoji": "🦢🦢🦢 🤗. ✅👀🔎 🚩👨‍👩‍👧‍👦, 😀➿.", "text": "Os outros cisnes o acolheram. Ele finalmente encontrou sua família e foi feliz para sempre." },
+    { "emoji": "🎬 FIM", "text": "" }
+  ],
+  "quizQuestions": [
+    {
+      "emoji_question": "🐣💔 ❓ ❌🤝",
+      "question": "Como o patinho feio era quando nasceu?",
+      "options": ["🦢", "⚫️⚪️", "🐣😻"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "🦆💔 🪄➡️❓",
+      "question": "Em que o patinho feio se transformou?",
+      "options": ["🦅", "🐔", "😻🦢"],
+      "correct": 2
+    }
+  ],
+  "glossary": [
+    { "emoji": "🤱🦆", "definition": "Mamãe Pata" },
+    { "emoji": "🥚", "definition": "Ovo" },
+    { "emoji": "🐣🦆", "definition": "Patinho" },
+    { "emoji": "🐣🦆💔", "definition": "Patinho Feio" },
+    { "emoji": "🦢", "definition": "Cisne" },
+    { "emoji": "🏞️", "definition": "Lago" },
+    { "emoji": "🥚🐣", "definition": "Chocar" },
+    { "emoji": "🏃💨", "definition": "Fugir" }
+  ]
+}

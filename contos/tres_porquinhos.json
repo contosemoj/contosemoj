@@ -1,0 +1,41 @@
+{
+  "title": "Os Três Porquinhos",
+  "storyParts": [
+    { "emoji": "🔙⌛️ 🐷🐷🐷", "text": "Era uma vez três porquinhos." },
+    { "emoji": "🥇🐷 👷🏾‍♂️🏗 🏠🌾", "text": "O primeiro porquinho construiu sua casa de palha." },
+    { "emoji": "🥈🐷 👷🏾‍♂️🏗 🏠🪵", "text": "O segundo porquinho construiu sua casa de madeira." },
+    { "emoji": "🥉🐷 👷🏾‍♂️🏗 🏠🧱", "text": "O terceiro porquinho construiu sua casa de tijolo." },
+    { "emoji": "🐺😈 🚶‍♂️➡️ 🏠🌾", "text": "O lobo mau foi até a casa de palha." },
+    { "emoji": "🐺😈 🌬️ 🏠🌾 🫳🍂❗", "text": "Ele soprou a casa de palha caiu!" },
+    { "emoji": "🐷 🏃➡️ 🏠🪵", "text": "O porquinho correu para a casa de madeira." },
+    { "emoji": "🐺😈 🌬️ 🏠🪵 🫳🍂❗", "text": "O lobo soprou a casa de madeira caiu!" },
+    { "emoji": "🐷🐷 🏃➡️ 🏠🧱", "text": "Os dois porquinhos correram para a casa de tijolos." },
+    { "emoji": "🐺😈 🌬️🏠🧱 ❌🫳🍂", "text": "O lobo soprou, mas a casa não caiu." },
+    { "emoji": "🐺😈 📤♨️ 🏠🧱", "text": "O lobo tentou entrar pela chaminé." },
+    { "emoji": "🐷🐷🐷 🍲⬛🔥 📤♨️", "text": "Os porquinhos colocaram um caldeirão quente." },
+    { "emoji": "🐺😈 🫳🍂 🍲⬛🔥 🏃💨", "text": "O lobo caiu no caldeirão e fugiu!" },
+    { "emoji": "🎬 FIM", "text": "" }
+  ],
+  "quizQuestions": [
+    {
+      "emoji_question": "🥉🐷 👷🏾‍♂️🏗 ❓",
+      "question": "O terceiro porquinho construiu sua casa de quê?",
+      "options": ["🏠🌾", "🏠🪵", "🏠🧱"],
+      "correct": 2
+    },
+    {
+      "emoji_question": "🤷‍♀️🏠 🐺😈 🫳🍂 🌬️❓",
+      "question": "Qual casa o lobo conseguiu derrubar com o sopro?",
+      "options": ["🏠🧱", "🏠🪵", "🏠🧁"],
+      "correct": 1
+    }
+  ],
+  "glossary": [
+    { "emoji": "👷🏾‍♂️🏗", "definition": "construir" },
+    { "emoji": "🫳🍂", "definition": "cair" },
+    { "emoji": "📤♨️", "definition": "chaminé" },
+    { "emoji": "🍲⬛🔥", "definition": "caldeirão quente" },
+    { "emoji": "🏃➡️", "definition": "correr para" },
+    { "emoji": "🏃💨", "definition": "fugir" }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "title": "Saci Pererê",
+  "storyParts": [
+    { "emoji": "🌳🌳🌳🇧🇷, 🏡 👦🏿🌪️.", "text": "Nas matas do Brasil, vive o Saci Pererê." },
+    { "emoji": "👉👦🏿 1️⃣🦵, 🧢🔴✨.", "text": "Ele é um menino de uma perna só, usa um gorro vermelho mágico." },
+    { "emoji": "🧢🔴✨ 🫱 💪, 💨🌪️🫥​ 💨🌪️😶‍🌫️.", "text": "Seu gorro lhe dá o poder de aparecer e desaparecer em um redemoinho." },
+    { "emoji": "👉👦🏿 ❤️😜. 🙈🛠️, 🪢〰️🐎​.", "text": "O Saci adora fazer travessuras, como esconder objetos e dar nós nos rabos dos cavalos." },
+    { "emoji": "🍳, ↔️🧂/🍬, 🔥🥘.", "text": "Na cozinha, ele troca os potes de sal e açúcar e queima a comida." },
+    { "emoji": "👉👦🏿 ​🛡️​️🌳🌳🌳.", "text": "Ele é um protetor da floresta." },
+    { "emoji": "❌🧢, ❌💪, 🔗🔒🍾.", "text": "Sem o gorro, ele perde seus poderes e pode ser preso em uma garrafa." },
+    { "emoji": "🎬 FIM", "text": "" }
+  ],
+  "quizQuestions": [
+    {
+      "emoji_question": "🤷‍♀️📦 🫱 💪 👦🏿🌪️❓",
+      "question": "O que dá poderes ao Saci?",
+      "options": ["1️⃣🦵", "🧢🔴✨", "🎈"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "🤷‍♀️😜 👦🏿🌪️ 🏗️❓",
+      "question": "Qual é uma travessura que o Saci faz?",
+      "options": ["🪢〰️🐎", "💧🌱", "🤗❤️🧑‍🌾"],
+      "correct": 0
+    }
+  ],
+  "glossary": [
+    { "emoji": "👦🏿🌪️", "definition": "Saci Pererê" },
+    { "emoji": "🧢🔴✨", "definition": "Gorro vermelho" },
+    { "emoji": "💨🌪️", "definition": "Redemoinho" },
+    { "emoji": "😜", "definition": "Travessura" },
+    { "emoji": "🪢🐎🐴", "definition": "Nó no rabo do cavalo" },
+    { "emoji": "🔗🔒🍾", "definition": "Preso na garrafa" }
+  ]
+}

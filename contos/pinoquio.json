@@ -1,0 +1,49 @@
+{
+  "title": "Pinóquio",
+  "storyParts": [
+    { "emoji": "🔙⌛️, 👴🪵 🏗️​ 🤖​🪵, 🪪🔤 👦​🪵🤥​.", "text": "Era uma vez um carpinteiro chamado Gepeto, que fez um boneco de madeira e o chamou de Pinóquio." },
+    { "emoji": "🧚‍♀️ 🫳🎁 👶↗️👵 🤖🪵 🪄​➡️​ 👦🪵: ☑️​👦 🤍️, 😇.", "text": "A Fada Azul deu vida ao boneco. Ele poderia se tornar um menino de verdade se fosse sincero e bom." },
+    { "emoji": "🧚‍♀️ 🙏 🦗🗣️ 🪄​➡️️🗣️🧠 👦​🪵🤥.", "text": "A Fada pediu a um Grilo Falante para ser a consciência de Pinóquio." },
+    { "emoji": "👴🪵 💰🧥➡️📖, Pinóquio 🚶‍♂️🏫.", "text": "Gepeto vendeu seu casaco para comprar um livro para Pinóquio ir à escola." },
+    { "emoji": "🛤️, Pinóquio 😵, 🚶‍♂️➡️ 🎪🤖.", "text": "No caminho, Pinóquio foi enganado e se juntou a um teatro de marionetes." },
+    { "emoji": "🤥🗣️➡️🧚‍♀️🔵, 👃➡️📏➡️📏.", "text": "Quando ele mentiu para a Fada, seu nariz de madeira começou a crescer." },
+    { "emoji": "➡️🏝️😜, 👦🏻😈 ❌📖.", "text": "Depois, ele foi levado para a Ilha dos Prazeres, onde meninos maus não precisavam estudar." },
+    { "emoji": "😡, 👦🏻😈 ➡️ 🐴. Pinóquio ➡️👂🐴.", "text": "Como castigo, os meninos da ilha viraram burros. Pinóquio também começou a se transformar!" },
+    { "emoji": "🏃💨, 👀🔍👴🪵, ↔️ 🐋👄.", "text": "Ele escapou e procurou por Gepeto, mas foi engolido por uma baleia gigante." },
+    { "emoji": "⬇️🐋, 👀😲 👴🪵.", "text": "Dentro da baleia, ele encontrou Gepeto, que também havia sido engolido!" },
+    { "emoji": "💪, Pinóquio 🔥. 💨➡️🐋🤧, ✅🏃💨.", "text": "Com coragem, Pinóquio fez uma fogueira. A fumaça fez a baleia espirrar e os libertou." },
+    { "emoji": "💪❤️😇, 🧚‍♀️🔵 ✨➡️ 👦🏻👍.", "text": "Por seu ato de coragem e bondade, a Fada Azul o transformou em um menino de verdade." },
+    { "emoji": "Pinóquio ❤️ 👴🪵, 😀➿.", "text": "Pinóquio e Gepeto viveram felizes para sempre." },
+    { "emoji": "🎬 FIM", "text": "" }
+  ],
+  "quizQuestions": [
+    {
+      "emoji_question": "Pinóquio 🤥🗣️ ➡️ 👃❓",
+      "question": "O que acontece com o nariz do Pinóquio quando ele mente?",
+      "options": ["⬇️", "⬆️", "↔️"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "❓ ➡️🧠 Pinóquio",
+      "question": "Quem se torna a consciência do Pinóquio?",
+      "options": ["🧚‍♀️🔵", "👴🪵", "🦗🗣️"],
+      "correct": 2
+    },
+    {
+      "emoji_question": "Pinóquio 👀 👴🪵 ❓",
+      "question": "Onde o Pinóquio reencontra o Gepeto?",
+      "options": ["🏫", "🏝️😜", "⬇️🐋"],
+      "correct": 2
+    }
+  ],
+  "glossary": [
+    { "emoji": "🤖🪵", "definition": "Boneco de madeira / Pinóquio" },
+    { "emoji": "🧚‍♀️🔵", "definition": "Fada Azul" },
+    { "emoji": "🦗🗣️", "definition": "Grilo Falante" },
+    { "emoji": "🧠", "definition": "Consciência" },
+    { "emoji": "🤥🗣️", "definition": "Mentir" },
+    { "emoji": "👃➡️📏", "definition": "O nariz cresce" },
+    { "emoji": "🏝️😜", "definition": "Ilha dos Prazeres" },
+    { "emoji": "🐋", "definition": "Baleia" }
+  ]
+}

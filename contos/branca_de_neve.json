@@ -1,0 +1,50 @@
+{
+  "title": "A História da Branca de Neve",
+  "storyParts": [
+    { "emoji": "🔙⌛️, 😻 👧🏻👸🏻 🪪🔤 👸🏻❄️", "text": "Era uma vez, uma linda jovem princesa, chamada Branca de Neve." },
+    { "emoji": "➿ 👸🏼 🙋‍♀️💬 🪞🧙‍♂: 🪞🪞🚩 🤷‍♀️👤 ➕😻 👸🏼👈❓", "text": "Sempre a rainha perguntava ao espelho mágico: Espelho, espelho meu, existe alguém mais bonita do que eu?" },
+    { "emoji": "🪞🧙‍♂️ 💬: 👸🏼 🥇😻.", "text": "O espelho respondia: a rainha é a mais bonita." },
+    { "emoji": "⌛️📅, 🪞💬: 👸🏻❄️ 🥇😻.", "text": "Um dia, o espelho respondeu: Branca de Neve é a mais bonita." },
+    { "emoji": "👸🏼😡, 👉👸🏼 🫴🏻 🫀 👸🏻❄️ 🫱 🧔🏻‍♂️🏹", "text": "A rainha ficou brava, ela pediu o coração de branca de neve para o caçador." },
+    { "emoji": "🧔🏻‍♂️🏹 💔😕 👸🏻❄️, 🧔🏻‍♂️🏹 👍 👉👸🏻 🏃‍♀ 🌳🌳🌳", "text": "O caçador ficou com pena de Branca de Neve, o caçador a deixou correr pela floresta." },
+    { "emoji": "👸🏻❄️ 👁️🔭 🏠 7️⃣ ▪️🧔🏻‍♂️.", "text": "Branca de Neve viu a casa de sete anões." },
+    { "emoji": "👸🏻❄️ 😀, 💃🕺 7️⃣ ▪️🧔🏻‍♂️.", "text": "Branca de Neve estava feliz, dançava com os sete anões." },
+    { "emoji": "👸🏼 🥸 👵, 👉👸🏼 🫳🎁 👸🏻❄️ 🍎 ☠️🟩.", "text": "A rainha se disfarçou de velhinha, ela deu a Branca de Neve uma maçã envenenada." },
+    { "emoji": "👸🏻❄️ 👄🍎, 👉👸🏻 🛌💤➿", "text": "Branca de Neve comeu a maçã, ela entrou em um sono profundo." },
+    { "emoji": "7️⃣ ▪️🧔🏻‍♂️ 😢, 👉🧔🏻‍♂ 💭 👸🏻❄️ 💀.", "text": "Os sete anões ficaram tristes, eles pensaram que Branca de Neve estava morta." },
+    { "emoji": "7️⃣ ▪️🧔🏻‍♂️ 📥 👸🏻❄️ ⚰️🪟.", "text": "Os sete anões colocaram Branca de Neve em um caixão de vidro." },
+    { "emoji": "🤴🏻 🚶🏻‍➡️ 🌳🌳🌳, 👁️🔭 👸🏻❄️ 💘.", "text": "Um príncipe que andava pela floresta, viu Branca de Neve e se apaixonou." },
+    { "emoji": "🤴🏻 💋👩‍❤️‍👨, ⛓️‍💥 😈🪄", "text": "O príncipe deu um beijo de amor em Branca de Neve, e quebrou o feitiço." },
+    { "emoji": "👫 👶↗️👵 😀➿.", "text": "E eles viveram felizes para sempre." }
+  ],
+  "quizQuestions": [
+    {
+        "emoji_question": "🤷‍♀️👤 🥇😻❓",
+        "question": "Com quem a Rainha falava sempre?",
+        "options": ["👸🏻❄️", "🧔🏻‍♂️🏹", "▪️🧔🏻‍♂️"],
+        "correct": 0
+    },
+    {
+        "emoji_question": "🤷‍♀️📦 👸🏻❄️ 🛌💤➿❓",
+        "question": "O que fez a Branca de Neve adormecer?",
+        "options": ["🫀", "⚰️🪟", "🍎"],
+        "correct": 2
+    },
+    {
+        "emoji_question": "🤷‍♀️👤 ⛓️‍💥 😈🪄 💋👩‍❤️‍👨❓",
+        "question": "Quem quebrou o feitiço com um beijo de amor?",
+        "options": ["🤴🏻", "👵", "🪓"],
+        "correct": 0
+    }
+  ],
+  "glossary": [
+    { "emoji": "👸🏻❄️", "definition": "Branca de Neve" },
+    { "emoji": "🪞🧙‍♂", "definition": "Espelho Mágico" },
+    { "emoji": "➕😻", "definition": "Mais bonita" },
+    { "emoji": "🧔🏻‍♂️🏹", "definition": "Caçador" },
+    { "emoji": "7️⃣ ▪️🧔🏻‍♂️", "definition": "Sete anões" },
+    { "emoji": "🍎 ☠️🟩", "definition": "Maçã envenenada" },
+    { "emoji": "🛌💤➿", "definition": "Sono profundo" },
+    { "emoji": "💋👩‍❤️‍👨", "definition": "Beijo de amor" }
+  ]
+}

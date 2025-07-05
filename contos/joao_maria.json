@@ -1,0 +1,46 @@
+{
+  "title": "João e Maria",
+  "storyParts": [
+    { "emoji": "👦👧 🏡 👨👩", "text": "João e Maria moravam com seus pais." },
+    { "emoji": "👨👩 🙅💰", "text": "Seus pais eram muito pobres." },
+    { "emoji": "👨👩 📩 👦👧 🌲🌲🌲", "text": "Eles levaram João e Maria para a floresta." },
+    { "emoji": "👦👧 1️⃣👈 🌲🌲🌲.", "text": "João e Maria ficaram sozinhos na floresta." },
+    { "emoji": "👦👧 👁️🔭 🏠🍭🍬🍰", "text": "João e Maria viram uma casa de doces." },
+    { "emoji": "🧙‍♀️ 🔓 🚪", "text": "Uma bruxa abriu a porta." },
+    { "emoji": "🧙‍♀️ 🔗🔒 👦👧", "text": "A bruxa prendeu João e Maria." },
+    { "emoji": "🧙‍♀️ 📥 👦 📦⛓️", "text": "A bruxa colocou João em uma jaula." },
+    { "emoji": "🧙‍♀️ 🫴 👦 🩵🐖☑️ ➡ 👄👦☑️", "text": "A bruxa queria que João engordasse para então comê-lo." },
+    { "emoji": "👧 🫸➡️ 🧙‍♀️ 🧰🔥", "text": "Maria empurrou a bruxa no forno!" },
+    { "emoji": "👦👧 🏃💨", "text": "João e Maria fugiram!" },
+    { "emoji": "👦👧 ↩️ 🏠", "text": "João e Maria voltaram para casa." },
+    { "emoji": "🎬 FIM", "text": "" }
+  ],
+  "quizQuestions": [
+    {
+      "emoji_question": "🤷‍♀️📦 👦👧 👁️🔭 🌲🌲🌲❓",
+      "question": "O que João e Maria encontraram na floresta?",
+      "options": ["👨👩", "🏠🍭🍬🍰", "🐺😈"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "🤷‍♀️👤 📥 👦 📦⛓️❓",
+      "question": "Quem prendeu João na jaula?",
+      "options": ["👧", "👨👩", "🧙‍♀️"],
+      "correct": 2
+    },
+    {
+      "emoji_question": "🤷‍♀️🏗 👧 👉🧙‍♀️❓",
+      "question": "O que Maria fez com a bruxa?",
+      "options": ["🏃💨", "🫸➡️ 🧙‍♀️ 🧰🔥", "💬"],
+      "correct": 1
+    }
+  ],
+  "glossary": [
+    { "emoji": "🩵🐖", "definition": "Engordar" },
+    { "emoji": "🧰🔥", "definition": "Forno" },
+    { "emoji": "🙅💰", "definition": "Pobre" },
+    { "emoji": "🔗🔒", "definition": "Prender" },
+    { "emoji": "🫸➡️", "definition": "Empurrar" },
+    { "emoji": "📦⛓️", "definition": "Jaula" }
+  ]
+}

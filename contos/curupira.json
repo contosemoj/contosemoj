@@ -1,0 +1,40 @@
+{
+  "title": "Curupira",
+  "storyParts": [
+    { "emoji": "🌳🌳🌳🇧🇷, 🏡 💪🛡️, 🪪🔤 👦🏽🦶↩️.", "text": "Nas matas do Brasil, vive um guardião chamado Curupira." },
+    { "emoji": "👉👦🏽 🦰🔥, 🦶↩️.", "text": "Ele é um menino com cabelos de fogo e seus pés são virados para trás." },
+    { "emoji": "🦶↩️ 🧠​➡️ 😵 👣.", "text": "Seus pés ao contrário servem para confundir e deixar pegadas engraçadas." },
+    { "emoji": "👦🏽🦶↩️ 🛡️ 🐆🐒🌳.", "text": "O Curupira protege os animais e as árvores." },
+    { "emoji": "👉👦🏽 😙🎶, 🪄🎶 🫱​😱.", "text": "Ele assobia e cria sons para assustar." },
+    { "emoji": "👦🏽🦶↩️ ❤️ 🌳.", "text": "O Curupira ama a natureza." },
+    { "emoji": "🎬 FIM", "text": "" }
+  ],
+  "quizQuestions": [
+    {
+      "emoji_question": "🤷‍♀️⚙️​ 👦🏽🦶↩️❓",
+      "question": "Qual a característica mais famosa do Curupira?",
+      "options": ["🔥👩‍🦰", "🦶↩️", "💪"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "🤷‍♀️🏗️ 🦶↩️❓",
+      "question": "Para que servem os pés virados para trás?",
+      "options": ["😵", "➡️🏃‍♀️⚡️", "➡️💃"],
+      "correct": 0
+    },
+    {
+      "emoji_question": "🤷‍♀️👤 👦🏽🦶↩️ 🛡️❓",
+      "question": "Quem o Curupira protege?",
+      "options": ["🏠", "💰", "🌳🐆🐒"],
+      "correct": 2
+    }
+  ],
+  "glossary": [
+    { "emoji": "👦🏽🦶↩️", "definition": "Curupira" },
+    { "emoji": "🛡️", "definition": "Guardião" },
+    { "emoji": "🦶↩️", "definition": "Pés virados" },
+    { "emoji": "👣", "definition": "Pegadas" },
+    { "emoji": "😙🎶", "definition": "Assobio" },
+    { "emoji": "🌳", "definition": "Árvore / Floresta" }
+  ]
+}

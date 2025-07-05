@@ -1,0 +1,43 @@
+{
+  "title": "Mula Sem Cabeça",
+  "storyParts": [
+    { "emoji": "📖🇧🇷 🪄👿: 🐴🔥.", "text": "Contam as lendas do Brasil, sobre uma maldição: a Mula Sem Cabeça." },
+    { "emoji": "👩 👩‍❤️‍💋‍👨 👨✝️, 👉👩 🪄👿 .", "text": "Uma mulher que deu beijo de amor em um padre, ela foi amaldiçoada." },
+    { "emoji": "🌃 ️5️⃣📆, 👩 🪄➡️ 🐴🔥", "text": "Nas noites de quinta-feira, ela se transforma na mula sem cabeça." },
+    { "emoji": "🐴🔥 🏇 🏞️🌱, 👤👤👤 😨.", "text": "A Mula galopa pelos campos,  todos ficavam assustados." },
+    { "emoji": "⌛ 🐓🗣️, 🐴🔥 ↩️ 👩.", "text": "Quando o galo cantava, a mula sem cabeça voltava a ser uma mulher." },
+    { "emoji": "🫱⛓️‍💥 🪄👿, 👤 📤 ⛓️👄 🐴🔥.", "text": "Para quebrar o feitiço, uma pessoa precisa tirar o freio de ferro da boca da Mula sem cabeça." },
+    { "emoji": "📖🇧🇷 ⚠️ 🫱 ❌🏗️ 🚫.", "text": "A lenda brasileira é um aviso para não fazer o que proíbido." },
+    { "emoji": "🎬 FIM", "text": "" }
+  ],
+  "quizQuestions": [
+    {
+      "emoji_question": "🪄👿❓ 脖",
+      "question": "Qual é a maldição?",
+      "options": ["💧", "🐴🔥", "🗣️"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "🤷‍♀️⌛ 👩 🪄➡️ 🐴🔥❓",
+      "question": "Quando a transformação acontece?",
+      "options": ["☀️", "🌃 ️5️⃣📆", "🌧️"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "🤔🧠 👉👩 👿🪄❓",
+      "question": "Por que ela foi amaldiçoada?",
+      "options": ["👩‍❤️‍💋‍👨 👨✝️", "🏀", "🗣️🤥"],
+      "correct": 0
+    }
+  ],
+  "glossary": [
+    { "emoji": "🐴🔥", "definition": "Mula Sem Cabeça" },
+    { "emoji": "👿🪄", "definition": "Maldição / Feitiço" },
+    { "emoji": "👨✝️", "definition": "Padre" },
+    { "emoji": "5️⃣📆", "definition": "Quinta-feira" },
+    { "emoji": "🏞️🌱", "definition": "Campos" },
+    { "emoji": "🐓🗣️", "definition": "Galo caontou" },
+    { "emoji": "⛓️‍💥", "definition": "Quebrar" },
+    { "emoji": "⚠️", "definition": "Aviso" }
+  ]
+}

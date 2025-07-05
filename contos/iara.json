@@ -1,0 +1,42 @@
+{
+  "title": "Iara, a Mãe d'Água",
+  "storyParts": [
+    { "emoji": "🏞️🇧🇷, 🏡 🧜🏼‍♀️👑, 👑💧​.", "text": "Nos rios do Brasil, vive a Iara, a rainha das águas." },
+    { "emoji": "👉🧜🏼‍♀️ 🧜‍♀️ 🦰📏⬛ 👀😵‍💫.", "text": "Ela é uma sereia de longos cabelos negros e olhos que hipnotizam." },
+    { "emoji": "🌆, 🧜‍♀️🧘‍♀️🪨, 🗣️🎶🪄.", "text": "Ao entardecer, Iara senta nas pedras e canta uma melodia mágica." },
+    { "emoji": "👨🏽👨🏽 🗣️👂, 😵‍💫, ️  🏞️.", "text": "Homens que escutam seu canto ficam hipnotizados e entram no rio." },
+    { "emoji": "👨🏽👨🏽 🗣️👂, 😵‍💫, ️🚶🏽‍➡️ 🏞️.", "text": "Homens que escutam seu canto ficam hipnotizados e entram no rio." },
+    { "emoji": "🧜🏼‍♀️👑 👉👨🏽️️📉🏞️, ❌↩️.", "text": "Ela os leva para o fundo do rio, de onde nunca mais voltam." },
+    { "emoji": "🗣️: ❌😈, ✅🛡️🏞️.", "text": "Dizem que ela não é má, mas uma guardiã que protege os rios." },
+    { "emoji": "📖 = ⚠️, 👍❤️🏞️.", "text": "Sua lenda é um aviso para que todos respeitem as águas." },
+    { "emoji": "🎬 FIM", "text": "" }
+  ],
+  "quizQuestions": [
+    {
+      "emoji_question": "🤷‍♀️💙 🧜🏼‍♀️👑 🧲 👨🏽👨🏽❓",
+      "question": "Como a Iara usa para atrair os homens?",
+      "options": ["🗣️🎶🪄", "🍴✨", "🔱"],
+      "correct": 0
+    },
+    {
+      "emoji_question": "🤷‍♀️🏡 🧜‍♀️❓",
+      "question": "Onde a Iara vive?",
+      "options": ["🌳", "🏞️", "☁️"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "🤷‍♀️➡ 👨🏽👨🏽 🚶🏽‍➡️ 🧜🏼‍♀️👑❓",
+      "question": "O que acontece com os homens que a Iara atrai?",
+      "options": ["💰", "❌↩️", "🤴"],
+      "correct": 1
+    }
+  ],
+  "glossary": [
+    { "emoji": "🧜🏼‍♀️👑", "definition": "Iara / Rainha das Águas" },
+    { "emoji": "🏞️", "definition": "Rio" },
+    { "emoji": "🗣️🎶🪄", "definition": "Canto mágico" },
+    { "emoji": "😵‍💫", "definition": "Hipnotizado" },
+    { "emoji": "📉🏞️", "definition": "Fundo do rio" },
+    { "emoji": "❌↩️", "definition": "Nunca mais volta" }
+  ]
+}
