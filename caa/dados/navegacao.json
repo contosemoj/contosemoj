@@ -1,0 +1,88 @@
+{
+  "Pessoas": {
+    "emoji": "👤",
+    "sub": {
+      "Família": { "emoji": "👨‍👩‍👧‍👦", "sub": null },
+      "Clinica": { "emoji": "👩‍⚕️", "sub": null },
+      "Escola": { "emoji": "👩‍🏫", "sub": {} },
+      "Personagens": { "emoji": "👸", "sub": null }
+    }
+  },
+  "Ações": {
+    "emoji": "🏃‍♂️",
+    "sub": {
+      "Laser": { "emoji": "⚽", "sub": null },
+      "Higiene": { "emoji": "🧼", "sub": null },
+      "Sentir": { "emoji": "😀", "sub": null },
+      "Perguntar": { "emoji": "❓", "sub": null }
+    }
+  },
+  "Lugares": {
+    "emoji": "🌐",
+    "sub": {
+      "Casa": {
+        "emoji": "🏠",
+        "sub": {
+          "Cozinha": { "emoji": "🍳", "sub": null },
+          "Quarto": { "emoji": "🛏️", "sub": null },
+          "Banheiro": { "emoji": "🚽", "sub": null }
+        }
+      },
+      "Escola": { "emoji": "🏫", "sub": null },
+      "Parque": { "emoji": "🏞️", "sub": null },
+      "Comercio": { "emoji": "🏪", "sub": null },
+	  "Tempo": { "emoji": "🕰", "sub": null }
+	}
+  },
+  "Seres Vivos": {
+    "emoji": "🐾",
+    "sub": {
+      "Animais": {
+        "emoji": "🐀",
+        "sub": {
+          "Marinhos": { "emoji": "🐳", "sub": null },
+          "Fazenda": { "emoji": "🐄", "sub": null },
+          "Parque": { "emoji": "🦋", "sub": null },
+          "Selvagens": { "emoji": "🐆", "sub": null }
+        }
+      },
+      "Insetos": { "emoji": "🐞", "sub": null },
+      "Plantas": { "emoji": "🌱", "sub": null },
+      "Microscópicos": { "emoji": "🦠", "sub": null }
+    }
+  },
+  "Comidas": {
+    "emoji": "🍽️",
+    "sub": {
+      "Frutas": { "emoji": "🍎", "sub": null },
+      "Vegetais": { "emoji": "🥕", "sub": null },
+      "Comidas": {
+        "emoji": "🥘",
+        "sub": {
+          "Fast-Food": { "emoji": "🍔", "sub": null },
+          "Saudável": { "emoji": "🥗", "sub": null }
+        }
+      },
+      "Bebidas": { "emoji": "🥤", "sub": null },
+      "Doces": { "emoji": "🧁", "sub": null }
+    }
+  },
+  "Objetos": {
+    "emoji": "🧸",
+    "sub": {
+      "Brinquedos": { "emoji": "🎲", "sub": null },
+      "Roupas": { "emoji": "👕", "sub": null },
+      "Móveis": { "emoji": "🛋️", "sub": null },
+      "Instrumentos Musicais": { "emoji": "🎸", "sub": null }
+    }
+  },
+  "Atributos": {
+    "emoji": "📋",
+    "sub": {
+      "Cores": { "emoji": "🎨", "sub": null },
+      "Formas": { "emoji": "⚪", "sub": null },
+      "Propiedades": { "emoji": "▪", "sub": null },
+      "Aparência": { "emoji": "😻", "sub": null }
+    }
+  }
+}
