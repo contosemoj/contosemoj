@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunicador Alternativo Editável</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container-principal">
+        <div id="controles-tempo-lateral">
+             <button id="btn-ciclo-tempo" class="btn-tempo" title="Mudar tempo verbal"></button>
+        </div>
+        
+        <div class="header-caixa">
+            <button id="btn-home">🏠</button>
+            <button id="btn-toggle-edicao">🔒</button>
+            <div id="caminho-navegacao" class="caminho-navegacao">Página Inicial</div>
+            <div class="navegacao-filtros">
+                 <button id="btn-navegar" title="Arraste para navegar">
+                     <span class="emoji">⭐</span>
+                 </button>
+            </div>
+            <div class="controles-edicao">
+                <div class="container-seletor-voz"><label for="select-voz">Voz:</label><select id="select-voz"></select></div>
+                <div class="botoes-secundarios-edicao">
+                    <button id="btn-add-figura">Adicionar Figura</button>
+                    <button id="btn-gerenciar-dados">Gerenciar Categorias</button>
+                    <button id="btn-exportar">Exportar (.zip)</button>
+                    <button id="btn-importar">Importar (.zip)</button>
+                    <button id="btn-apagar-tudo">Apagar Tudo</button>
+                </div>
+                <input type="file" id="input-importar-zip" style="display:none;" accept=".zip">
+            </div>
+        </div>
+
+        <div id="caixa-de-figuras"></div>
+
+        <div class="container-sentenca">
+            <h1>Ficha de Sentença</h1>
+            <div class="sentenca-wrapper">
+                <div id="ficha-de-sentenca"></div>
+                <div class="botoes-acao">
+                    <button id="btn-falar">🔊</button>
+                    <button id="btn-limpar">🗑️</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="menu-overlay"></div>
+
+    <div id="modal-edicao" class="modal"><div class="modal-content"><div class="modal-header"><h3>Editar Figura</h3><button class="close-button">&times;</button></div><div class="modal-body"><div class="grupo-campo"><label for="input-texto-figura">Texto (Palavra base):</label><input type="text" id="input-texto-figura" ></div><div class="grupo-campo"><label for="select-tipo-palavra">Tipo de Palavra:</label><select id="select-tipo-palavra"><option value="substantivo">Substantivo</option><option value="verbo">Verbo</option><option value="adjetivo">Adjetivo</option><option value="pronome">Pronome</option></select></div><div id="campos-gramatica"></div><div class="grupo-campo"><label>Caminhos da Figura</label><input type="text" id="input-caminho-figura" placeholder="Caminho1,Sub1;Caminho2,Sub2"><small>Para múltiplos caminhos, separe com ponto e vírgula (;).</small></div><hr><h4>Escolher Imagem</h4><input type="search" id="input-busca-unificada" placeholder="Buscar em ARASAAC ou Emojis..."><div id="emoji-resultados"></div><div id="arasaac-resultados"></div><hr><h4>Outras Fontes</h4><div class="grupo-campo"><label for="input-url-imagem">URL:</label><input type="text" id="input-url-imagem"></div><div class="grupo-campo"><label for="input-upload-imagem">Upload:</label><input type="file" id="input-upload-imagem" accept="image/*"></div></div><button id="btn-salvar-figura">Salvar Figura</button></div></div>
+    <div id="modal-gerenciar" class="modal"><div class="modal-content"><div class="modal-header"><h3>Gerenciar Categorias</h3><button class="close-button">&times;</button></div><div class="modal-body"><div id="lista-categorias"></div><button id="btn-add-cat-raiz" style="margin-top: 1rem;">+ Adicionar Categoria Raiz</button></div></div></div>
+    
+    <div id="modal-acao-categoria" class="modal">
+        <div class="modal-content">
+            <h3 id="acao-cat-titulo"></h3>
+            <p id="acao-cat-mensagem"></p>
+            <input type="text" id="acao-cat-input-nome" placeholder="Nome da categoria">
+            <input type="text" id="acao-cat-input-emoji" placeholder="Emoji (opcional)">
+            <div class="botoes-acao-modal">
+                <button id="acao-cat-cancelar" class="close-button">Cancelar</button>
+                <button id="acao-cat-confirmar">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
