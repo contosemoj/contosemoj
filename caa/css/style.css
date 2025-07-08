@@ -232,12 +232,12 @@ h1 { font-size: clamp(1.2rem, 3vw, 1.8rem); margin: 0; }
     background-color: #ffffff;
     border: 4px dashed var(--cor-borda);
     border-radius: 16px;
-    min-height: 80px;
+    min-height: 60px;
     padding: 0.5rem;
     display: flex;
     align-items: flex-start;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 1rem;
     transition: background-color 0.3s, border-color 0.3s;
     flex-grow: 1;
 }
@@ -297,7 +297,7 @@ h1 { font-size: clamp(1.2rem, 3vw, 1.8rem); margin: 0; }
     align-items: center; 
     pointer-events: none; 
 }
-.figura img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.figura img { max-width: 110%; max-height: 110%; object-fit: contain; }
 .figura .emoji-display { font-family: var(--fonte-emoji); font-size: 60px; line-height: 1; }
 .figura p { margin: 0.3rem 0 0 0; font-weight: 600; font-size: 0.6rem; text-align: center; pointer-events: none; }
 .dragging { opacity: 0.4; }
@@ -472,4 +472,17 @@ hr { border: none; border-top: 1px solid #eee; margin: 1rem 0; }
     top: 0%;
     right: 0%;
     transform: translateX(50%);
+}
+/* --- Melhorias para Toque em Dispositivos Móveis (iPad/iPhone) --- */
+
+.figura img, 
+.figura .imagem-container,
+.figura p {
+    -webkit-touch-callout: none; /* Desabilita o menu de contexto no iOS ao segurar o toque */
+    -webkit-user-select: none;   /* Força a não seleção de texto em navegadores WebKit */
+    -khtml-user-select: none;    /* Para navegadores mais antigos */
+    -moz-user-select: none;      /* Para Firefox */
+    -ms-user-select: none;       /* Para Internet Explorer/Edge */
+    user-select: none;           /* Padrão */
+    pointer-events: none;        /* Garante que eventos de toque passem para o elemento .figura */
 }
