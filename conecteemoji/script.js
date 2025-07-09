@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		{ id: 'gato', item: '​​​🐈​', target: '🐭​​​​', video: 'videos/gato-rato.mp4', caption: '​​🐈 🏃‍➡️​ 🐭​' },
 		{ id: 'noel', item: '​​​🎅🏽​', target: '🎁​​​​', video: 'videos/noel-presente.mp4', caption: '​​🎅🏽 🫳​🎁' },
 		{ id: 'menina', item: '​​​​👧🏽', target: '🚴🏽‍♀️‍​​​​', video: 'videos/menina-bicicleta.mp4', caption: '​​🎅🏽 🫳​🎁' },
-		{ id: 'menina', item: '​​​​⛵​', target: '🏝‍​​​​', video: 'videos/veleiro-ilha.mp4', caption: '​​🎅🏽 🫳​🎁' }
+		{ id: 'veleiro', item: '​​​​⛵​', target: '🏝‍​​​​', video: 'videos/veleiro-ilha.mp4', caption: '​​⛵ ➡️ 🏝‍' }
     ];
 
     // --- Elementos do DOM ---
