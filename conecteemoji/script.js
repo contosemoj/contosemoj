@@ -21,7 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'elefante', item: '🐘', target: '​⬛​​', video: 'videos/elefante-grande.mp4', caption: '​​🐘⬛​​​' },
 		{ id: 'aranha', item: '🕷️', target: '​🕸️​​​', video: 'videos/aranha-teia.mp4', caption: '​​🕷️​🕸️​​​' },
 		{ id: 'foguete', item: '🚀​', target: '🌕​​​​', video: 'videos/foguete-lua.mp4', caption: '​​🚀 ➡️​ 🌕' },
-		{ id: 'gato', item: '​​​🐈​', target: '🐭​​​​', video: 'videos/gato-rato.mp4', caption: '​​🐈 🏃‍➡️​ 🐭​' }
+		{ id: 'gato', item: '​​​🐈​', target: '🐭​​​​', video: 'videos/gato-rato.mp4', caption: '​​🐈 🏃‍➡️​ 🐭​' },
+		{ id: 'noel', item: '​​​🎅🏽​', target: '🎁​​​​', video: 'videos/noel-presente.mp4', caption: '​​🎅🏽 🫳​🎁' },
+		{ id: 'menina', item: '​​​​👧🏽', target: '🚴🏽‍♀️‍​​​​', video: 'videos/menina-bicicleta.mp4', caption: '​​🎅🏽 🫳​🎁' },
+		{ id: 'menina', item: '​​​​⛵​', target: '🏝‍​​​​', video: 'videos/veleiro-ilha.mp4', caption: '​​🎅🏽 🫳​🎁' }
     ];
 
     // --- Elementos do DOM ---
