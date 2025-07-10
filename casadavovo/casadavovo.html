@@ -29,13 +29,23 @@
         midi-player {
             display: none;
         }
+        .difficulty-btn.active {
+            background-color: #f59e0b;
+            color: #fff;
+        }
     </style>
 </head>
 <body class="bg-red-100 flex flex-col items-center justify-center min-h-screen p-4">
 
-    <div class="w-full max-w-1xl text-center mb-4">
+    <div class="w-full max-w-0.5xl text-center mb-4">
         <h1 class="text-1xl md:text-1xl text-red-700">Fase <span id="level-display">1</span>: Leve a Chapeuzinho até a Vovó!</h1>
         <p class="text-red-500 text-lg md:text-xl mt-2">Siga o caminho de terra e não entre na floresta!</p>
+    </div>
+
+    <div id="difficulty-selector" class="flex justify-center space-x-4 mb-4">
+        <button id="easyBtn" class="difficulty-btn active bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-full">Fácil</button>
+        <button id="mediumBtn" class="difficulty-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-full">Médio</button>
+        <button id="hardBtn" class="difficulty-btn bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full">Difícil</button>
     </div>
 
     <div id="game-container" class="relative w-full max-w-3xl aspect-[4/3]">
@@ -50,7 +60,7 @@
         <div id="levelCompleteMessage" class="message-box absolute inset-0 bg-blue-500 bg-opacity-80 flex flex-col items-center justify-center text-white p-4 rounded-2xl opacity-0 transform scale-95 pointer-events-none">
             <div class="text-7xl">👍</div>
             <h2 class="text-4xl mt-4">Fase Completa!</h2>
-            <p class="text-xl mt-2">A preparar a próxima fase...</p>
+            <p class="text-xl mt-2">Clique em "Próxima Fase" para continuar!</p>
         </div>
 
         <div id="winMessage" class="message-box absolute inset-0 bg-yellow-400 bg-opacity-80 flex flex-col items-center justify-center text-yellow-900 p-4 rounded-2xl opacity-0 transform scale-95 pointer-events-none">
@@ -78,12 +88,21 @@
         const winMessage = document.getElementById('winMessage');
         const restartButton = document.getElementById('restartButton');
         const levelDisplay = document.getElementById('level-display');
-
-        // --- Audio Setup ---
+        const easyBtn = document.getElementById('easyBtn');
+        const mediumBtn = document.getElementById('mediumBtn');
+        const hardBtn = document.getElementById('hardBtn');
         const backgroundMusic = document.getElementById('background-music');
         const victorySound = document.getElementById('victory-sound');
         const defeatSound = document.getElementById('defeat-sound');
+
+        // --- Game State Variables ---
         let audioStarted = false;
+        let PATH_WIDTH = 150; 
+        let currentLevel = 0;
+        let isDrawing = false;
+        let gameEnded = false;
+        let pathPoints = [];
+        let playerTrace = [];
 
         // --- Game Colors & Settings ---
         const FOREST_COLOR = '#228B22';
@@ -91,42 +110,31 @@
         const HOUSE_COLOR = '#A52A2A';
         const ROOF_COLOR = '#8B4513';
         const TRACE_COLOR = 'rgba(255, 99, 71, 0.5)';
-        const PATH_WIDTH = 150; 
 
         // --- Level Data ---
         const levels = [
             [ { x: 0.1, y: 0.85 }, { x: 0.3, y: 0.7 }, { x: 0.4, y: 0.4 }, { x: 0.7, y: 0.25 }, { x: 0.85, y: 0.15 } ],
-            [ { x: 0.1, y: 0.85 }, { x: 0.4, y: 0.75 }, { x: 0.2, y: 0.5 }, { x: 0.6, y: 0.4 }, { x: 0.8, y: 0.2 }, { x: 0.85, y: 0.15 } ],
+            [ { x: 0.1, y: 0.85 }, { x: 0.4, y: 0.60 }, { x: 0.4, y: 0.85 }, { x: 0.8, y: 0.65 }, { x: 0.7, y: 0.4 }, { x: 0.85, y: 0.15 } ],
             [ { x: 0.1, y: 0.85 }, { x: 0.2, y: 0.4 }, { x: 0.6, y: 0.5 }, { x: 0.7, y: 0.2 }, { x: 0.4, y: 0.1 }, { x: 0.85, y: 0.15 } ],
-            [ { x: 0.1, y: 0.85 }, { x: 0.5, y: 0.7 }, { x: 0.5, y: 0.3 }, { x: 0.85, y: 0.15 } ],
+            [ { x: 0.1, y: 0.85 }, { x: 0.5, y: 0.85 }, { x: 0.1, y: 0.5 }, { x: 0.85, y: 0.15 } ],
             [ { x: 0.1, y: 0.85 }, { x: 0.5, y: 0.8 }, { x: 0.7, y: 0.5 }, { x: 0.5, y: 0.2 }, { x: 0.3, y: 0.4 }, { x: 0.85, y: 0.15 } ],
             [ { x: 0.1, y: 0.85 }, { x: 0.8, y: 0.7 }, { x: 0.2, y: 0.5 }, { x: 0.8, y: 0.3 }, { x: 0.85, y: 0.15 } ],
             [ { x: 0.15, y: 0.85 }, { x: 0.8, y: 0.7 }, { x: 0.2, y: 0.3 }, { x: 0.8, y: 0.2 }, { x: 0.15, y: 0.15 } ],
             [ { x: 0.5, y: 0.1 }, { x: 0.2, y: 0.25 }, { x: 0.8, y: 0.5 }, { x: 0.2, y: 0.75 }, { x: 0.5, y: 0.9 } ],
-            [ { x: 0.9, y: 0.85 }, { x: 0.9, y: 0.5 }, { x: 0.2, y: 0.5 }, { x: 0.2, y: 0.2 }, { x: 0.1, y: 0.1 } ],
+            [ { x: 0.9, y: 0.85 }, { x: 0.1, y: 0.7 }, { x: 0.9, y: 0.6 }, { x: 0.1, y: 0.5 }, { x: 0.1, y: 0.1 } ],
             [ { x: 0.9, y: 0.1 }, { x: 0.9, y: 0.9 }, { x: 0.1, y: 0.9 }, { x: 0.1, y: 0.1 }, { x: 0.7, y: 0.2 }, { x: 0.7, y: 0.7 }, { x: 0.3, y: 0.7 }, { x: 0.3, y: 0.3 }, { x: 0.5, y: 0.5 } ],
-            [ { x: 0.1, y: 0.1 }, { x: 0.9, y: 0.1 }, { x: 0.9, y: 0.9 }, { x: 0.1, y: 0.9 } ],
-            [ { x: 0.5, y: 0.9 }, { x: 0.2, y: 0.8 }, { x: 0.8, y: 0.7 }, { x: 0.5, y: 0.5 }, { x: 0.2, y: 0.4 }, { x: 0.8, y: 0.2 }, { x: 0.5, y: 0.1 } ]
+            [ { x: 0.1, y: 0.1 }, { x: 0.9, y: 0.1 }, { x: 0.1, y: 0.3 }, { x: 0.8, y: 0.4 }, { x: 0.2, y: 0.3 }, { x: 0.7, y: 0.6 }, { x: 0.9, y: 0.9 } ],
+            [ { x: 0.5, y: 0.9 }, { x: 0.1, y: 0.8 }, { x: 0.9, y: 0.7 }, { x: 0.1, y: 0.5 }, { x: 0.1, y: 0.4 }, { x: 0.9, y: 0.2 }, { x: 0.5, y: 0.1 } ]
         ];
         
-        let currentLevel = 0;
-        let isDrawing = false;
-        let gameEnded = false;
-        let pathPoints = [];
-        let playerTrace = [];
-        let aguardandoProximaFase = false;
-
-        // --- Funções de Áudio ---
         function pararMusicas() {
             backgroundMusic.stop();
             victorySound.stop();
             defeatSound.stop();
         }
 
-        // --- Funções do Jogo ---
         function resetGame() {
             gameEnded = false;
-            aguardandoProximaFase = false;
             isDrawing = false;
             playerTrace = [];
             hideMessages();
@@ -163,8 +171,7 @@
 
                 if (currentLevel < levels.length - 1) {
                     showMessage(levelCompleteMessage);
-                    currentLevel++;
-                    aguardandoProximaFase = true; 
+                    restartButton.textContent = "Próxima Fase";
                 } else {
                     showMessage(winMessage);
                     restartButton.textContent = "Jogar Desde o Início";
@@ -299,19 +306,39 @@
 
         // --- Event Listeners ---
         window.addEventListener('resize', resizeCanvas);
+        
         restartButton.addEventListener('click', () => {
-            if (restartButton.textContent.includes("Início")) {
+            const buttonText = restartButton.textContent;
+            if (buttonText.includes("Próxima Fase")) {
+                currentLevel++;
+                resetGame();
+            } else if (buttonText.includes("Início")) {
                 currentLevel = 0;
-            }
-            resetGame();
-        });
-
-        // Evento 'ended' robusto para a vitória
-        victorySound.addEventListener('ended', () => {
-            if (aguardandoProximaFase) {
+                resetGame();
+            } else { // "Jogar de Novo"
                 resetGame();
             }
         });
+
+        function setDifficulty(difficulty) {
+            document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
+            if (difficulty === 'easy') {
+                PATH_WIDTH = 150;
+                easyBtn.classList.add('active');
+            } else if (difficulty === 'medium') {
+                PATH_WIDTH = 50;
+                mediumBtn.classList.add('active');
+            } else if (difficulty === 'hard') {
+                PATH_WIDTH = 25;
+                hardBtn.classList.add('active');
+            }
+            currentLevel = 0;
+            resetGame();
+        }
+
+        easyBtn.addEventListener('click', () => setDifficulty('easy'));
+        mediumBtn.addEventListener('click', () => setDifficulty('medium'));
+        hardBtn.addEventListener('click', () => setDifficulty('hard'));
 
         canvas.addEventListener('mousedown', handleStart);
         canvas.addEventListener('mousemove', handleMove);
@@ -322,6 +349,7 @@
         canvas.addEventListener('touchend', handleEnd);
         canvas.addEventListener('touchcancel', handleEnd);
 
+        // --- Initial Load ---
         resizeCanvas();
     </script>
 </body>
