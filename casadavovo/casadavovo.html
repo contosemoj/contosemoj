@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Chapeuzinho Vermelho</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.5.0"></script>
+    
+    <style>
+        body {
+            font-family: 'Fredoka One', cursive;
+            touch-action: none; /* Disable scrolling on touch devices */
+        }
+        canvas {
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            border-radius: 1rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .message-box {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        /* Esconde os players de MIDI */
+        midi-player {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-red-100 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-2xl text-center mb-4">
+        <h1 class="text-3xl md:text-5xl text-red-700">Fase <span id="level-display">1</span>: Leve a Chapeuzinho até a Vovó!</h1>
+        <p class="text-red-500 text-lg md:text-xl mt-2">Siga o caminho de terra e não entre na floresta!</p>
+    </div>
+
+    <div id="game-container" class="relative w-full max-w-2xl aspect-[4/3]">
+        <canvas id="gameCanvas"></canvas>
+        
+        <div id="gameOverMessage" class="message-box absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center text-white p-4 rounded-2xl opacity-0 transform scale-95 pointer-events-none">
+            <div class="text-7xl">🐺</div>
+            <h2 class="text-4xl mt-4">O Lobo te pegou!</h2>
+            <p class="text-xl mt-2">Vamos tentar de novo?</p>
+        </div>
+
+        <div id="levelCompleteMessage" class="message-box absolute inset-0 bg-blue-500 bg-opacity-80 flex flex-col items-center justify-center text-white p-4 rounded-2xl opacity-0 transform scale-95 pointer-events-none">
+            <div class="text-7xl">👍</div>
+            <h2 class="text-4xl mt-4">Fase Completa!</h2>
+            <p class="text-xl mt-2">A preparar a próxima fase...</p>
+        </div>
+
+        <div id="winMessage" class="message-box absolute inset-0 bg-yellow-400 bg-opacity-80 flex flex-col items-center justify-center text-yellow-900 p-4 rounded-2xl opacity-0 transform scale-95 pointer-events-none">
+            <div class="text-7xl">🎉</div>
+            <h2 class="text-4xl mt-4">Você Conseguiu!</h2>
+            <p class="text-xl mt-2">A vovó ficou muito feliz!</p>
+        </div>
+    </div>
+    
+    <button id="restartButton" class="mt-6 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full text-2xl shadow-lg transform hover:scale-105 transition-transform">
+        Jogar de Novo
+    </button>
+
+    <midi-player id="background-music" src="background.mid" loop></midi-player>
+    <midi-player id="victory-sound" src="vitoria.mid"></midi-player>
+    <midi-player id="defeat-sound" src="derrota.mid"></midi-player>
+
+    <script>
+        // --- Game Setup ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        const gameContainer = document.getElementById('game-container');
+        const gameOverMessage = document.getElementById('gameOverMessage');
+        const levelCompleteMessage = document.getElementById('levelCompleteMessage');
+        const winMessage = document.getElementById('winMessage');
+        const restartButton = document.getElementById('restartButton');
+        const levelDisplay = document.getElementById('level-display');
+
+        // --- Audio Setup ---
+        const backgroundMusic = document.getElementById('background-music');
+        const victorySound = document.getElementById('victory-sound');
+        const defeatSound = document.getElementById('defeat-sound');
+        let audioStarted = false;
+
+        // --- Game Colors & Settings ---
+        const FOREST_COLOR = '#228B22'; // Forest Green
+        const PATH_COLOR = '#D2B48C';   // Tan
+        const HOUSE_COLOR = '#A52A2A';  // Brown
+        const ROOF_COLOR = '#8B4513';   // SaddleBrown
+        const TRACE_COLOR = 'rgba(255, 99, 71, 0.5)'; // Tomato color for trace
+        const PATH_WIDTH = 50; 
+
+        // --- Level Data (sem alterações) ---
+        const levels = [
+            [ { x: 0.1, y: 0.85 }, { x: 0.3, y: 0.7 }, { x: 0.4, y: 0.4 }, { x: 0.7, y: 0.25 }, { x: 0.85, y: 0.15 } ],
+            [ { x: 0.1, y: 0.85 }, { x: 0.4, y: 0.75 }, { x: 0.2, y: 0.5 }, { x: 0.6, y: 0.4 }, { x: 0.8, y: 0.2 }, { x: 0.85, y: 0.15 } ],
+            [ { x: 0.1, y: 0.85 }, { x: 0.2, y: 0.4 }, { x: 0.6, y: 0.5 }, { x: 0.7, y: 0.2 }, { x: 0.4, y: 0.1 }, { x: 0.85, y: 0.15 } ],
+            [ { x: 0.1, y: 0.85 }, { x: 0.5, y: 0.7 }, { x: 0.5, y: 0.3 }, { x: 0.85, y: 0.15 } ],
+            [ { x: 0.1, y: 0.85 }, { x: 0.5, y: 0.8 }, { x: 0.7, y: 0.5 }, { x: 0.5, y: 0.2 }, { x: 0.3, y: 0.4 }, { x: 0.85, y: 0.15 } ],
+            [ { x: 0.1, y: 0.85 }, { x: 0.8, y: 0.7 }, { x: 0.2, y: 0.5 }, { x: 0.8, y: 0.3 }, { x: 0.85, y: 0.15 } ],
+            [ { x: 0.15, y: 0.85 }, { x: 0.8, y: 0.7 }, { x: 0.2, y: 0.3 }, { x: 0.8, y: 0.2 }, { x: 0.15, y: 0.15 } ],
+            [ { x: 0.5, y: 0.1 }, { x: 0.2, y: 0.25 }, { x: 0.8, y: 0.5 }, { x: 0.2, y: 0.75 }, { x: 0.5, y: 0.9 } ],
+            [ { x: 0.9, y: 0.85 }, { x: 0.9, y: 0.5 }, { x: 0.2, y: 0.5 }, { x: 0.2, y: 0.2 }, { x: 0.1, y: 0.1 } ],
+            [ { x: 0.9, y: 0.1 }, { x: 0.9, y: 0.9 }, { x: 0.1, y: 0.9 }, { x: 0.1, y: 0.1 }, { x: 0.7, y: 0.2 }, { x: 0.7, y: 0.7 }, { x: 0.3, y: 0.7 }, { x: 0.3, y: 0.3 }, { x: 0.5, y: 0.5 } ],
+            [ { x: 0.1, y: 0.1 }, { x: 0.9, y: 0.1 }, { x: 0.9, y: 0.9 }, { x: 0.1, y: 0.9 } ],
+            [ { x: 0.5, y: 0.9 }, { x: 0.2, y: 0.8 }, { x: 0.8, y: 0.7 }, { x: 0.5, y: 0.5 }, { x: 0.2, y: 0.4 }, { x: 0.8, y: 0.2 }, { x: 0.5, y: 0.1 } ]
+        ];
+        let currentLevel = 0;
+        let isDrawing = false;
+        let gameEnded = false;
+        let pathPoints = [];
+        let playerTrace = [];
+
+        // --- Funções de Áudio Melhoradas ---
+
+        function pararMusicas() {
+            backgroundMusic.stop();
+            victorySound.stop();
+            defeatSound.stop();
+        }
+
+        // --- Funções do Jogo ---
+
+        function resetGame() {
+            gameEnded = false;
+            isDrawing = false;
+            playerTrace = [];
+            hideMessages();
+            loadLevel(currentLevel);
+            restartButton.textContent = "Jogar de Novo";
+            
+            pararMusicas();
+            if (audioStarted) {
+                backgroundMusic.start();
+            }
+        }
+
+        function handleMove(e) {
+            e.preventDefault();
+            if (!isDrawing || gameEnded) return;
+
+            const { x, y } = getEventCoords(e);
+            drawScene();
+            const location = checkPixel(x, y);
+            playerTrace.push({ x, y });
+            drawPlayerTrace();
+
+            if (location === 'forest') {
+                gameEnded = true;
+                isDrawing = false;
+                pararMusicas(); // Garante que tudo para antes
+                defeatSound.start();
+                showMessage(gameOverMessage);
+            } else if (location === 'house') {
+                isDrawing = false;
+                gameEnded = true; // Marca o fim do jogo/fase aqui
+                pararMusicas(); // Garante que tudo para antes
+                victorySound.start();
+
+                if (currentLevel < levels.length - 1) {
+                    showMessage(levelCompleteMessage);
+                    currentLevel++;
+                    // O reset será chamado pelo evento 'ended' da música da vitória
+                } else {
+                    showMessage(winMessage);
+                    restartButton.textContent = "Jogar Desde o Início";
+                }
+            }
+        }
+        
+        // --- Funções do Jogo (sem alterações) ---
+        function loadLevel(levelIndex) {
+            const w = canvas.width;
+            const h = canvas.height;
+            pathPoints = levels[levelIndex].map(p => ({ x: p.x * w, y: p.y * h }));
+            levelDisplay.textContent = levelIndex + 1;
+            drawScene();
+        }
+
+        function resizeCanvas() {
+            const { width, height } = gameContainer.getBoundingClientRect();
+            canvas.width = width;
+            canvas.height = height;
+            loadLevel(currentLevel);
+            drawPlayerTrace();
+        }
+
+        function drawScene() {
+            ctx.fillStyle = FOREST_COLOR;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = PATH_COLOR;
+            ctx.lineWidth = PATH_WIDTH;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            ctx.moveTo(pathPoints[0].x, pathPoints[0].y);
+            for (let i = 1; i < pathPoints.length - 1; i++) {
+                const xc = (pathPoints[i].x + pathPoints[i + 1].x) / 2;
+                const yc = (pathPoints[i].y + pathPoints[i + 1].y) / 2;
+                ctx.quadraticCurveTo(pathPoints[i].x, pathPoints[i].y, xc, yc);
+            }
+            ctx.quadraticCurveTo(pathPoints[pathPoints.length - 2].x, pathPoints[pathPoints.length - 2].y, pathPoints[pathPoints.length - 1].x, pathPoints[pathPoints.length - 1].y);
+            ctx.stroke();
+            const housePos = pathPoints[pathPoints.length - 1];
+            const houseWidth = canvas.width * 0.15;
+            const houseHeight = canvas.height * 0.15;
+            const houseX = housePos.x - houseWidth / 2;
+            const houseY = housePos.y - houseHeight / 2;
+            ctx.fillStyle = HOUSE_COLOR;
+            ctx.fillRect(houseX, houseY + houseHeight * 0.4, houseWidth, houseHeight * 0.6);
+            ctx.fillStyle = ROOF_COLOR;
+            ctx.beginPath();
+            ctx.moveTo(houseX - houseWidth * 0.1, houseY + houseHeight * 0.4);
+            ctx.lineTo(houseX + houseWidth / 2, houseY);
+            ctx.lineTo(houseX + houseWidth * 1.1, houseY + houseHeight * 0.4);
+            ctx.closePath();
+            ctx.fill();
+            const startPoint = pathPoints[0];
+            ctx.font = `${PATH_WIDTH * 0.8}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('👧', startPoint.x, startPoint.y);
+        }
+
+        function drawPlayerTrace() {
+            if (playerTrace.length < 2) return;
+            ctx.strokeStyle = TRACE_COLOR;
+            ctx.lineWidth = 10;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            ctx.moveTo(playerTrace[0].x, playerTrace[0].y);
+            for (let i = 1; i < playerTrace.length; i++) {
+                ctx.lineTo(playerTrace[i].x, playerTrace[i].y);
+            }
+            ctx.stroke();
+        }
+
+        function showMessage(messageElement) {
+            [winMessage, gameOverMessage, levelCompleteMessage].forEach(el => hideMessages(el));
+            messageElement.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+            messageElement.classList.add('opacity-100', 'scale-100');
+        }
+
+        function hideMessages() {
+            [winMessage, gameOverMessage, levelCompleteMessage].forEach(el => {
+                el.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+                el.classList.remove('opacity-100', 'scale-100');
+            });
+        }
+        
+        function checkPixel(x, y) {
+            if (x < 0 || x >= canvas.width || y < 0 || y >= canvas.height) {
+                return 'forest';
+            }
+            const pixelData = ctx.getImageData(x, y, 1, 1).data;
+            if (pixelData[0] < 100 && pixelData[1] > 100 && pixelData[2] < 100) {
+                return 'forest';
+            }
+            const endPoint = pathPoints[pathPoints.length - 1];
+            if (Math.hypot(x - endPoint.x, y - endPoint.y) < PATH_WIDTH / 2) {
+                return 'house';
+            }
+            return 'path';
+        }
+
+        function handleStart(e) {
+            e.preventDefault();
+            if (!audioStarted) {
+                backgroundMusic.start();
+                audioStarted = true;
+            }
+            if (gameEnded) return;
+            const { x, y } = getEventCoords(e);
+            const startPoint = pathPoints[0];
+            const dist = Math.hypot(x - startPoint.x, y - startPoint.y);
+            if (dist < PATH_WIDTH) {
+                isDrawing = true;
+                playerTrace = [{ x, y }];
+            }
+        }
+
+        function handleEnd(e) {
+            e.preventDefault();
+            isDrawing = false;
+        }
+
+        function getEventCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches ? e.touches[0] : null;
+            return {
+                x: (touch ? touch.clientX : e.clientX) - rect.left,
+                y: (touch ? touch.clientY : e.clientY) - rect.top
+            };
+        }
+
+        // --- Event Listeners ---
+        window.addEventListener('resize', resizeCanvas);
+        restartButton.addEventListener('click', () => {
+            if (restartButton.textContent.includes("Início")) {
+                currentLevel = 0;
+            }
+            resetGame();
+        });
+
+        // NOVO EVENT LISTENER: Ouve quando a música de vitória acaba
+        victorySound.addEventListener('ended', () => {
+            // Só avança para a próxima fase se a mensagem de "Fase Completa" estiver visível
+            if (levelCompleteMessage.classList.contains('opacity-100')) {
+                 resetGame();
+            }
+        });
+
+        canvas.addEventListener('mousedown', handleStart);
+        canvas.addEventListener('mousemove', handleMove);
+        canvas.addEventListener('mouseup', handleEnd);
+        canvas.addEventListener('mouseleave', handleEnd);
+        canvas.addEventListener('touchstart', handleStart);
+        canvas.addEventListener('touchmove', handleMove);
+        canvas.addEventListener('touchend', handleEnd);
+        canvas.addEventListener('touchcancel', handleEnd);
+
+        resizeCanvas();
+    </script>
+</body>
+</html>
