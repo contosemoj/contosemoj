@@ -138,7 +138,14 @@
         #mini-game-view { display: flex; justify-content: space-around; align-items: flex-start; width: 100%; max-width: 600px; animation: fadeIn 0.5s ease; gap: 20px; }
         .mini-game-column { display: flex; flex-direction: column; gap: 15px; width: 45%; }
         .choice { background: #fff; border: 2px solid #ddd; border-radius: 15px; padding: clamp(10px, 3vw, 20px); font-size: clamp(2rem, 5vw, 3rem); transition: all 0.2s ease; box-shadow: 0 4px 10px var(--shadow-color); display: flex; align-items: center; justify-content: center; min-height: 80px; }
-        .syllable-choice { cursor: grab; font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 700; }
+        .syllable-choice {
+            cursor: grab;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 700;
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10+ */
+            user-select: none; /* Standard syntax */
+        }
         .syllable-choice:active { cursor: grabbing; }
         .emoji-choice.drag-over { border-color: var(--primary-color); background-color: #e7f3ff; transform: scale(1.05); }
         .choice.dragging { opacity: 0.5; }
@@ -170,9 +177,7 @@
 </head>
 <body>
     <div id="game-container">
-        <!-- Loading Spinner -->
         <div id="loading-overlay" class="loading-overlay hidden"><div class="loader"></div></div>
-        <!-- Modal for Gemini Features -->
         <div id="modal" class="hidden">
             <div class="modal-content">
                 <span class="modal-close">&times;</span>
