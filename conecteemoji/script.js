@@ -1,20 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
     const allPairs = [
-        { id: 'queijo', item: '🐀', target: '🧀', video: 'videos/rato-queijo.mp4', caption: '🐀 👄🧀' },
+        // { id: 'queijo', item: '🐀', target: '🧀', video: 'videos/rato-queijo.mp4', caption: '🐀 👄🧀' },
         { id: 'peixe', item: '🐧', target: '🐟', video: 'videos/pinguim-peixe.mp4', caption: '🐧 👄🐟' },
         { id: 'banana', item: '🐒', target: '🍌', video: 'videos/macaco-banana.mp4', caption: '🐒 👄🍌' },
         { id: 'osso', item: '🐶', target: '🦴', video: 'videos/cao-osso.mp4', caption: '🐶 ❤ 🦴' },
         { id: 'cenoura', item: '🐰', target: '🥕', video: 'videos/coelho-cenoura.mp4', caption: '🐰 👄🥕' },
         { id: 'mel', item: '🐝', target: '🍯', video: 'videos/abelha-mel.mp4', caption: '🐝 👄🍯' },
-        { id: 'mamadeira', item: '👶', target: '🍼', video: 'videos/bebe-mamadeira.mp4', caption: '👶 ​🫴​ 🍼' },
-        { id: 'estrada', item: '🚗', target: '🛣️', video: 'videos/carro-estrada.mp4', caption: '🚗 🚶‍♀️​ 🛣️' },
+        // { id: 'mamadeira', item: '👶', target: '🍼', video: 'videos/bebe-mamadeira.mp4', caption: '👶 ​🫴​ 🍼' },
+        // { id: 'estrada', item: '🚗', target: '🛣️', video: 'videos/carro-estrada.mp4', caption: '🚗 🚶‍♀️​ 🛣️' },
         { id: 'ovo', item: '🐔', target: '🥚', video: 'videos/galinha-ovo.mp4', caption: '🐔 📥 🥚' },
         { id: 'cadeado', item: '🔑', target: '🔒', video: 'videos/chave-cadeado.mp4', caption: '🔑 🔐​🔓 🔒' },
         { id: 'dormir', item: '😴', target: '🛌💤', video: 'videos/sono-dormir.mp4', caption: '😴 🫴​ 🛌💤' },
         { id: 'voou', item: '✈', target: '🛫', video: 'videos/aviao-voou.mp4', caption: '✈️ 🛫' },
         { id: 'basquete', item: '🏀', target: '⛹️‍♀️', video: 'videos/bola-basquete.mp4', caption: '⛹️‍♀️​' },
-        { id: 'dente', item: '🪥', target: '🦷', video: 'videos/escova-dente.mp4', caption: '🪥🦷' },
-        { id: 'praia', item: '​👙​', target: '🏖️', video: 'videos/biquine-praia.mp4', caption: '📥​👙 ➡ 🏖️' },
+        // { id: 'dente', item: '🪥', target: '🦷', video: 'videos/escova-dente.mp4', caption: '🪥🦷' },
+        // { id: 'praia', item: '​👙​', target: '🏖️', video: 'videos/biquine-praia.mp4', caption: '📥​👙 ➡ 🏖️' },
         { id: 'bombeiro', item: '​🧑‍🚒​', target: '​🔥​', video: 'videos/bombeiro-fogo.mp4', caption: '🧑‍🚒 🧯​ 🔥️' },
         { id: 'cientista', item: '​​👨‍🔬', target: '​🔬​', video: 'videos/cientista-microscopio.mp4', caption: '👨‍🔬 👀​​ ‍🔬' },
         { id: 'formiga', item: '​​🐜​', target: '​▪️​', video: 'videos/formiga-pequena.mp4', caption: '​​🐜▪️​' },
@@ -23,8 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		{ id: 'foguete', item: '🚀​', target: '🌕​​​​', video: 'videos/foguete-lua.mp4', caption: '​​🚀 ➡️​ 🌕' },
 		{ id: 'gato', item: '​​​🐈​', target: '🐭​​​​', video: 'videos/gato-rato.mp4', caption: '​​🐈 🏃‍➡️​ 🐭​' },
 		{ id: 'noel', item: '​​​🎅🏽​', target: '🎁​​​​', video: 'videos/noel-presente.mp4', caption: '​​🎅🏽 🫳​🎁' },
-		{ id: 'menina', item: '​​​​👧🏽', target: '🚴🏽‍♀️‍​​​​', video: 'videos/menina-bicicleta.mp4', caption: '​​🎅🏽 🫳​🎁' },
-		{ id: 'veleiro', item: '​​​​⛵​', target: '🏝‍​​​​', video: 'videos/veleiro-ilha.mp4', caption: '​​⛵ ➡️ 🏝‍' }
+		{ id: 'menina', item: '​​​​👧🏽', target: '🚴🏽‍♀️‍​​​​', video: 'videos/menina-bicicleta.mp4', caption: '​​👧🏽 🚴🏽‍♀️' },
+		{ id: 'veleiro', item: '​​​​⛵​', target: '🏝‍​​​​', video: 'videos/veleiro-ilha.mp4', caption: '​​⛵ ➡️ 🏝‍' }.
+		{ id: 'virus', item: '​​​​🦠​', target: '🤧​​​​', video: 'videos/virus-doente.mp4', caption: '​​🦠 🤧​​​​' }
     ];
 
     // --- Elementos do DOM ---
