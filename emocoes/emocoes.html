@@ -75,7 +75,7 @@
             <h2 id="question" class="text-2xl md:text-3xl font-bold text-gray-800 mb-5">Como a pessoa está se sentindo?</h2>
 
             <div class="w-full bg-gray-200 rounded-lg overflow-hidden mb-6 shadow-lg aspect-video">
-                <video id="emotion-video" class="w-full h-full" controls controlsList="nodownload nofullscreen" playsinline autoplay muted loop>
+                <video id="emotion-video" class="w-full h-full" controls controlsList="nodownload nofullscreen" playsinline autoplay loop>
                     Seu navegador não suporta a tag de vídeo.
                 </video>
             </div>
@@ -122,6 +122,10 @@
             const scoreDisplay = document.getElementById('score');
             const finalScoreDisplay = document.getElementById('final-score');
             const restartButton = document.getElementById('restart-button');
+            
+            // --- ALTERAÇÃO 1: VOLUME DO VÍDEO NO MÁXIMO ---
+            videoPlayer.volume = 1.0;
+
             const audios = {
                 feliz: document.getElementById('audio-feliz'),
                 triste: document.getElementById('audio-triste'),
@@ -207,11 +211,9 @@
                 });
             }
 
-            // *** LÓGICA DE VERIFICAÇÃO MODIFICADA ***
             function checkAnswer(selectedEmotion) {
                 const correctEmotion = shuffledVideos[currentVideoIndex].emotion;
 
-                // Se a resposta estiver CORRETA
                 if (selectedEmotion === correctEmotion) {
                     score += 10;
                     updateScore();
@@ -219,7 +221,6 @@
                     if (audios[correctEmotion]) audios[correctEmotion].play();
                     emojiRain(emotions[correctEmotion].emoji);
                     
-                    // Desativa todos os botões e destaca o correto
                     const buttons = emotionChoicesContainer.querySelectorAll('button');
                     buttons.forEach(button => {
                         button.disabled = true;
@@ -232,11 +233,9 @@
 
                     nextButton.classList.remove('hidden');
 
-                // Se a resposta estiver INCORRETA
                 } else {
                     const wrongButton = emotionChoicesContainer.querySelector(`button[data-emotion="${selectedEmotion}"]`);
                     if (wrongButton) {
-                        // Desativa apenas o botão errado e o deixa cinza
                         wrongButton.disabled = true;
                         wrongButton.className = `emoji-btn w-full p-4 rounded-xl shadow-md text-white text-5xl bg-gray-400 cursor-not-allowed`;
                     }
