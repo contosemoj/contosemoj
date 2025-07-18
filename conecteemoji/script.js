@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // { id: 'mamadeira', item: '👶', target: '🍼', video: 'videos/bebe-mamadeira.mp4', caption: '👶 ​🫴​ 🍼' },
         // { id: 'estrada', item: '🚗', target: '🛣️', video: 'videos/carro-estrada.mp4', caption: '🚗 🚶‍♀️​ 🛣️' },
         { id: 'ovo', item: '🐔', target: '🥚', video: 'videos/galinha-ovo.mp4', caption: '🐔 📥 🥚' },
-        { id: 'cadeado', item: '🔑', target: '🔒', video: 'videos/chave-cadeado.mp4', caption: '🔑 🔐​🔓 🔒' },
+        // { id: 'cadeado', item: '🔑', target: '🔒', video: 'videos/chave-cadeado.mp4', caption: '🔑 🔐​🔓 🔒' },
         { id: 'dormir', item: '😴', target: '🛌💤', video: 'videos/sono-dormir.mp4', caption: '😴 🫴​ 🛌💤' },
         { id: 'voou', item: '✈', target: '🛫', video: 'videos/aviao-voou.mp4', caption: '✈️ 🛫' },
         { id: 'basquete', item: '🏀', target: '⛹️‍♀️', video: 'videos/bola-basquete.mp4', caption: '⛹️‍♀️​' },
@@ -25,7 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
 		{ id: 'noel', item: '​​​🎅🏽​', target: '🎁​​​​', video: 'videos/noel-presente.mp4', caption: '​​🎅🏽 🫳​🎁' },
 		{ id: 'menina', item: '​​​​👧🏽', target: '🚴🏽‍♀️‍​​​​', video: 'videos/menina-bicicleta.mp4', caption: '​​👧🏽 🚴🏽‍♀️' },
 		{ id: 'veleiro', item: '​​​​⛵​', target: '🏝‍​​​​', video: 'videos/veleiro-ilha.mp4', caption: '​​⛵ ➡️ 🏝‍' },
-		{ id: 'virus', item: '​​​​🦠​', target: '🤧​​​​', video: 'videos/virus-doente.mp4', caption: '​​🦠 🤧​​​​' }
+		{ id: 'virus', item: '​​​​🦠​', target: '🤧​​​​', video: 'videos/virus-doente.mp4', caption: '​​🦠 🤧​​​​' },
+		{ id: 'frio', item: '​​​​❄️', target: '​​​​🧣', video: 'videos/frio-cachecol.mp4', caption: '​​❄️ 👧🏽👈🏽🧣​​​​' },
+		{ id: 'sol', item: '​​​​☀️', target: '🕶️​​​​', video: 'videos/sol-oculos.mp4', caption: '​​​​​​☀️ 👧🏽👈🏽​​​​🕶️​​​​' },
+		{ id: 'chuva', item: '​​​​🌧️​', target: '☂️​​​​', video: 'videos/chuva-guarda.mp4', caption: '​​🌧️ 👧🏽👈🏽​​​​☂️​​​​' }
     ];
 
     // --- Elementos do DOM ---
