@@ -211,14 +211,19 @@
                 });
             }
 
-            function checkAnswer(selectedEmotion) {
+			function checkAnswer(selectedEmotion) {
                 const correctEmotion = shuffledVideos[currentVideoIndex].emotion;
 
                 if (selectedEmotion === correctEmotion) {
                     score += 10;
                     updateScore();
                     showFeedback('Isso, muito bem!', true);
-                    if (audios[correctEmotion]) audios[correctEmotion].play();
+                    
+                    // --- ALTERAÇÃO 2: GARANTE QUE O ÁUDIO TOQUE DO INÍCIO ---
+                    if (audios[correctEmotion]) {
+                        audios[correctEmotion].currentTime = 0;
+                        audios[correctEmotion].play();
+                    }
                     emojiRain(emotions[correctEmotion].emoji);
                     
                     const buttons = emotionChoicesContainer.querySelectorAll('button');
