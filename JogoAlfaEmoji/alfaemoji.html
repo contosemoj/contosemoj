@@ -308,6 +308,7 @@
         let currentStepInSequence = 0;
         let sequence = [];
         let currentCardIndex = 0;
+        let familiesToReview = new Set(); // MODIFICADO: Rastreia famílias para revisar
         
         // Minigame Variables
         let pairsToMatch = 0;
@@ -336,9 +337,8 @@
         const speech = {
             instance: window.speechSynthesis, enabled: !!window.speechSynthesis, voice: null, voicesLoaded: false,
             init() {
-    if (!this.enabled || this.voicesLoaded) return;
-    // A linha que selecionava a voz foi removida para usar o padrão do sistema.
-    this.voicesLoaded = true;
+                if (!this.enabled || this.voicesLoaded) return;
+                this.voicesLoaded = true;
 			},
             speak(text1, text2) { if (!this.enabled) return; this.instance.cancel(); const u1 = new SpeechSynthesisUtterance(text1); u1.lang = 'pt-BR'; u1.rate = 0.9; if (this.voice) u1.voice = this.voice; u1.onend = () => { if (text2) setTimeout(() => { const u2 = new SpeechSynthesisUtterance(text2); u2.lang = 'pt-BR'; u2.rate = 0.9; if (this.voice) u2.voice = this.voice; this.instance.speak(u2); }, 350); }; this.instance.speak(u1); }
         };
@@ -440,28 +440,48 @@
 
 
         // --- Game Logic Functions ---
-        function saveProgress() { setCookie('alfabetizacaoProgress', JSON.stringify({level: currentLevelIndex, step: currentStepInSequence, card: currentCardIndex}), 365); }
+        function saveProgress() { setCookie('alfabetizacaoProgress', JSON.stringify({level: currentLevelIndex, step: currentStepInSequence, card: currentCardIndex, review: Array.from(familiesToReview)}), 365); }
         function loadProgress() {
             const savedProgress = getCookie('alfabetizacaoProgress');
             if (savedProgress) {
                 try {
                     const p = JSON.parse(savedProgress);
-                    currentLevelIndex = p.level || 0; currentStepInSequence = p.step || 0; currentCardIndex = p.card || 0;
+                    currentLevelIndex = p.level || 0; 
+                    currentStepInSequence = p.step || 0; 
+                    currentCardIndex = p.card || 0;
+                    familiesToReview = new Set(p.review || []);
                     return true;
                 } catch (e) { return false; }
             }
             return false;
         }
 
+        // MODIFICADO: Gera uma sequência adaptativa com base nos erros do aluno.
         function generateSequence(level) {
-            if (level === 0) return [gameData[0].family];
-            const prevSeq = generateSequence(level - 1);
-            return [...prevSeq, gameData[level].family, ...prevSeq];
+            const newSequenceSet = new Set();
+            // Adiciona todas as famílias marcadas para revisão.
+            familiesToReview.forEach(family => newSequenceSet.add(family));
+            // Limpa a lista de revisão, pois elas já estão na nova sequência.
+            familiesToReview.clear();
+            // Adiciona a nova família para o nível atual, se houver.
+            if (level < gameData.length) {
+                newSequenceSet.add(gameData[level].family);
+            }
+            // Converte o conjunto em um array e embaralha para variar a ordem.
+            const finalSequence = Array.from(newSequenceSet);
+            return finalSequence.sort(() => 0.5 - Math.random());
         }
         
         function displayCurrentCard() {
             geminiStoryBtn.classList.add('hidden');
-            const familyData = letterDataMap.get(sequence[currentStepInSequence]);
+            const familyId = sequence[currentStepInSequence];
+            const familyData = letterDataMap.get(familyId);
+            
+            if (!familyData) {
+                console.error("Dados da família não encontrados para a sequência:", sequence, "passo:", currentStepInSequence);
+                endGame();
+                return;
+            }
             const card = familyData.cards[currentCardIndex];
             displayArea.innerHTML = `<div class="card"><div class="syllable">${card.syllable}</div><div class="emoji">${card.emoji}</div><div class="word">${card.word}</div><button id="suggest-words-btn">✨</button></div>`;
             document.getElementById('suggest-words-btn').addEventListener('click', suggestWords);
@@ -472,7 +492,8 @@
         function updateProgress() {
             if (gameState === 'LEARNING') {
                 const familyData = letterDataMap.get(sequence[currentStepInSequence]);
-                progressIndicator.innerHTML = `Nível: <strong>${gameData[currentLevelIndex].letter}</strong> (Passo ${currentStepInSequence + 1}/${sequence.length} | Carta ${currentCardIndex + 1}/${familyData.cards.length})`;
+                // MODIFICADO: O progresso agora mostra o passo atual na sequência (que pode incluir revisões).
+                progressIndicator.innerHTML = `Nível: <strong>${gameData[currentLevelIndex].letter}</strong> (Passo ${currentStepInSequence + 1}/${sequence.length}) | Carta ${currentCardIndex + 1}/${familyData.cards.length}`;
             } else if (gameState === 'MINI_GAME') {
                 progressIndicator.innerHTML = `Minijogo: <strong>Rodada ${currentRound} de ${totalRounds}</strong>`;
             }
@@ -493,8 +514,9 @@
         }
 
         function previousStep() {
-            if (currentCardIndex > 0) currentCardIndex--;
-            else if (currentStepInSequence > 0) {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+            } else if (currentStepInSequence > 0) {
                 currentStepInSequence--;
                 const prevFamilyData = letterDataMap.get(sequence[currentStepInSequence]);
                 currentCardIndex = prevFamilyData.cards.length - 1;
@@ -506,10 +528,15 @@
             gameState = 'MINI_GAME';
             subtitle.textContent = "Arraste a sílaba até a figura!";
             navigation.classList.add('hidden');
-            const totalLearnedSyllables = gameData.slice(0, currentLevelIndex + 1).flatMap(g => g.cards).length;
+            
+            // MODIFICADO: Adiciona a 'família' a cada card para rastreamento de erros.
+            availablePairsForMinigame = gameData.slice(0, currentLevelIndex + 1).flatMap(g => 
+                g.cards.map(card => ({ ...card, family: g.family }))
+            ).sort(() => 0.5 - Math.random());
+            
+            const totalLearnedSyllables = availablePairsForMinigame.length;
             if (totalLearnedSyllables <= 5) totalRounds = 1; else if (totalLearnedSyllables <= 11) totalRounds = 2; else totalRounds = 3;
             currentRound = 1;
-            availablePairsForMinigame = [...gameData.slice(0, currentLevelIndex + 1).flatMap(g => g.cards)].sort(() => 0.5 - Math.random());
             setupMiniGameRound();
         }
 
@@ -523,8 +550,13 @@
             pairsToMatch = selectedPairs.length;
             const shuffle = arr => arr.sort(() => 0.5 - Math.random());
             const emojis = shuffle(selectedPairs.map(p => ({ emoji: p.emoji, word: p.word })));
-            const syllables = shuffle(selectedPairs.map(p => ({ syllable: p.syllable, word: p.word })));
-            displayArea.innerHTML = `<div id="mini-game-view"><div id="syllable-column" class="mini-game-column">${syllables.map((s, i) => `<div id="syllable-${i}" class="choice syllable-choice" draggable="true" data-word="${s.word}">${s.syllable}</div>`).join('')}</div><div id="emoji-column" class="mini-game-column">${emojis.map(e => `<div class="choice emoji-choice" data-word="${e.word}">${e.emoji}</div>`).join('')}</div></div>`;
+            // MODIFICADO: Inclui a família nos dados da sílaba para o elemento do DOM.
+            const syllables = shuffle(selectedPairs.map(p => ({ syllable: p.syllable, word: p.word, family: p.family })));
+            
+            displayArea.innerHTML = `<div id="mini-game-view">
+                <div id="syllable-column" class="mini-game-column">${syllables.map((s, i) => `<div id="syllable-${i}" class="choice syllable-choice" draggable="true" data-word="${s.word}" data-family="${s.family}">${s.syllable}</div>`).join('')}</div>
+                <div id="emoji-column" class="mini-game-column">${emojis.map(e => `<div class="choice emoji-choice" data-word="${e.word}">${e.emoji}</div>`).join('')}</div>
+            </div>`;
             addDragDropListeners();
         }
         
@@ -538,8 +570,8 @@
         }
         
         function handleMiniGameCompletion() {
-             displayArea.innerHTML = `<div class="card" style="width: auto;"><div class="syllable">🏆</div><div class="emoji">🎉</div><div class="word">Nível Completo!</div></div>`;
-             progressIndicator.textContent = "Muito bem!";
+             displayArea.innerHTML = `<div class="card" style="width: auto;"><div class="syllable">🏆</div><div class="emoji">🎉</div><div class="word">Muito bem!</div></div>`;
+             progressIndicator.textContent = "Continue assim!";
              navigation.classList.remove('hidden');
              geminiStoryBtn.classList.remove('hidden');
              nextBtn.textContent = 'Próximo Nível';
@@ -563,14 +595,21 @@
                         e.target.classList.add('correct');
                         pairsToMatch--;
                         if (pairsToMatch === 0) handleRoundCompletion();
-                    } else { playTone(200, 'square', 0.2); }
+                    } else { 
+                        // MODIFICADO: Se errar, adiciona a família à lista de revisão.
+                        const familyToReview = draggedEl.dataset.family;
+                        if (familyToReview && familyToReview !== gameData[currentLevelIndex].family) {
+                            familiesToReview.add(familyToReview);
+                        }
+                        playTone(200, 'square', 0.2); 
+                    }
                 });
             });
         }
         
         function returnToLearning() {
             currentLevelIndex++;
-            if (currentLevelIndex >= gameData.length) {
+            if (currentLevelIndex >= gameData.length && familiesToReview.size === 0) {
                 endGame();
                 return;
             }
@@ -587,7 +626,7 @@
 
         function endGame() {
             displayArea.innerHTML = `<div class="card" style="width: auto;"><div class="syllable">Fim</div><div class="emoji">🎉</div><div class="word">Parabéns!</div></div>`;
-            progressIndicator.textContent = "FIM🎬";
+            progressIndicator.textContent = "VOCÊ COMPLETOU O JOGO!";
             nextBtn.textContent = 'Recomeçar';
             nextBtn.classList.add('completed');
             prevBtn.disabled = true;
@@ -601,13 +640,23 @@
             gameState = 'LEARNING';
             subtitle.textContent = "Ouça e aprenda as sílabas!";
             navigation.classList.remove('hidden');
+            nextBtn.classList.remove('completed');
+            prevBtn.disabled = false;
+
             if (!loadProgress()) {
-                currentLevelIndex = 0; currentStepInSequence = 0; currentCardIndex = 0;
+                currentLevelIndex = 0; 
+                currentStepInSequence = 0; 
+                currentCardIndex = 0;
+                familiesToReview.clear();
             }
+            
             sequence = generateSequence(currentLevelIndex);
+
             if (currentStepInSequence >= sequence.length) {
-                currentStepInSequence = 0; currentCardIndex = 0;
+                currentStepInSequence = 0;
+                currentCardIndex = 0;
             }
+            
             displayCurrentCard();
         }
 
@@ -637,9 +686,6 @@
             if (currentLevelIndex === -1) {
                 firstInteraction = false;
                 eraseCookie('alfabetizacaoProgress');
-                currentLevelIndex = 0;
-                currentStepInSequence = 0;
-                currentCardIndex = 0;
                 startGame();
             } else {
                 nextStep();
