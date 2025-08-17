@@ -132,59 +132,64 @@
         #next-btn.completed { background-color: var(--correct-color); }
         #read-button { background-color: var(--secondary-color); color: #212529; }
         #gemini-story-btn { background: linear-gradient(45deg, #2196F3, #673AB7); color: white; }
+        #restart-btn { background-color: #dc3545; color: white; }
         .hidden { display: none !important; }
 
-        /* Estilos do Minijogo */
-        #mini-game-view { display: flex; justify-content: space-around; align-items: flex-start; width: 100%; max-width: 600px; animation: fadeIn 0.5s ease; gap: 20px; }
-        .mini-game-column { display: flex; flex-direction: column; gap: 15px; width: 45%; }
-        .choice { background: #fff; border: 2px solid #ddd; border-radius: 15px; padding: clamp(10px, 3vw, 20px); font-size: clamp(2rem, 5vw, 3rem); transition: all 0.2s ease; box-shadow: 0 4px 10px var(--shadow-color); display: flex; align-items: center; justify-content: center; min-height: 80px; }
-        .syllable-choice {
-            cursor: grab;
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
-            font-weight: 700;
-            -webkit-user-select: none; /* Safari */
-            -ms-user-select: none; /* IE 10+ */
-            user-select: none; /* Standard syntax */
+        /* --- CSS CORRIGIDO E ADICIONADO --- */
+        #loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex; justify-content: center; align-items: center; z-index: 1000;
+            backdrop-filter: blur(4px);
         }
-        .syllable-choice:active { cursor: grabbing; }
-        .emoji-choice.drag-over { border-color: var(--primary-color); background-color: #e7f3ff; transform: scale(1.05); }
-        .choice.dragging { opacity: 0.5; }
-        .choice.correct { animation: correct-vanish 0.5s forwards; pointer-events: none; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        @keyframes correct-vanish { to { opacity: 0; transform: scale(0.8); } }
-
-        /* --- Gemini Features --- */
-        #suggest-words-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 2rem; cursor: pointer; color: var(--secondary-color); text-shadow: 0 2px 4px var(--shadow-color); padding: 5px; line-height: 1; }
-        .loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); display: flex; justify-content: center; align-items: center; z-index: 100; border-radius: 20px; }
-        .loader { border: 8px solid #f3f3f3; border-radius: 50%; border-top: 8px solid var(--primary-color); width: 60px; height: 60px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        #modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 200; padding: 1rem; box-sizing: border-box; }
-        .modal-content { background: white; padding: 2rem; border-radius: 15px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; text-align: left; position: relative; }
-        .modal-content h3 { color: var(--primary-color); margin-top: 0; }
-        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 2rem; font-weight: bold; cursor: pointer; color: #aaa; }
+        #loading-overlay::after {
+            content: '✨'; font-size: 3.5rem;
+            animation: spin 1.5s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg) scale(0.9); }
+            to { transform: rotate(360deg) scale(1.1); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        #modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex; justify-content: center; align-items: center; z-index: 999;
+            padding: 1rem; animation: fadeIn 0.3s ease;
+        }
+        .modal-content {
+            background: white; padding: 2rem; border-radius: 15px;
+            max-width: 500px; width: 100%; position: relative;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            text-align: left;
+        }
+        .modal-close {
+            position: absolute; top: 10px; right: 15px; font-size: 1.8rem;
+            font-weight: bold; cursor: pointer; border: none; background: none;
+        }
         .suggestion-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 1rem; margin-top: 1rem; }
         .suggestion-item { text-align: center; background: #f8f9fa; padding: 1rem; border-radius: 10px; }
         .suggestion-item .emoji { font-size: 2.5rem; }
         .suggestion-item .word { font-weight: 600; margin-top: 0.5rem; }
+        #read-story-btn { margin-top: 1rem; width: 100%; background-color: var(--secondary-color); padding: 12px; }
 
-        /* --- REGRAS DE RESPONSIVIDADE --- */
-        @media (min-width: 768px) {
-            #game-container { max-width: 700px; padding: 35px; }
-            #display-area { min-height: 400px; }
-            .card { max-width: 320px; }
-        }
+        #mini-game-view { display: flex; justify-content: space-around; width: 100%; align-items: flex-start; }
+        .mini-game-column { display: flex; flex-direction: column; gap: 15px; flex: 1; padding: 10px; }
+        .choice { padding: 20px; border-radius: 12px; font-size: 2em; user-select: none; transition: all 0.2s ease; text-align: center; }
+        .syllable-choice { background-color: #e9ecef; cursor: grab; }
+        .syllable-choice:active { cursor: grabbing; }
+        .syllable-choice.dragging { opacity: 0.5; }
+        .syllable-choice.correct { background-color: var(--correct-color) !important; color: white; cursor: default; }
+        .emoji-choice { background-color: transparent; border: 2px dashed #ccc; font-size: 2.5em; }
+        .emoji-choice.drag-over { border-color: var(--primary-color); background-color: #eef8ff; }
+        .emoji-choice.correct { border-style: solid; border-color: var(--correct-color); background-color: #d4edda; }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <div id="loading-overlay" class="loading-overlay hidden"><div class="loader"></div></div>
-        <div id="modal" class="hidden">
-            <div class="modal-content">
-                <span class="modal-close">&times;</span>
-                <div id="modal-body"></div>
-            </div>
-        </div>
-
         <h1>🔠🕹</h1>
         <p id="subtitle">Ouça e aprenda as sílabas!</p>
         <div id="progress-indicator">A carregar...</div>
@@ -194,6 +199,14 @@
             <button id="read-button">🗣</button>
             <button id="next-btn">⏭</button>
             <button id="gemini-story-btn" class="hidden">✨ Criar História</button>
+        </div>
+    </div>
+    
+    <div id="loading-overlay" class="hidden"></div>
+    <div id="modal" class="hidden">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div id="modal-body"></div>
         </div>
     </div>
 
@@ -255,13 +268,13 @@
             ]},
             { letter: 'O', family: 'O', cards: [{ word: 'Olho', syllable: 'O', emoji: '👁️' }] },
             { letter: 'P', family: 'P', cards: [
-                { word: 'Pão', syllable: 'Pa', emoji: '🍞' }, { word: 'Peixe', syllable: 'Pe', emoji: '🐠' },
+                { word: 'Pato', syllable: 'Pa', emoji: '🦆' }, { word: 'Peixe', syllable: 'Pe', emoji: '🐠' },
                 { word: 'Pipoca', syllable: 'Pi', emoji: '🍿' }, { word: 'Porco', syllable: 'Po', emoji: '🐷' },
                 { word: 'Pudim', syllable: 'Pu', emoji: '🍮' }
             ]},
             { letter: 'Q', family: 'Q', cards: [
                 { word: 'Quadro', syllable: 'Qua', emoji: '🖼️' }, { word: 'Queijo', syllable: 'Que', emoji: '🧀' },
-                { word: 'Quiabo', syllable: 'Qui', emoji: '🥬' }
+                { word: 'Quieto', syllable: 'Qui', emoji: '🤫' }
             ]},
             { letter: 'R', family: 'R', cards: [
                 { word: 'Rato', syllable: 'Ra', emoji: '🐀' }, { word: 'Relógio', syllable: 'Re', emoji: '⏰' },
@@ -278,7 +291,7 @@
                 { word: 'Tigre', syllable: 'Ti', emoji: '🐅' }, { word: 'Tomate', syllable: 'To', emoji: '🍅' },
                 { word: 'Tubarão', syllable: 'Tu', emoji: '🦈' }
             ]},
-            { letter: 'U', family: 'U', cards: [{ word: 'Urso', syllable: 'U', emoji: '🐻' }] },
+            { letter: 'U', family: 'U', cards: [{ word: 'Uva', syllable: 'U', emoji: '🍇' }] },
             { letter: 'V', family: 'V', cards: [
                 { word: 'Vaca', syllable: 'Va', emoji: '🐄' }, { word: 'Vela', syllable: 'Ve', emoji: '🕯️' },
                 { word: 'Violino', syllable: 'Vi', emoji: '🎻' }, { word: 'Vovó', syllable: 'Vo', emoji: '👵' },
@@ -287,7 +300,7 @@
             { letter: 'X', family: 'X', cards: [
                 { word: 'Xadrez', syllable: 'Xa', emoji: '♟️' }, { word: 'Xerife', syllable: 'Xe', emoji: '🤠' },
                 { word: 'Xícara', syllable: 'Xi', emoji: '☕' }, { word: 'Xodó', syllable: 'Xo', emoji: '🥰' },
-                { word: 'Xampu', syllable: 'Xu', emoji: '🧴' }
+                { word: 'Xuxa', syllable: 'Xu', emoji: '👱‍♀️' }
             ]},
             { letter: 'Z', family: 'Z', cards: [
                 { word: 'Zangado', syllable: 'Za', emoji: '😡' }, { word: 'Zebra', syllable: 'Ze', emoji: '🦓' },
@@ -308,7 +321,7 @@
         let currentStepInSequence = 0;
         let sequence = [];
         let currentCardIndex = 0;
-        let familiesToReview = new Set(); // MODIFICADO: Rastreia famílias para revisar
+        let familiesToReview = new Set();
         
         // Minigame Variables
         let pairsToMatch = 0;
@@ -323,7 +336,7 @@
         const prevBtn = document.getElementById('prev-btn');
         const readButton = document.getElementById('read-button');
         const geminiStoryBtn = document.getElementById('gemini-story-btn');
-        const navigation = document.getElementById('navigation');
+		const navigation = document.getElementById('navigation');
         const subtitle = document.getElementById('subtitle');
         const loadingOverlay = document.getElementById('loading-overlay');
         const modal = document.getElementById('modal');
@@ -334,15 +347,41 @@
         let audioCtx;
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
         function playTone(freq, type, duration = 0.1) { if (!audioCtx) return; const osc = audioCtx.createOscillator(); osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime); osc.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration); }
+        
         const speech = {
             instance: window.speechSynthesis, enabled: !!window.speechSynthesis, voice: null, voicesLoaded: false,
             init() {
                 if (!this.enabled || this.voicesLoaded) return;
                 this.voicesLoaded = true;
 			},
-            speak(text1, text2) { if (!this.enabled) return; this.instance.cancel(); const u1 = new SpeechSynthesisUtterance(text1); u1.lang = 'pt-BR'; u1.rate = 0.9; if (this.voice) u1.voice = this.voice; u1.onend = () => { if (text2) setTimeout(() => { const u2 = new SpeechSynthesisUtterance(text2); u2.lang = 'pt-BR'; u2.rate = 0.9; if (this.voice) u2.voice = this.voice; this.instance.speak(u2); }, 350); }; this.instance.speak(u1); }
+            speak(text) {
+                 if (!this.enabled) return; 
+                 this.instance.cancel(); 
+                 const utterance = new SpeechSynthesisUtterance(text); 
+                 utterance.lang = 'pt-BR'; 
+                 utterance.rate = 0.9; 
+                 if (this.voice) utterance.voice = this.voice; 
+                 this.instance.speak(utterance); 
+            }
         };
         if (speech.enabled) speech.instance.onvoiceschanged = () => speech.init();
+
+        function playLocalAudio(syllable, word) {
+            const syllableAudio = new Audio(`audios/${syllable}.mp3`);
+            const wordAudio = new Audio(`audios/${word}.mp3`);
+
+            syllableAudio.play();
+
+            syllableAudio.addEventListener('ended', () => {
+                setTimeout(() => {
+                    wordAudio.play();
+                }, 200);
+            });
+
+            syllableAudio.addEventListener('error', () => console.error(`Erro ao carregar o áudio: audio/${syllable}.mp3`));
+            wordAudio.addEventListener('error', () => console.error(`Erro ao carregar o áudio: audio/${word}.mp3`));
+        }
+
 
         // --- Gemini API Functions ---
         async function callGemini(prompt, jsonSchema = null) {
@@ -356,7 +395,7 @@
                 };
             }
             const apiKey = ""; // Canvas will provide the key
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
             
             try {
                 const response = await fetch(apiUrl, {
@@ -456,18 +495,13 @@
             return false;
         }
 
-        // MODIFICADO: Gera uma sequência adaptativa com base nos erros do aluno.
         function generateSequence(level) {
             const newSequenceSet = new Set();
-            // Adiciona todas as famílias marcadas para revisão.
             familiesToReview.forEach(family => newSequenceSet.add(family));
-            // Limpa a lista de revisão, pois elas já estão na nova sequência.
             familiesToReview.clear();
-            // Adiciona a nova família para o nível atual, se houver.
             if (level < gameData.length) {
                 newSequenceSet.add(gameData[level].family);
             }
-            // Converte o conjunto em um array e embaralha para variar a ordem.
             const finalSequence = Array.from(newSequenceSet);
             return finalSequence.sort(() => 0.5 - Math.random());
         }
@@ -483,7 +517,7 @@
                 return;
             }
             const card = familyData.cards[currentCardIndex];
-            displayArea.innerHTML = `<div class="card"><div class="syllable">${card.syllable}</div><div class="emoji">${card.emoji}</div><div class="word">${card.word}</div><button id="suggest-words-btn">✨</button></div>`;
+            displayArea.innerHTML = `<div class="card"><div class="syllable">${card.syllable}</div><div class="emoji">${card.emoji}</div><div class="word">${card.word}</div><button id="suggest-words-btn" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 1.8rem; cursor: pointer;">✨</button></div>`;
             document.getElementById('suggest-words-btn').addEventListener('click', suggestWords);
             updateProgress();
             saveProgress();
@@ -492,7 +526,6 @@
         function updateProgress() {
             if (gameState === 'LEARNING') {
                 const familyData = letterDataMap.get(sequence[currentStepInSequence]);
-                // MODIFICADO: O progresso agora mostra o passo atual na sequência (que pode incluir revisões).
                 progressIndicator.innerHTML = `Nível: <strong>${gameData[currentLevelIndex].letter}</strong> (Passo ${currentStepInSequence + 1}/${sequence.length}) | Carta ${currentCardIndex + 1}/${familyData.cards.length}`;
             } else if (gameState === 'MINI_GAME') {
                 progressIndicator.innerHTML = `Minijogo: <strong>Rodada ${currentRound} de ${totalRounds}</strong>`;
@@ -523,13 +556,12 @@
             }
             displayCurrentCard();
         }
-        
+        		
         function switchToMiniGame() {
             gameState = 'MINI_GAME';
             subtitle.textContent = "Arraste a sílaba até a figura!";
             navigation.classList.add('hidden');
             
-            // MODIFICADO: Adiciona a 'família' a cada card para rastreamento de erros.
             availablePairsForMinigame = gameData.slice(0, currentLevelIndex + 1).flatMap(g => 
                 g.cards.map(card => ({ ...card, family: g.family }))
             ).sort(() => 0.5 - Math.random());
@@ -550,7 +582,6 @@
             pairsToMatch = selectedPairs.length;
             const shuffle = arr => arr.sort(() => 0.5 - Math.random());
             const emojis = shuffle(selectedPairs.map(p => ({ emoji: p.emoji, word: p.word })));
-            // MODIFICADO: Inclui a família nos dados da sílaba para o elemento do DOM.
             const syllables = shuffle(selectedPairs.map(p => ({ syllable: p.syllable, word: p.word, family: p.family })));
             
             displayArea.innerHTML = `<div id="mini-game-view">
@@ -577,31 +608,52 @@
              nextBtn.textContent = 'Próximo Nível';
         }
 
-        function addDragDropListeners() {
+		function addDragDropListeners() {
             document.querySelectorAll('.syllable-choice').forEach(el => {
-                el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', e.target.id); setTimeout(() => e.target.classList.add('dragging'), 0); });
+                el.addEventListener('dragstart', e => { 
+                    e.dataTransfer.setData('text/plain', e.target.id); 
+                    setTimeout(() => e.target.classList.add('dragging'), 0);
+
+                    const syllable = el.textContent.trim();
+                    const syllableAudio = new Audio(`audios/${syllable}.mp3`);
+                    syllableAudio.play().catch(err => console.error("Erro ao tocar sílaba:", err));
+                });
                 el.addEventListener('dragend', e => e.target.classList.remove('dragging'));
             });
+
             document.querySelectorAll('.emoji-choice').forEach(el => {
-                el.addEventListener('dragover', e => { e.preventDefault(); e.target.classList.add('drag-over'); });
+                el.addEventListener('dragover', e => { 
+                    e.preventDefault(); 
+                    e.target.classList.add('drag-over'); 
+                });
                 el.addEventListener('dragleave', e => e.target.classList.remove('drag-over'));
                 el.addEventListener('drop', e => {
-                    e.preventDefault(); initAudio(); e.target.classList.remove('drag-over');
+                    e.preventDefault(); 
+                    initAudio(); 
+                    e.target.classList.remove('drag-over');
+
                     const draggedId = e.dataTransfer.getData('text/plain');
                     const draggedEl = document.getElementById(draggedId);
+
                     if (draggedEl.dataset.word === e.target.dataset.word) {
                         playTone(600, 'sine');
                         draggedEl.classList.add('correct');
                         e.target.classList.add('correct');
+
+                        const word = draggedEl.dataset.word;
+                        const wordAudio = new Audio(`audios/${word}.mp3`);
+                        wordAudio.play().catch(err => console.error("Erro ao tocar palavra:", err));
+
                         pairsToMatch--;
                         if (pairsToMatch === 0) handleRoundCompletion();
                     } else { 
-                        // MODIFICADO: Se errar, adiciona a família à lista de revisão.
                         const familyToReview = draggedEl.dataset.family;
                         if (familyToReview && familyToReview !== gameData[currentLevelIndex].family) {
                             familiesToReview.add(familyToReview);
                         }
-                        playTone(200, 'square', 0.2); 
+                        playTone(200, 'square', 0.2);
+                        const failAudio = new Audio("audios/erro.mp3");
+                        failAudio.play().catch(err => console.error("Erro ao tocar som de falha:", err));
                     }
                 });
             });
@@ -673,7 +725,7 @@
         function triggerSpeech() {
             if (gameState === 'LEARNING') {
                 const card = letterDataMap.get(sequence[currentStepInSequence]).cards[currentCardIndex];
-                speech.speak(card.syllable, card.word);
+                playLocalAudio(card.syllable, card.word);
             }
         }
         
@@ -689,10 +741,10 @@
                 startGame();
             } else {
                 nextStep();
-                if(gameState === 'LEARNING') triggerSpeech();
+                if(gameState === 'LEARNING') setTimeout(triggerSpeech, 300);
             }
         });
-        prevBtn.addEventListener('click', () => { handleInteraction(); previousStep(); triggerSpeech(); });
+        prevBtn.addEventListener('click', () => { handleInteraction(); previousStep(); setTimeout(triggerSpeech, 300); });
         readButton.addEventListener('click', () => { handleInteraction(); triggerSpeech(); });
         geminiStoryBtn.addEventListener('click', generateStory);
         
