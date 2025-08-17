@@ -134,7 +134,6 @@
         #gemini-story-btn { background: linear-gradient(45deg, #2196F3, #673AB7); color: white; }
         .hidden { display: none !important; }
 
-        /* --- CSS DAS MELHORIAS --- */
         #hidden-restart-btn {
             position: absolute;
             top: 15px;
@@ -159,7 +158,6 @@
             font-size: 1.2rem;
         }
 
-        /* --- CSS Adicional --- */
         #loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(255, 255, 255, 0.8);
@@ -215,7 +213,6 @@
 <body>
     <div id="game-container">
         <button id="hidden-restart-btn" title="Reiniciar Jogo">🔄</button>
-
         <h1>🔠🕹</h1>
         <p id="subtitle">Ouça e aprenda as sílabas!</p>
         <div id="progress-indicator">A carregar...</div>
@@ -373,7 +370,19 @@
         
         // Audio & Speech
         let audioCtx;
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        
+        // --- FUNÇÃO DE ÁUDIO MELHORADA PARA IPAD ---
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            // Para iPads/iPhones, o contexto de áudio pode ser suspenso.
+            // É preciso reativá-lo com uma ação do usuário.
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
         function playTone(freq, type, duration = 0.1) { if (!audioCtx) return; const osc = audioCtx.createOscillator(); osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime); osc.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + duration); }
         
         const speech = {
@@ -678,25 +687,24 @@
             sequence = generateSequence(currentLevelIndex);
             displayCurrentCard();
         }
-
-        // --- FUNÇÕES DE CONTROLE DO JOGO ATUALIZADAS ---
+        
         function endGame() {
             displayArea.innerHTML = `<div class="card" style="width: auto;"><div class="syllable">Fim</div><div class="emoji">🎉</div><div class="word">Parabéns!</div></div>`;
             progressIndicator.textContent = "VOCÊ COMPLETOU O JOGO!";
-            
             navigation.classList.add('hidden');
             playAgainBtn.classList.remove('hidden');
-
             eraseCookie('alfabetizacaoProgress');
-            currentLevelIndex = -1; // Flag para indicar que o jogo acabou
+            currentLevelIndex = -1;
         }
 
+        // --- FUNÇÃO DE REINÍCIO MELHORADA ---
         function resetGame() {
-            eraseCookie('alfabetizacaoProgress');
+            // Adicionado para reativar o áudio no reinício, essencial para iPad/iPhone
+            initAudio(); 
             
+            eraseCookie('alfabetizacaoProgress');
             navigation.classList.remove('hidden');
             playAgainBtn.classList.add('hidden');
-            
             gameState = 'LEARNING';
             currentLevelIndex = 0;
             currentStepInSequence = 0;
@@ -748,7 +756,6 @@
             }
         }
         
-        // --- EVENT LISTENERS ATUALIZADOS ---
         nextBtn.addEventListener('click', () => {
             handleInteraction();
             if (nextBtn.textContent === 'Próximo Nível') {
@@ -762,7 +769,6 @@
         readButton.addEventListener('click', () => { handleInteraction(); triggerSpeech(); });
         geminiStoryBtn.addEventListener('click', generateStory);
 
-        // Listeners para os novos botões de reinício
         hiddenRestartBtn.addEventListener('click', resetGame);
         playAgainBtn.addEventListener('click', resetGame);
         
