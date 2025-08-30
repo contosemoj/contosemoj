@@ -208,6 +208,15 @@
         .emoji-choice { background-color: transparent; border: 2px dashed #ccc; font-size: 2.5em; }
         .emoji-choice.drag-over { border-color: var(--primary-color); background-color: #eef8ff; }
         .emoji-choice.correct { border-style: solid; border-color: var(--correct-color); background-color: #d4edda; }
+        
+        .confirmation-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .btn-confirm { background-color: var(--wrong-color); color: white; }
+        .btn-cancel { background-color: #6c757d; color: white; }
     </style>
 </head>
 <body>
@@ -236,39 +245,31 @@
 
     <script>
         const gameData = [
+            // --- VOGAIS ---
+            // A base da nossa língua. Começamos com os sons mais simples e fundamentais.
             { letter: 'A', family: 'A', cards: [{ word: 'Abelha', syllable: 'A', emoji: '🐝' }] },
+            { letter: 'E', family: 'E', cards: [{ word: 'Elefante', syllable: 'E', emoji: '🐘' }] },
+            { letter: 'I', family: 'I', cards: [{ word: 'Ilha', syllable: 'I', emoji: '🏝️' }] },
+            { letter: 'O', family: 'O', cards: [{ word: 'Olho', syllable: 'O', emoji: '👁️' }] },
+            { letter: 'U', family: 'U', cards: [{ word: 'Uva', syllable: 'U', emoji: '🍇' }] },
+
+            // --- SÍLABAS SIMPLES ---
+            // Famílias silábicas onde o som da consoante é consistente com todas as vogais.
             { letter: 'B', family: 'B', cards: [
                 { word: 'Bala', syllable: 'Ba', emoji: '🍬' }, { word: 'Beijo', syllable: 'Be', emoji: '😘' },
                 { word: 'Biquíni', syllable: 'Bi', emoji: '👙' }, { word: 'Bola', syllable: 'Bo', emoji: '🏀' },
                 { word: 'Buraco', syllable: 'Bu', emoji: '🕳️' }
-            ]},
-            { letter: 'C', family: 'C', cards: [
-                { word: 'Casa', syllable: 'Ca', emoji: '🏠' }, { word: 'Cebola', syllable: 'Ce', emoji: '🧅' },
-                { word: 'Cinema', syllable: 'Ci', emoji: '📽️' }, { word: 'Coração', syllable: 'Co', emoji: '❤️' },
-                { word: 'Curativo', syllable: 'Cu', emoji: '🩹' }
             ]},
             { letter: 'D', family: 'D', cards: [
                 { word: 'Dado', syllable: 'Da', emoji: '🎲' }, { word: 'Dente', syllable: 'De', emoji: '🦷' },
                 { word: 'Dinossauro', syllable: 'Di', emoji: '🦕' }, { word: 'Doce', syllable: 'Do', emoji: '🧁' },
                 { word: 'Ducha', syllable: 'Du', emoji: '🚿' }
             ]},
-             { letter: 'E', family: 'E', cards: [{ word: 'Elefante', syllable: 'E', emoji: '🐘' }] },
             { letter: 'F', family: 'F', cards: [
                 { word: 'Fada', syllable: 'Fa', emoji: '🧚' }, { word: 'Feijão', syllable: 'Fe', emoji: '🫘' },
                 { word: 'Fita', syllable: 'Fi', emoji: '🎀' }, { word: 'Folha', syllable: 'Fo', emoji: '🍃' },
                 { word: 'Futebol', syllable: 'Fu', emoji: '⚽' }
             ]},
-            { letter: 'G', family: 'G', cards: [
-                { word: 'Gato', syllable: 'Ga', emoji: '🐈' }, { word: 'Gelo', syllable: 'Ge', emoji: '🧊' },
-                { word: 'Girassol', syllable: 'Gi', emoji: '🌻' }, { word: 'Gota', syllable: 'Go', emoji: '💧' },
-                { word: 'Gude', syllable: 'Gu', emoji: '🔴' }
-            ]},
-            { letter: 'H', family: 'H', cards: [
-                { word: 'Hambúrguer', syllable: 'Ha', emoji: '🍔' }, { word: 'Helicóptero', syllable: 'He', emoji: '🚁' },
-                { word: 'Hipopótamo', syllable: 'Hi', emoji: '🦛' }, { word: 'Hospital', syllable: 'Ho', emoji: '🏥' },
-                { word: 'Humano', syllable: 'Hu', emoji: '🧑' }
-            ]},
-            { letter: 'I', family: 'I', cards: [{ word: 'Ilha', syllable: 'I', emoji: '🏝️' }] },
             { letter: 'J', family: 'J', cards: [
                 { word: 'Jacaré', syllable: 'Ja', emoji: '🐊' }, { word: 'Jegue', syllable: 'Je', emoji: '🐴' },
                 { word: 'Jipe', syllable: 'Ji', emoji: '🚙' }, { word: 'Joaninha', syllable: 'Jo', emoji: '🐞' },
@@ -289,15 +290,10 @@
                 { word: 'Ninho', syllable: 'Ni', emoji: '🪹' }, { word: 'Noite', syllable: 'No', emoji: '🌃' },
                 { word: 'Nuvem', syllable: 'Nu', emoji: '☁️' }
             ]},
-            { letter: 'O', family: 'O', cards: [{ word: 'Olho', syllable: 'O', emoji: '👁️' }] },
             { letter: 'P', family: 'P', cards: [
                 { word: 'Pato', syllable: 'Pa', emoji: '🦆' }, { word: 'Peixe', syllable: 'Pe', emoji: '🐠' },
                 { word: 'Pipoca', syllable: 'Pi', emoji: '🍿' }, { word: 'Porco', syllable: 'Po', emoji: '🐷' },
                 { word: 'Pudim', syllable: 'Pu', emoji: '🍮' }
-            ]},
-            { letter: 'Q', family: 'Q', cards: [
-                { word: 'Quadro', syllable: 'Qua', emoji: '🖼️' }, { word: 'Queijo', syllable: 'Que', emoji: '🧀' },
-                { word: 'Quieto', syllable: 'Qui', emoji: '🤫' }
             ]},
             { letter: 'R', family: 'R', cards: [
                 { word: 'Rato', syllable: 'Ra', emoji: '🐀' }, { word: 'Relógio', syllable: 'Re', emoji: '⏰' },
@@ -314,21 +310,42 @@
                 { word: 'Tigre', syllable: 'Ti', emoji: '🐅' }, { word: 'Tomate', syllable: 'To', emoji: '🍅' },
                 { word: 'Tubarão', syllable: 'Tu', emoji: '🦈' }
             ]},
-            { letter: 'U', family: 'U', cards: [{ word: 'Uva', syllable: 'U', emoji: '🍇' }] },
             { letter: 'V', family: 'V', cards: [
                 { word: 'Vaca', syllable: 'Va', emoji: '🐄' }, { word: 'Vela', syllable: 'Ve', emoji: '🕯️' },
                 { word: 'Violino', syllable: 'Vi', emoji: '🎻' }, { word: 'Vovó', syllable: 'Vo', emoji: '👵' },
                 { word: 'Vulcão', syllable: 'Vu', emoji: '🌋' }
             ]},
-            { letter: 'X', family: 'X', cards: [
-                { word: 'Xadrez', syllable: 'Xa', emoji: '♟️' }, { word: 'Xerife', syllable: 'Xe', emoji: '🤠' },
-                { word: 'Xícara', syllable: 'Xi', emoji: '☕' }, { word: 'Xodó', syllable: 'Xo', emoji: '🥰' },
-                { word: 'Xuxa', syllable: 'Xu', emoji: '👱‍♀️' }
-            ]},
             { letter: 'Z', family: 'Z', cards: [
                 { word: 'Zangado', syllable: 'Za', emoji: '😡' }, { word: 'Zebra', syllable: 'Ze', emoji: '🦓' },
                 { word: 'Zíper', syllable: 'Zi', emoji: '🤐' }, { word: 'Zoológico', syllable: 'Zo', emoji: '🏞️🐧🐒' },
                 { word: 'Zumbi', syllable: 'Zu', emoji: '🧟' }
+            ]},
+            
+            // --- SÍLABAS COMPLEXAS ---
+            // Famílias que possuem variações de som ou regras especiais.
+            { letter: 'C', family: 'C', cards: [
+                { word: 'Casa', syllable: 'Ca', emoji: '🏠' }, { word: 'Cebola', syllable: 'Ce', emoji: '🧅' },
+                { word: 'Cinema', syllable: 'Ci', emoji: '📽️' }, { word: 'Coração', syllable: 'Co', emoji: '❤️' },
+                { word: 'Curativo', syllable: 'Cu', emoji: '🩹' }
+            ]},
+            { letter: 'G', family: 'G', cards: [
+                { word: 'Gato', syllable: 'Ga', emoji: '🐈' }, { word: 'Gelo', syllable: 'Ge', emoji: '🧊' },
+                { word: 'Girassol', syllable: 'Gi', emoji: '🌻' }, { word: 'Gota', syllable: 'Go', emoji: '💧' },
+                { word: 'Gude', syllable: 'Gu', emoji: '🔴' }
+            ]},
+            { letter: 'Q', family: 'Q', cards: [
+                { word: 'Quadro', syllable: 'Qua', emoji: '🖼️' }, { word: 'Queijo', syllable: 'Que', emoji: '🧀' },
+                { word: 'Quieto', syllable: 'Qui', emoji: '🤫' }
+            ]},
+            { letter: 'H', family: 'H', cards: [
+                { word: 'Hambúrguer', syllable: 'Ha', emoji: '🍔' }, { word: 'Helicóptero', syllable: 'He', emoji: '🚁' },
+                { word: 'Hipopótamo', syllable: 'Hi', emoji: '🦛' }, { word: 'Hospital', syllable: 'Ho', emoji: '🏥' },
+                { word: 'Humano', syllable: 'Hu', emoji: '🧑' }
+            ]},
+            { letter: 'X', family: 'X', cards: [
+                { word: 'Xadrez', syllable: 'Xa', emoji: '♟️' }, { word: 'Xerife', syllable: 'Xe', emoji: '🤠' },
+                { word: 'Xícara', syllable: 'Xi', emoji: '☕' }, { word: 'Xodó', syllable: 'Xo', emoji: '🥰' },
+                { word: 'Xuxa', syllable: 'Xu', emoji: '👱‍♀️' }
             ]}
         ];
 
@@ -696,10 +713,21 @@
             eraseCookie('alfabetizacaoProgress');
             currentLevelIndex = -1;
         }
+        
+        function confirmReset() {
+            const confirmationHtml = `
+                <h3>Tem a certeza?</h3>
+                <p>Todo o seu progresso será perdido. Deseja mesmo recomeçar o jogo do zero?</p>
+                <div class="confirmation-buttons">
+                    <button class="btn-cancel" onclick="closeModal()">Não</button>
+                    <button class="btn-confirm" onclick="resetGame()">Sim, recomeçar</button>
+                </div>
+            `;
+            showModal(confirmationHtml);
+        }
 
-        // --- FUNÇÃO DE REINÍCIO MELHORADA ---
         function resetGame() {
-            // Adicionado para reativar o áudio no reinício, essencial para iPad/iPhone
+            closeModal(); // Garante que a janela de confirmação seja fechada
             initAudio(); 
             
             eraseCookie('alfabetizacaoProgress');
@@ -769,7 +797,7 @@
         readButton.addEventListener('click', () => { handleInteraction(); triggerSpeech(); });
         geminiStoryBtn.addEventListener('click', generateStory);
 
-        hiddenRestartBtn.addEventListener('click', resetGame);
+        hiddenRestartBtn.addEventListener('click', confirmReset);
         playAgainBtn.addEventListener('click', resetGame);
         
         startGame();
