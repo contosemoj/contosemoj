@@ -6,15 +6,15 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'osso', item: '🐶', target: '🦴', video: 'videos/cao-osso.mp4', caption: '🐶 ❤ 🦴', speechPhrase: 'o cachorro gosta do osso' },
         { id: 'cenoura', item: '🐰', target: '🥕', video: 'videos/coelho-cenoura.mp4', caption: '🐰 👄🥕', speechPhrase: 'o coelho come cenoura' },
         { id: 'mel', item: '🐝', target: '🍯', video: 'videos/abelha-mel.mp4', caption: '🐝 👄🍯', speechPhrase: 'a abelha faz mel' },
-        { id: 'mamadeira', item: '👶', target: '🍼', video: 'videos/bebe-mamadeira.mp4', caption: '👶 ​🫴​ 🍼', speechPhrase: 'o bebê quer a mamadeira' },
-        { id: 'estrada', item: '🚗', target: '🛣️', video: 'videos/carro-estrada.mp4', caption: '🚗 🚶‍♀️​ 🛣️', speechPhrase: 'o carro está na estrada' },
+        // { id: 'mamadeira', item: '👶', target: '🍼', video: 'videos/bebe-mamadeira.mp4', caption: '👶 ​🫴​ 🍼', speechPhrase: 'o bebê quer a mamadeira' },
+        // { id: 'estrada', item: '🚗', target: '🛣️', video: 'videos/carro-estrada.mp4', caption: '🚗 🚶‍♀️​ 🛣️', speechPhrase: 'o carro está na estrada' },
         { id: 'ovo', item: '🐔', target: '🥚', video: 'videos/galinha-ovo.mp4', caption: '🐔 📥 🥚', speechPhrase: 'a galinha bota o ovo' },
-        { id: 'cadeado', item: '🔑', target: '🔒', video: 'videos/chave-cadeado.mp4', caption: '🔑 🔐​🔓 🔒', speechPhrase: 'a chave abre o cadeado' },
+        // { id: 'cadeado', item: '🔑', target: '🔒', video: 'videos/chave-cadeado.mp4', caption: '🔑 🔐​🔓 🔒', speechPhrase: 'a chave abre o cadeado' },
         { id: 'dormir', item: '😴', target: '🛌💤', video: 'videos/sono-dormir.mp4', caption: '😴 🫴​ 🛌💤', speechPhrase: 'a pessoa vai dormir na cama' },
         { id: 'voou', item: '✈', target: '🛫', video: 'videos/aviao-voou.mp4', caption: '✈️ 🛫', speechPhrase: 'o avião vai decolar' },
         { id: 'basquete', item: '🏀', target: '⛹️‍♀️', video: 'videos/bola-basquete.mp4', caption: '⛹️‍♀️​', speechPhrase: 'a jogadora joga basquete' },
-        { id: 'dente', item: '🪥', target: '🦷', video: 'videos/escova-dente.mp4', caption: '🪥🦷', speechPhrase: 'a escova limpa o dente' },
-        { id: 'praia', item: '​👙​', target: '🏖️', video: 'videos/biquine-praia.mp4', caption: '📥​👙 ➡ 🏖️', speechPhrase: 'o biquíni é para a praia' },
+        // { id: 'dente', item: '🪥', target: '🦷', video: 'videos/escova-dente.mp4', caption: '🪥🦷', speechPhrase: 'a escova limpa o dente' },
+        // { id: 'praia', item: '​👙​', target: '🏖️', video: 'videos/biquine-praia.mp4', caption: '📥​👙 ➡ 🏖️', speechPhrase: 'o biquíni é para a praia' },
         { id: 'bombeiro', item: '​🧑‍🚒​', target: '​🔥​', video: 'videos/bombeiro-fogo.mp4', caption: '🧑‍🚒 🧯​ 🔥️', speechPhrase: 'o bombeiro apaga o fogo' },
         { id: 'cientista', item: '​​👨‍🔬', target: '​🔬​', video: 'videos/cientista-microscopio.mp4', caption: '👨‍🔬 👀​​ ‍🔬', speechPhrase: 'o cientista usa o microscópio' },
         { id: 'formiga', item: '​​🐜​', target: '​▪️​', video: 'videos/formiga-pequena.mp4', caption: '​​🐜▪️​', speechPhrase: 'a formiga é pequena' },
@@ -55,6 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsOverlay = document.getElementById('settings-overlay');
     const saveSettingsButton = document.getElementById('save-settings-button');
     const micFeedback = document.getElementById('mic-feedback');
+    const speechHintOverlay = document.getElementById('speech-hint-overlay'); // NOVO
+    const speechHintCaption = document.getElementById('speech-hint-caption'); // NOVO
 
     // --- Variáveis de Estado do Jogo ---
     let availablePairs = [];
@@ -257,8 +259,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const recognition = new SpeechRecognition();
         recognition.lang = 'pt-BR';
         recognition.interimResults = false;
+        
+        // Exibe a dica visual e o feedback do microfone
+        speechHintCaption.textContent = pair.caption;
+        speechHintOverlay.style.display = 'flex';
         micFeedback.textContent = `🎙️ Diga: "${pair.speechPhrase}"`;
         micFeedback.style.display = 'block';
+
         recognition.start();
 
         recognition.onresult = (event) => {
@@ -275,6 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 micFeedback.textContent = '👍 Ótimo!';
                 setTimeout(() => {
                     micFeedback.style.display = 'none';
+                    speechHintOverlay.style.display = 'none'; // Esconde a dica
                     proceedToVideo(pair);
                 }, 1500);
             } else {
@@ -284,8 +292,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         recognition.onerror = (event) => {
             micFeedback.textContent = "Houve um erro. Tente novamente.";
-            micFeedback.style.display = 'none';
-            setTimeout(() => proceedToVideo(pair), 2000);
+            setTimeout(() => {
+                micFeedback.style.display = 'none';
+                speechHintOverlay.style.display = 'none'; // Esconde a dica
+                proceedToVideo(pair);
+            }, 2000);
         };
     }
     

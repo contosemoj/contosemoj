@@ -276,3 +276,23 @@ body {
     border-radius: 15px;
     z-index: 1500;
 }
+
+/* NOVO: Estilos para a Dica de Fala com Emojis */
+#speech-hint-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1900; /* Abaixo do menu de config, acima do resto */
+}
+
+#speech-hint-caption {
+    font-size: 8em;
+    color: white;
+    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
+}
