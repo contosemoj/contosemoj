@@ -201,3 +201,78 @@ body {
 #restart-button:hover {
     background-color: #0056b3;
 }
+
+/* Estilos para o Botão e Menu de Configurações */
+#settings-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    font-size: 2.5em;
+    cursor: pointer;
+    z-index: 2100; /* Para ficar acima de tudo */
+}
+
+#settings-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.settings-modal {
+    background-color: white;
+    padding: 30px 40px;
+    border-radius: 20px;
+    text-align: left;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    color: #333;
+}
+
+.settings-modal h2 {
+    text-align: center;
+    margin-top: 0;
+}
+
+.difficulty-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+    font-size: 1.2em;
+}
+
+.difficulty-options label {
+    cursor: pointer;
+}
+
+#save-settings-button {
+    font-size: 1.2em;
+    padding: 10px 25px;
+    cursor: pointer;
+    border-radius: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    margin-top: 30px;
+    width: 100%;
+}
+
+/* Estilo para o Indicador de Microfone */
+#mic-feedback {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2em;
+    color: white;
+    background-color: rgba(255, 0, 0, 0.7);
+    padding: 10px 20px;
+    border-radius: 15px;
+    z-index: 1500;
+}

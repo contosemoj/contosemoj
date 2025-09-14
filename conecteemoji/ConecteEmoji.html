@@ -7,6 +7,22 @@
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="settings-button">⚙️</div>
+
+    <div id="settings-overlay" style="display: none;">
+        <div class="settings-modal">
+            <h2>Dificuldade da Fala</h2>
+            <div class="difficulty-options">
+                <label><input type="radio" name="difficulty" value="1" checked> Nível 1: Desativado</label>
+                <label><input type="radio" name="difficulty" value="2"> Nível 2: Qualquer som</label>
+                <label><input type="radio" name="difficulty" value="3"> Nível 3: Fala parecida</label>
+                <label><input type="radio" name="difficulty" value="4"> Nível 4: Fala correta</label>
+                <label><input type="radio" name="difficulty" value="5"> Nível 5: Fala exata</label>
+            </div>
+            <button id="save-settings-button">Salvar</button>
+        </div>
+    </div>
+
     <div id="start-screen-overlay">
         <div class="start-screen-modal">
             <h1>ConecteEmoji</h1>
@@ -16,12 +32,14 @@
         </div>
     </div>
 
-    <div class="game-area" style="display: none;"> <div class="container">
+    <div class="game-area" style="display: none;">
+        <div class="container">
             <div class="left-side"></div>
             <div class="right-side"></div>
         </div>
         <div id="feedback"></div>
-        </div>
+        <div id="mic-feedback" style="display: none;">🎙️ Ouvindo...</div>
+    </div>
 
     <div id="final-score-overlay" style="display: none;">
         <div class="final-score-modal">
@@ -33,10 +51,10 @@
         </div>
     </div>
 
-<div id="video-overlay" style="display: none;">
-    <video id="video-player" class="video" playsinline></video>
-    <p id="video-caption"></p>
-</div>
+    <div id="video-overlay" style="display: none;">
+        <video id="video-player" class="video" playsinline></video>
+        <p id="video-caption"></p>
+    </div>
 
     <audio id="correctSound" src="correct.mp3"></audio>
     <audio id="wrongSound" src="wrong.mp3"></audio>
