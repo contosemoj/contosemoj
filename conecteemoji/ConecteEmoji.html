@@ -67,6 +67,19 @@
     <audio id="star4Sound" src="4-estrelas.mp3"></audio>
     <audio id="star5Sound" src="5-estrelas.mp3"></audio>
 
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registrado com sucesso: ', registration);
+                })
+                .catch(error => {
+                    console.log('Falha no registro do Service Worker: ', error);
+                });
+        });
+    }
+</script>
     <script src="script.js"></script>
 </body>
 </html>
