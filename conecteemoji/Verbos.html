@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verbos em Ação: Jogo de Completar Frases</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e5e7eb; /* Gray 200 */
+        }
+        .game-card {
+            background-color: #ffffff;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .verb-option {
+            cursor: grab;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .verb-option:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+            box-shadow: 0 0 0 4px #facc15; /* Yellow 400 */
+        }
+        .drop-target {
+            min-width: 100px; /* Ajuste para caber em mobile */
+            min-height: 48px;
+            border: 3px dashed #9ca3af; /* Gray 400 */
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .drop-target.drag-over {
+            border-color: #10b981; /* Emerald 500 */
+            background-color: #ecfdf5; /* Emerald 50 */
+        }
+        .dragged {
+            opacity: 0.5;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .verb-icon {
+                font-size: 3rem; 
+            }
+            .verb-text {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body class="p-4 flex items-center justify-center min-h-screen">
+
+    <div id="game-container" class="w-full max-w-xl mx-auto p-4 md:p-8 rounded-xl game-card flex flex-col gap-8">
+        <h1 class="text-3xl md:text-4xl font-black text-center text-gray-800 mb-4">Verbos em Ação 🧠</h1>
+
+        <!-- Opções de Verbos (Parte Superior) -->
+        <div id="verb-options" class="flex justify-around items-center p-4 bg-yellow-100 rounded-lg shadow-inner flex-wrap gap-4">
+            <!-- As opções serão inseridas aqui via JavaScript -->
+            <div class="text-gray-500 text-lg">Carregando verbos...</div>
+        </div>
+        
+        <!-- Frase com Espaço para Completar (Parte Inferior com Figuras e Legendas) -->
+        <div class="text-center p-6 bg-white rounded-xl border-4 border-gray-100 min-h-[150px] flex items-center justify-center">
+            <div id="sentence-display" class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 flex-wrap text-xl md:text-2xl font-bold text-gray-700">
+                Carregando frase...
+            </div>
+        </div>
+
+        <!-- Botão para Próxima Fase (Inicialmente oculto) -->
+        <button id="next-level-button" 
+                class="hidden w-full py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition-colors"
+                onclick="nextLevel()">
+            Próxima Fase!
+        </button>
+
+    </div>
+
+    <!-- Modal de Sucesso (Exibição do Vídeo) -->
+    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm hidden items-center justify-center p-4 z-50" onclick="hideSuccessModal()">
+        <div class="bg-white p-8 rounded-xl max-w-md w-full text-center shadow-2xl" onclick="event.stopPropagation()">
+            <h2 class="text-4xl font-extrabold text-green-600 mb-4 animate-bounce">CORRETO! 🎉</h2>
+            
+            <!-- Player de Vídeo -->
+            <video id="video-player" controls preload="auto"
+                   class="w-full h-auto rounded-lg mb-6 border-4 border-green-300">
+                Seu navegador não suporta a tag de vídeo.
+            </video>
+
+            <p class="text-xl text-gray-800 font-semibold mb-6">
+                Você acertou! <span id="current-explanation"></span>
+            </p>
+            
+            <button class="w-full py-3 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600 transition-colors" onclick="hideSuccessModal()">
+                Continuar
+            </button>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        // Estrutura de Dados do Jogo
+        // URLs dos vídeos adicionados de acordo com os dados do seu jogo "ConecteEmoji"
+        const levels = [
+            // 1. Pinguim/Peixe
+            {
+                id: "level1_pinguim",
+                subject: { text: "O Pinguim", icon: "🐧" },
+                object: { text: "o Peixe", icon: "🐟" },
+                correctVerb: { text: "come", icon: "👄" },
+                distractorVerb: { text: "voa", icon: "🛫" },
+                answer: "come",
+                explanation: "O verbo correto é 'come', pois Pinguins comem peixe.",
+                videoUrl: "videos/pinguim-peixe.mp4"
+            },
+            // 2. Macaco/Banana
+            {
+                id: "level2_macaco",
+                subject: { text: "O Macaco", icon: "🐒" },
+                object: { text: "a Banana", icon: "🍌" },
+                correctVerb: { text: "come", icon: "👄" },
+                distractorVerb: { text: "dorme", icon: "🛌💤" },
+                answer: "come",
+                explanation: "O verbo correto é 'come', pois Macacos comem bananas.",
+                videoUrl: "videos/macaco-banana.mp4"
+            },
+            // 3. Cachorro/Osso
+            {
+                id: "level3_cachorro",
+                subject: { text: "O Cachorro", icon: "🐶" },
+                object: { text: "o Osso", icon: "🦴" },
+                correctVerb: { text: "gosta", icon: "❤" },
+                distractorVerb: { text: "voa", icon: "🛫" },
+                answer: "gosta",
+                explanation: "O verbo correto é 'gosta', pois Cachorros gostam de ossos.",
+                videoUrl: "videos/cao-osso.mp4"
+            },
+            // 4. Coelho/Cenoura
+            {
+                id: "level4_coelho",
+                subject: { text: "O Coelho", icon: "🐰" },
+                object: { text: "a Cenoura", icon: "🥕" },
+                correctVerb: { text: "come", icon: "👄" },
+                distractorVerb: { text: "dormi", icon: "🛌💤" },
+                answer: "come",
+                explanation: "O verbo correto é 'come', pois Coelhos comem cenouras.",
+                videoUrl: "videos/coelho-cenoura.mp4"
+            },
+            // 5. Abelha/Mel
+            {
+                id: "level5_abelha",
+                subject: { text: "A Abelha", icon: "🐝" },
+                object: { text: "o Mel", icon: "🍯" },
+                correctVerb: { text: "come", icon: "👄" },
+                distractorVerb: { text: "voa", icon: "🛫" },
+                answer: "come",
+                explanation: "O verbo correto é 'come', pois a abelha come o mel.",
+                videoUrl: "videos/abelha-mel.mp4"
+            },
+            // 6. Galinha/Ovo (a galinha bota o ovo)
+            {
+                id: "level6_galinha",
+                subject: { text: "A Galinha", icon: "🐔" },
+                object: { text: "o Ovo", icon: "🥚" },
+                correctVerb: { text: "bota", icon: "📥" },
+                distractorVerb: { text: "come", icon: "👄" },
+                answer: "bota",
+                explanation: "O verbo correto é 'bota', pois a galinha bota o ovo.",
+                videoUrl: "videos/galinha-ovo.mp4"
+            },
+            // 7. Sono/Dormir (a pessoa dorme na cama)
+            {
+                id: "level7_sono",
+                subject: { text: "Estou com sono", icon: "😴" },
+                object: { text: "dormir", icon: "🛌💤" },
+                correctVerb: { text: "quero", icon: "🫴​" },
+                distractorVerb: { text: "come", icon: "👄" },
+                answer: "dorme",
+                explanation: "O verbo correto é 'quero', pois qudno estou com sono eu quero dormir.",
+                videoUrl: "videos/sono-dormir.mp4"
+            },
+            
+            
+            // 10. Bombeiro/Fogo (o bombeiro apaga o fogo)
+            {
+                id: "level10_bombeiro",
+                subject: { text: "O Bombeiro", icon: "🧑‍🚒" },
+                object: { text: "o Fogo", icon: "🔥" },
+                correctVerb: { text: "apaga", icon: "🧯" },
+                distractorVerb: { text: "come", icon: "👄" },
+                answer: "apaga",
+                explanation: "O verbo correto é 'apaga', pois o bombeiro apaga o fogo.",
+                videoUrl: "videos/bombeiro-fogo.mp4"
+            },
+            // 11. Cientista/Microscópio (o cientista olha no microscópio)
+            {
+                id: "level11_cientista",
+                subject: { text: "O Cientista", icon: "👨‍🔬" },
+                object: { text: "o Microscópio", icon: "🔬" },
+                correctVerb: { text: "olha", icon: "👀" },
+                distractorVerb: { text: "guarda", icon: "📦" },
+                answer: "olha",
+                explanation: "O verbo correto é 'olha', pois o cientista olha no microscópio.",
+                videoUrl: "videos/cientista-microscopio.mp4"
+            },
+            // 12. Formiga/Pequena (a formiga é pequena)
+            {
+                id: "level12_formiga",
+                subject: { text: "A Formiga", icon: "🐜" },
+                object: { text: "Pequena", icon: "▪️" },
+                correctVerb: { text: "é", icon: "✅" },
+                distractorVerb: { text: "não é", icon: "❌" },
+                answer: "é",
+                explanation: "O verbo correto é 'é', pois a formiga é pequena (verbo de estado).",
+                videoUrl: "videos/formiga-pequena.mp4"
+            },
+            // 13. Elefante/Grande (o elefante é grande)
+            {
+                id: "level13_elefante",
+                subject: { text: "O Elefante", icon: "🐘" },
+                object: { text: "Grande", icon: "⬛" },
+                correctVerb: { text: "é", icon: "✅" },
+                distractorVerb: { text: "não é", icon: "❌" },
+                answer: "é",
+                explanation: "O verbo correto é 'é', pois o elefante é grande (verbo de estado).",
+                videoUrl: "videos/elefante-grande.mp4"
+            },
+            // 14. Aranha/Teia (a aranha faz a teia)
+            {
+                id: "level14_aranha",
+                subject: { text: "A Aranha", icon: "🕷️" },
+                object: { text: "a Teia", icon: "🕸️" },
+                correctVerb: { text: "faz", icon: "🏭" },
+                distractorVerb: { text: "destrói", icon: "💣" },
+                answer: "faz",
+                explanation: "O verbo correto é 'faz', pois a aranha faz a teia.",
+                videoUrl: "videos/aranha-teia.mp4"
+            },
+            // 15. Foguete/Lua (o foguete vai para a lua)
+            {
+                id: "level15_foguete",
+                subject: { text: "O Foguete", icon: "🚀" },
+                object: { text: "a Lua", icon: "🌕" },
+                correctVerb: { text: "vai", icon: "➡️​" },
+                distractorVerb: { text: "esplode", icon: "💥" },
+                answer: "vai",
+                explanation: "O verbo correto é 'vai', pois o foguete vai para a Lua.",
+                videoUrl: "videos/foguete-lua.mp4"
+            },
+            // 16. Gato/Rato (o gato corre atrás do rato)
+            {
+                id: "level16_gato",
+                subject: { text: "O Gato", icon: "🐈" },
+                object: { text: "o Rato", icon: "🐭" },
+                correctVerb: { text: "corre", icon: "🏃‍➡️" },
+                distractorVerb: { text: "pergunta", icon: "🤷" },
+                answer: "corre",
+                explanation: "O verbo correto é 'corre', pois o gato corre atrás do rato.",
+                videoUrl: "videos/gato-rato.mp4"
+            },
+            // 17. Noel/Presente (papai noel entrega o presente)
+            {
+                id: "level17_noel",
+                subject: { text: "Papai Noel", icon: "🎅🏽" },
+                object: { text: "o Presente", icon: "🎁" },
+                correctVerb: { text: "entrega", icon: "🫳" },
+                distractorVerb: { text: "coloca", icon: "📥" },
+                answer: "entrega",
+                explanation: "O verbo correto é 'entrega', pois o Papai Noel entrega o presente.",
+                videoUrl: "videos/noel-presente.mp4"
+            },
+            
+            // 19. Veleiro/Ilha (o veleiro vai para a ilha)
+            {
+                id: "level19_veleiro",
+                subject: { text: "O Veleiro", icon: "⛵" },
+                object: { text: "a Ilha", icon: "🏝" },
+                correctVerb: { text: "vai", icon: "➡️" },
+                distractorVerb: { text: "coloca", icon: "📥" },
+                answer: "vai",
+                explanation: "O verbo correto é vai', pois o veleiro vai para a ilha.",
+                videoUrl: "videos/veleiro-ilha.mp4"
+            }
+            
+            
+        ];
+
+        let currentLevelIndex = 0;
+        let currentDragElement = null;
+
+        // --- Elementos do DOM ---
+        const verbOptionsContainer = document.getElementById('verb-options');
+        const sentenceDisplay = document.getElementById('sentence-display');
+        const nextLevelButton = document.getElementById('next-level-button');
+        const successModal = document.getElementById('success-modal');
+        const currentExplanation = document.getElementById('current-explanation');
+        const videoPlayer = document.getElementById('video-player'); // Referência ao player de vídeo
+
+        // --- Funções de Drag and Drop (Arrastar e Soltar) ---
+
+        function dragStart(event) {
+            // Guarda o ID do verbo que está sendo arrastado
+            event.dataTransfer.setData("text/plain", event.target.dataset.verb);
+            currentDragElement = event.target;
+            setTimeout(() => {
+                event.target.classList.add('dragged');
+            }, 0);
+        }
+
+        function dragEnd(event) {
+            if (currentDragElement) {
+                currentDragElement.classList.remove('dragged');
+                currentDragElement = null;
+            }
+        }
+
+        function dragOver(event) {
+            event.preventDefault(); // Permite que o elemento seja solto
+            const target = event.target.closest('.drop-target');
+            if (target && target.classList.contains('drop-target')) {
+                target.classList.add('drag-over');
+            }
+        }
+
+        function dragLeave(event) {
+            const target = event.target.closest('.drop-target');
+            if (target) {
+                target.classList.remove('drag-over');
+            }
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            const droppedVerb = event.dataTransfer.getData("text/plain");
+            event.target.classList.remove('drag-over');
+
+            if (event.target.id === 'drop-zone') {
+                checkAnswer(droppedVerb);
+            }
+        }
+
+        // --- Funções do Jogo ---
+
+        function createVerbOption(verb) {
+            const div = document.createElement('div');
+            div.className = 'verb-option p-3 md:p-5 flex flex-col items-center justify-center bg-white rounded-xl shadow-lg hover:shadow-xl transition-all w-32 h-32 touch-target';
+            div.setAttribute('draggable', true);
+            div.dataset.verb = verb.text;
+            div.id = `verb-${verb.text}`;
+            div.ondragstart = dragStart;
+            div.ondragend = dragEnd;
+
+            const iconSpan = document.createElement('span');
+            iconSpan.className = 'verb-icon text-5xl md:text-6xl mb-1';
+            iconSpan.textContent = verb.icon;
+
+            const textSpan = document.createElement('span');
+            textSpan.className = 'verb-text text-lg font-bold text-gray-800';
+            textSpan.textContent = verb.text.toUpperCase();
+
+            div.appendChild(iconSpan);
+            div.appendChild(textSpan);
+            return div;
+        }
+
+        function createSentencePart(part) {
+            // Cria um span que contém o emoji grande e a legenda abaixo dele
+            const span = document.createElement('span');
+            span.className = 'flex flex-col items-center justify-center p-2';
+            
+            const icon = document.createElement('span');
+            icon.className = 'text-5xl md:text-6xl';
+            icon.textContent = part.icon;
+
+            const text = document.createElement('span');
+            text.className = 'text-base font-bold text-gray-800 mt-1';
+            text.textContent = part.text;
+
+            span.appendChild(icon);
+            span.appendChild(text);
+            return span;
+        }
+
+        function loadLevel(index) {
+            if (index >= levels.length) {
+                // Fim do Jogo
+                sentenceDisplay.innerHTML = `
+                    <p class="text-3xl text-purple-600">Fim do Jogo! 🎉</p>
+                    <p class="text-xl text-gray-500 mt-2">Parabéns, você completou todas as fases!</p>
+                `;
+                verbOptionsContainer.innerHTML = '';
+                nextLevelButton.classList.add('hidden');
+                return;
+            }
+
+            const level = levels[index];
+
+            // 1. Configurar o Drop Target na frase
+            const dropZoneHTML = `
+                <span id="drop-zone" 
+                      class="drop-target inline-flex items-center justify-center text-lg md:text-2xl font-extrabold rounded-lg align-middle mx-4 p-3 shadow-inner bg-gray-50">
+                    ?
+                </span>`;
+            
+            // Cria os elementos do sujeito e objeto
+            const subjectElement = createSentencePart(level.subject);
+            const objectElement = createSentencePart(level.object);
+            
+            // Limpa o display e adiciona os elementos
+            sentenceDisplay.innerHTML = '';
+            sentenceDisplay.appendChild(subjectElement);
+            sentenceDisplay.insertAdjacentHTML('beforeend', dropZoneHTML);
+            sentenceDisplay.appendChild(objectElement);
+
+            const dropZone = document.getElementById('drop-zone');
+            dropZone.ondragover = dragOver;
+            dropZone.ondragleave = dragLeave;
+            dropZone.ondrop = drop;
+
+            // 2. Configurar as Opções de Verbos (embaralhadas)
+            verbOptionsContainer.innerHTML = '';
+            const options = [level.correctVerb, level.distractorVerb];
+            
+            // Simples embaralhamento
+            if (Math.random() > 0.5) {
+                options.reverse();
+            }
+
+            options.forEach(verb => {
+                verbOptionsContainer.appendChild(createVerbOption(verb));
+            });
+            
+            // 3. Esconder botão de próxima fase
+            nextLevelButton.classList.add('hidden');
+        }
+
+        function checkAnswer(droppedVerb) {
+            const currentLevel = levels[currentLevelIndex];
+            const dropZone = document.getElementById('drop-zone');
+
+            // Desabilita o drop para evitar múltiplas tentativas
+            dropZone.ondragover = null;
+            dropZone.ondrop = null;
+
+            if (droppedVerb === currentLevel.answer) {
+                // Acerto
+                dropZone.classList.remove('bg-gray-50');
+                dropZone.classList.add('bg-green-500', 'border-green-700', 'text-white', 'shadow-lg');
+                dropZone.textContent = droppedVerb.toUpperCase();
+                
+                showSuccessModal(currentLevel.explanation);
+                nextLevelButton.classList.remove('hidden');
+
+                // Oculta todas as opções de verbo
+                document.querySelectorAll('.verb-option').forEach(el => el.style.opacity = '0.3');
+                
+            } else {
+                // Erro (Feedback visual imediato)
+                dropZone.classList.add('bg-red-400', 'border-red-600', 'text-white');
+                dropZone.textContent = '❌ Errado';
+
+                // Re-habilita o drop após um pequeno atraso
+                setTimeout(() => {
+                    dropZone.textContent = '?';
+                    dropZone.classList.remove('bg-red-400', 'border-red-600', 'text-white');
+                    dropZone.ondragover = dragOver;
+                    dropZone.ondrop = drop;
+                }, 1000);
+            }
+        }
+        
+        function showSuccessModal(explanation) {
+            const currentLevel = levels[currentLevelIndex];
+            currentExplanation.textContent = explanation;
+            
+            // Configura e inicia o player de vídeo
+            videoPlayer.src = currentLevel.videoUrl;
+            videoPlayer.load(); 
+            // Usa setTimeout para garantir que a reprodução comece depois que o modal for exibido (melhor compatibilidade)
+            setTimeout(() => {
+                videoPlayer.play().catch(error => {
+                    console.error("Erro ao tentar reproduzir o vídeo automaticamente:", error);
+                    // O player de vídeo ainda estará visível para o usuário clicar em play manualmente
+                });
+            }, 100); 
+            
+            successModal.classList.remove('hidden');
+            successModal.classList.add('flex');
+        }
+
+        function hideSuccessModal() {
+            // Pausa e reseta o player de vídeo
+            videoPlayer.pause();
+            videoPlayer.currentTime = 0;
+            videoPlayer.src = ""; // Limpa a fonte para liberar recursos
+            
+            successModal.classList.remove('flex');
+            successModal.classList.add('hidden');
+        }
+
+        function nextLevel() {
+            currentLevelIndex++;
+            loadLevel(currentLevelIndex);
+            hideSuccessModal();
+            // Re-exibe todas as opções de verbo
+            document.querySelectorAll('.verb-option').forEach(el => el.style.opacity = '1');
+        }
+
+        // Inicializa o Jogo ao carregar a página
+        window.onload = () => {
+            loadLevel(currentLevelIndex);
+        };
+    </script>
+</body>
+</html>
