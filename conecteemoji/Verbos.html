@@ -115,7 +115,7 @@
                 subject: { text: "O Pinguim", icon: "🐧" },
                 object: { text: "o Peixe", icon: "🐟" },
                 correctVerb: { text: "come", icon: "👄" },
-                distractorVerb: { text: "voa", icon: "✈️" },
+                distractorVerb: { text: "voa", icon: "🛫" },
                 answer: "come",
                 explanation: "O verbo correto é 'come', pois Pinguins comem peixe.",
                 videoUrl: "videos/pinguim-peixe.mp4"
@@ -126,7 +126,7 @@
                 subject: { text: "O Macaco", icon: "🐒" },
                 object: { text: "a Banana", icon: "🍌" },
                 correctVerb: { text: "come", icon: "👄" },
-                distractorVerb: { text: "dorme", icon: "😴" },
+                distractorVerb: { text: "dorme", icon: "🛌💤" },
                 answer: "come",
                 explanation: "O verbo correto é 'come', pois Macacos comem bananas.",
                 videoUrl: "videos/macaco-banana.mp4"
@@ -137,7 +137,7 @@
                 subject: { text: "O Cachorro", icon: "🐶" },
                 object: { text: "o Osso", icon: "🦴" },
                 correctVerb: { text: "gosta", icon: "❤" },
-                distractorVerb: { text: "bebe", icon: "💧" },
+                distractorVerb: { text: "dorme", icon: "🛌💤" },
                 answer: "gosta",
                 explanation: "O verbo correto é 'gosta', pois Cachorros gostam de ossos.",
                 videoUrl: "videos/cao-osso.mp4"
@@ -148,7 +148,7 @@
                 subject: { text: "O Coelho", icon: "🐰" },
                 object: { text: "a Cenoura", icon: "🥕" },
                 correctVerb: { text: "come", icon: "👄" },
-                distractorVerb: { text: "pula", icon: "🐇" },
+                distractorVerb: { text: "voa", icon: "🛫" },
                 answer: "come",
                 explanation: "O verbo correto é 'come', pois Coelhos comem cenouras.",
                 videoUrl: "videos/coelho-cenoura.mp4"
@@ -158,10 +158,10 @@
                 id: "level5_abelha",
                 subject: { text: "A Abelha", icon: "🐝" },
                 object: { text: "o Mel", icon: "🍯" },
-                correctVerb: { text: "faz", icon: "🏭" },
-                distractorVerb: { text: "voa", icon: "🦋" },
-                answer: "faz",
-                explanation: "O verbo correto é 'faz', pois a abelha produz (faz) o mel.",
+                correctVerb: { text: "come", icon: "👄" },
+                distractorVerb: { text: "voa", icon: "🛫" },
+                answer: "Come",
+                explanation: "O verbo correto é 'come', pois a abelha come o mel.",
                 videoUrl: "videos/abelha-mel.mp4"
             },
             // 6. Galinha/Ovo (a galinha bota o ovo)
@@ -169,8 +169,8 @@
                 id: "level6_galinha",
                 subject: { text: "A Galinha", icon: "🐔" },
                 object: { text: "o Ovo", icon: "🥚" },
-                correctVerb: { text: "bota", icon: "🥚" },
-                distractorVerb: { text: "choca", icon: "🐣" },
+                correctVerb: { text: "bota", icon: "📥" },
+                distractorVerb: { text: "dorme", icon: "🛌💤" },
                 answer: "bota",
                 explanation: "O verbo correto é 'bota', pois a galinha bota o ovo.",
                 videoUrl: "videos/galinha-ovo.mp4"
@@ -178,56 +178,36 @@
             // 7. Sono/Dormir (a pessoa dorme na cama)
             {
                 id: "level7_sono",
-                subject: { text: "A Pessoa", icon: "😴" },
-                object: { text: "na Cama", icon: "🛌💤" },
-                correctVerb: { text: "dorme", icon: "😴" },
-                distractorVerb: { text: "levanta", icon: "⬆️" },
-                answer: "dorme",
-                explanation: "O verbo correto é 'dorme', pois a pessoa dorme na cama.",
+                subject: { text: "Sono", icon: "😴" },
+                object: { text: "dormir", icon: "🛌💤" },
+                correctVerb: { text: "quero", icon: "🫴" },
+                distractorVerb: { text: "voa", icon: "🛫" },
+                answer: "quero",
+                explanation: "O verbo correto é 'quero', pois a pessoa com sono quer domir.",
                 videoUrl: "videos/sono-dormir.mp4"
             },
-            // 8. Avião/Decolar (o avião decola)
-            {
-                id: "level8_aviao",
-                subject: { text: "O Avião", icon: "✈" },
-                object: { text: "para Cima", icon: "🛫" },
-                correctVerb: { text: "decola", icon: "🚀" },
-                distractorVerb: { text: "pousa", icon: "⬇️" },
-                answer: "decola",
-                explanation: "O verbo correto é 'decola', pois o avião vai decolar.",
-                videoUrl: "videos/aviao-voou.mp4"
-            },
-            // 9. Basquete (a jogadora joga basquete)
-            {
-                id: "level9_basquete",
-                subject: { text: "A Jogadora", icon: "⛹️‍♀️" },
-                object: { text: "Basquete", icon: "🏀" },
-                correctVerb: { text: "joga", icon: "🥎" },
-                distractorVerb: { text: "chuta", icon: "⚽" },
-                answer: "joga",
-                explanation: "O verbo correto é 'joga', pois a jogadora joga basquete.",
-                videoUrl: "videos/bola-basquete.mp4"
-            },
+           
+           
             // 10. Bombeiro/Fogo (o bombeiro apaga o fogo)
             {
                 id: "level10_bombeiro",
                 subject: { text: "O Bombeiro", icon: "🧑‍🚒" },
                 object: { text: "o Fogo", icon: "🔥" },
                 correctVerb: { text: "apaga", icon: "🧯" },
-                distractorVerb: { text: "acende", icon: "💡" },
+                distractorVerb: { text: "voa", icon: "🛫" },
                 answer: "apaga",
                 explanation: "O verbo correto é 'apaga', pois o bombeiro apaga o fogo.",
                 videoUrl: "videos/bombeiro-fogo.mp4"
             },
-            // 11. Cientista/Microscópio (o cientista usa o microscópio)
+            // 11. Cientista/Microscópio (o cientista olha o microscópio)
             {
                 id: "level11_cientista",
                 subject: { text: "O Cientista", icon: "👨‍🔬" },
                 object: { text: "o Microscópio", icon: "🔬" },
-                correctVerb: { text: "usa", icon: "👓" },
+                correctVerb: { text: "olha", icon: "👀" },
                 distractorVerb: { text: "guarda", icon: "📦" },
-                answer: "usa",
-                explanation: "O verbo correto é 'usa', pois o cientista usa o microscópio.",
+                answer: "olha",
+                explanation: "O verbo correto é 'olha', pois o cientista olha no microscópio.",
                 videoUrl: "videos/cientista-microscopio.mp4"
             },
             // 12. Formiga/Pequena (a formiga é pequena)
@@ -257,7 +237,7 @@
                 id: "level14_aranha",
                 subject: { text: "A Aranha", icon: "🕷️" },
                 object: { text: "a Teia", icon: "🕸️" },
-                correctVerb: { text: "faz", icon: "🏭" },
+                correctVerb: { text: "faz", icon: "🏗️" },
                 distractorVerb: { text: "destrói", icon: "💣" },
                 answer: "faz",
                 explanation: "O verbo correto é 'faz', pois a aranha faz a teia.",
@@ -268,10 +248,10 @@
                 id: "level15_foguete",
                 subject: { text: "O Foguete", icon: "🚀" },
                 object: { text: "a Lua", icon: "🌕" },
-                correctVerb: { text: "chega", icon: "🎯" },
+                correctVerb: { text: "vai", icon: "➡️" },
                 distractorVerb: { text: "cai", icon: "💥" },
-                answer: "chega",
-                explanation: "O verbo correto é 'chega', pois o foguete chega à Lua.",
+                answer: "vai",
+                explanation: "O verbo correto é 'vai', pois o foguete vai ate a Lua.",
                 videoUrl: "videos/foguete-lua.mp4"
             },
             // 16. Gato/Rato (o gato persegue o rato)
@@ -279,10 +259,10 @@
                 id: "level16_gato",
                 subject: { text: "O Gato", icon: "🐈" },
                 object: { text: "o Rato", icon: "🐭" },
-                correctVerb: { text: "persegue", icon: "🏃‍➡️" },
-                distractorVerb: { text: "ignora", icon: "🤷" },
+                correctVerb: { text: "corre", icon: "🏃‍➡️" },
+                distractorVerb: { text: "gosta", icon: "❤" },
                 answer: "persegue",
-                explanation: "O verbo correto é 'persegue', pois o gato persegue o rato.",
+                explanation: "O verbo correto é 'corre', pois o gato corre atrás do rato.",
                 videoUrl: "videos/gato-rato.mp4"
             },
             // 17. Noel/Presente (papai noel entrega o presente)
@@ -291,77 +271,25 @@
                 subject: { text: "Papai Noel", icon: "🎅🏽" },
                 object: { text: "o Presente", icon: "🎁" },
                 correctVerb: { text: "entrega", icon: "🫳" },
-                distractorVerb: { text: "recebe", icon: "📥" },
+                distractorVerb: { text: "come", icon: "👄" },
                 answer: "entrega",
                 explanation: "O verbo correto é 'entrega', pois o Papai Noel entrega o presente.",
                 videoUrl: "videos/noel-presente.mp4"
             },
-            // 18. Menina/Bicicleta (a menina anda de bicicleta)
-            {
-                id: "level18_menina",
-                subject: { text: "A Menina", icon: "👧🏽" },
-                object: { text: "a Bicicleta", icon: "🚴🏽‍♀️" },
-                correctVerb: { text: "anda", icon: "👣" },
-                distractorVerb: { text: "conserta", icon: "🔧" },
-                answer: "anda",
-                explanation: "O verbo correto é 'anda', pois a menina anda de bicicleta.",
-                videoUrl: "videos/menina-bicicleta.mp4"
-            },
+            
             // 19. Veleiro/Ilha (o veleiro navega para a ilha)
             {
                 id: "level19_veleiro",
                 subject: { text: "O Veleiro", icon: "⛵" },
                 object: { text: "a Ilha", icon: "🏝" },
-                correctVerb: { text: "navega", icon: "🌊" },
+                correctVerb: { text: "vai", icon: "➡️" },
                 distractorVerb: { text: "afunda", icon: "⬇️" },
-                answer: "navega",
-                explanation: "O verbo correto é 'navega', pois o veleiro navega para a ilha.",
+                answer: "vai",
+                explanation: "O verbo correto é 'vai', pois o veleiro vai para a ilha.",
                 videoUrl: "videos/veleiro-ilha.mp4"
-            },
-            // 20. Vírus/Doente (o vírus deixa doente)
-            {
-                id: "level20_virus",
-                subject: { text: "O Vírus", icon: "🦠" },
-                object: { text: "Doente", icon: "🤧" },
-                correctVerb: { text: "deixa", icon: "🤒" },
-                distractorVerb: { text: "cura", icon: "🩹" },
-                answer: "deixa",
-                explanation: "O verbo correto é 'deixa', pois o vírus deixa a pessoa doente.",
-                videoUrl: "videos/virus-doente.mp4"
-            },
-            // 21. Frio/Cachecol (no frio usamos cachecol)
-            {
-                id: "level21_frio",
-                subject: { text: "No Frio", icon: "❄️" },
-                object: { text: "Cachecol", icon: "🧣" },
-                correctVerb: { text: "usa", icon: "👈🏽" },
-                distractorVerb: { text: "tira", icon: "🙅" },
-                answer: "usa",
-                explanation: "O verbo correto é 'usa', pois no frio usamos cachecol.",
-                videoUrl: "videos/frio-cachecol.mp4"
-            },
-            // 22. Sol/Óculos (no sol usamos óculos)
-            {
-                id: "level22_sol",
-                subject: { text: "No Sol", icon: "☀️" },
-                object: { text: "Óculos", icon: "🕶️" },
-                correctVerb: { text: "usa", icon: "👈🏽" },
-                distractorVerb: { text: "quebra", icon: "💔" },
-                answer: "usa",
-                explanation: "O verbo correto é 'usa', pois no sol usamos óculos.",
-                videoUrl: "videos/sol-oculos.mp4"
-            },
-            // 23. Chuva/Guarda-chuva (na chuva usamos guarda chuva)
-            {
-                id: "level23_chuva",
-                subject: { text: "Na Chuva", icon: "🌧️" },
-                object: { text: "Guarda-chuva", icon: "☂️" },
-                correctVerb: { text: "usa", icon: "👈🏽" },
-                distractorVerb: { text: "perde", icon: "❓" },
-                answer: "usa",
-                explanation: "O verbo correto é 'usa', pois na chuva usamos guarda-chuva.",
-                videoUrl: "videos/chuva-guarda.mp4"
             }
+            
+            
         ];
 
         let currentLevelIndex = 0;
