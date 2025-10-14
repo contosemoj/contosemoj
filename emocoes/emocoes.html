@@ -109,193 +109,214 @@
     <audio id="audio-calmo" src="calma.mp3" preload="auto"></audio>
     <audio id="audio-erro" src="falha.mp3" preload="auto"></audio>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const startScreen = document.getElementById('start-screen');
-            const mainGame = document.getElementById('main-game');
-            const endScreen = document.getElementById('end-screen');
-            const startButton = document.getElementById('start-button');
-            const videoPlayer = document.getElementById('emotion-video');
-            const emotionChoicesContainer = document.getElementById('emotion-choices');
-            const feedbackText = document.getElementById('feedback-text');
-            const nextButton = document.getElementById('next-button');
-            const scoreDisplay = document.getElementById('score');
-            const finalScoreDisplay = document.getElementById('final-score');
-            const restartButton = document.getElementById('restart-button');
-            
-            // --- ALTERAÇÃO 1: VOLUME DO VÍDEO NO MÁXIMO ---
-            videoPlayer.volume = 1.0;
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const startScreen = document.getElementById('start-screen');
+        const mainGame = document.getElementById('main-game');
+        const endScreen = document.getElementById('end-screen');
+        const startButton = document.getElementById('start-button');
+        const videoPlayer = document.getElementById('emotion-video');
+        const emotionChoicesContainer = document.getElementById('emotion-choices');
+        const feedbackText = document.getElementById('feedback-text');
+        const nextButton = document.getElementById('next-button');
+        const scoreDisplay = document.getElementById('score');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const restartButton = document.getElementById('restart-button');
+        
+        videoPlayer.volume = 1.0;
 
-            const audios = {
-                feliz: document.getElementById('audio-feliz'),
-                triste: document.getElementById('audio-triste'),
-                bravo: document.getElementById('audio-bravo'),
-                calmo: document.getElementById('audio-calmo'),
-                erro: document.getElementById('audio-erro'),
-            };
+        const audios = {
+            feliz: document.getElementById('audio-feliz'),
+            triste: document.getElementById('audio-triste'),
+            bravo: document.getElementById('audio-bravo'),
+            calmo: document.getElementById('audio-calmo'),
+            erro: document.getElementById('audio-erro'),
+        };
 
-            const videos = [
-                { src: 'feliz1.mp4', emotion: 'feliz' },
-                { src: 'triste1.mp4', emotion: 'triste' },
-                { src: 'raiva1.mp4', emotion: 'bravo' },
-                { src: 'calma1.mp4', emotion: 'calmo' },
-                { src: 'feliz2.mp4', emotion: 'feliz' },
-                { src: 'triste2.mp4', emotion: 'triste' },
-                { src: 'raiva2.mp4', emotion: 'bravo' },
-                { src: 'calma2.mp4', emotion: 'calmo' },
-				{ src: 'feliz3.mp4', emotion: 'feliz' },
-                { src: 'triste3.mp4', emotion: 'triste' },
-                { src: 'raiva3.mp4', emotion: 'bravo' }
-            ];
-
-            const emotions = {
-                feliz: { emoji: '😄', label: 'Feliz', color: 'bg-yellow-400', hover: 'bg-yellow-500' },
-                triste: { emoji: '😢', label: 'Triste', color: 'bg-blue-400', hover: 'bg-blue-500' },
-                bravo: { emoji: '😠', label: 'Bravo', color: 'bg-red-500', hover: 'bg-red-600' },
-                calmo: { emoji: '😌', label: 'Calmo', color: 'bg-green-400', hover: 'bg-green-500' }
-            };
-
-            let score = 0;
-            let currentVideoIndex = 0;
-            let shuffledVideos = [];
-
-            function shuffleArray(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-            }
-            
-            function startGame() {
-                score = 0;
-                currentVideoIndex = 0;
-                shuffledVideos = [...videos];
-                shuffleArray(shuffledVideos);
-                
-                startScreen.classList.add('hidden');
-                endScreen.classList.add('hidden');
-                mainGame.classList.remove('hidden');
-                
-                loadNextVideo();
-            }
-
-            function loadNextVideo() {
-                if (currentVideoIndex >= shuffledVideos.length) {
-                    endGame();
-                    return;
-                }
-
-                const currentVideo = shuffledVideos[currentVideoIndex];
-                videoPlayer.src = currentVideo.src;
-                videoPlayer.load();
-                videoPlayer.play().catch(error => {
-                    console.log("A reprodução automática foi bloqueada pelo navegador.");
+        // --- ALTERAÇÃO 1: FUNÇÃO PARA PREPARAR OS ÁUDIOS ---
+        // Esta função tenta tocar e pausar cada som. Isso "desbloqueia" os áudios no iOS.
+        function unlockAudios() {
+            Object.values(audios).forEach(audio => {
+                audio.play().then(() => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }).catch(error => {
+                    console.log('Áudio não pôde ser pré-carregado interativamente.', error);
                 });
-
-                updateScore();
-                resetFeedback();
-                generateEmotionButtons();
-                nextButton.classList.add('hidden');
-            }
-
-            function generateEmotionButtons() {
-                emotionChoicesContainer.innerHTML = '';
-                Object.keys(emotions).forEach(key => {
-                    const emotion = emotions[key];
-                    const button = document.createElement('button');
-                    button.dataset.emotion = key;
-                    button.className = `emoji-btn w-full p-4 rounded-xl shadow-md text-white text-5xl ${emotion.color} hover:${emotion.hover}`;
-                    button.textContent = emotion.emoji;
-                    button.onclick = () => checkAnswer(key);
-                    emotionChoicesContainer.appendChild(button);
-                });
-            }
-
-			function checkAnswer(selectedEmotion) {
-                const correctEmotion = shuffledVideos[currentVideoIndex].emotion;
-
-                if (selectedEmotion === correctEmotion) {
-                    score += 10;
-                    updateScore();
-                    showFeedback('Isso, muito bem!', true);
-                    
-                    // --- ALTERAÇÃO 2: GARANTE QUE O ÁUDIO TOQUE DO INÍCIO ---
-                    if (audios[correctEmotion]) {
-                        audios[correctEmotion].currentTime = 0;
-                        audios[correctEmotion].play();
-                    }
-                    emojiRain(emotions[correctEmotion].emoji);
-                    
-                    const buttons = emotionChoicesContainer.querySelectorAll('button');
-                    buttons.forEach(button => {
-                        button.disabled = true;
-                        if (button.dataset.emotion === correctEmotion) {
-                            button.classList.add('ring-4', 'ring-offset-2', 'ring-green-400', 'scale-110');
-                        } else {
-                            button.classList.add('opacity-50');
-                        }
-                    });
-
-                    nextButton.classList.remove('hidden');
-
-                } else {
-                    const wrongButton = emotionChoicesContainer.querySelector(`button[data-emotion="${selectedEmotion}"]`);
-                    if (wrongButton) {
-                        wrongButton.disabled = true;
-                        wrongButton.className = `emoji-btn w-full p-4 rounded-xl shadow-md text-white text-5xl bg-gray-400 cursor-not-allowed`;
-                    }
-                    
-                    showFeedback('Não foi essa. Tente de novo!', false);
-                    if (audios.erro) audios.erro.play();
-                }
-            }
-
-            function showFeedback(message, isCorrect) {
-                feedbackText.textContent = message;
-                feedbackText.className = `text-2xl font-bold ${isCorrect ? 'correct' : 'incorrect'} fade-in`;
-            }
-
-            function resetFeedback() {
-                feedbackText.textContent = '';
-                feedbackText.className = 'text-2xl font-bold opacity-0';
-            }
-            
-            function updateScore() {
-                scoreDisplay.textContent = `Pontos: ${score}`;
-            }
-
-            function endGame() {
-                mainGame.classList.add('hidden');
-                endScreen.classList.remove('hidden');
-                finalScoreDisplay.textContent = score;
-            }
-
-            function emojiRain(emoji) {
-                const container = document.body;
-                for (let i = 0; i < 50; i++) {
-                    const emojiEl = document.createElement('div');
-                    emojiEl.className = 'emoji-rain';
-                    emojiEl.textContent = emoji;
-                    emojiEl.style.left = `${Math.random() * 100}vw`;
-                    emojiEl.style.animationDuration = `${Math.random() * 2 + 3}s`;
-                    emojiEl.style.animationDelay = `${Math.random() * 2}s`;
-                    container.appendChild(emojiEl);
-                    
-                    emojiEl.addEventListener('animationend', () => {
-                        emojiEl.remove();
-                    });
-                }
-            }
-
-            startButton.addEventListener('click', startGame);
-            restartButton.addEventListener('click', startGame);
-            nextButton.addEventListener('click', () => {
-                currentVideoIndex++;
-                loadNextVideo();
             });
+            // Remove o listener para que isso aconteça apenas uma vez.
+            document.body.removeEventListener('click', unlockAudios);
+        }
+        // Adiciona um listener para a primeira interação do usuário em qualquer lugar da tela.
+        document.body.addEventListener('click', unlockAudios, { once: true });
+
+
+        const videos = [
+            { src: 'feliz1.mp4', emotion: 'feliz' },
+            { src: 'triste1.mp4', emotion: 'triste' },
+            { src: 'raiva1.mp4', emotion: 'bravo' },
+            { src: 'calma1.mp4', emotion: 'calmo' },
+            { src: 'feliz2.mp4', emotion: 'feliz' },
+            { src: 'triste2.mp4', emotion: 'triste' },
+            { src: 'raiva2.mp4', emotion: 'bravo' },
+            { src: 'calma2.mp4', emotion: 'calmo' },
+            { src: 'feliz3.mp4', emotion: 'feliz' },
+            { src: 'triste3.mp4', emotion: 'triste' },
+            { src: 'raiva3.mp4', emotion: 'bravo' }
+        ];
+
+        const emotions = {
+            feliz: { emoji: '😄', label: 'Feliz', color: 'bg-yellow-400', hover: 'bg-yellow-500' },
+            triste: { emoji: '😢', label: 'Triste', color: 'bg-blue-400', hover: 'bg-blue-500' },
+            bravo: { emoji: '😠', label: 'Bravo', color: 'bg-red-500', hover: 'bg-red-600' },
+            calmo: { emoji: '😌', label: 'Calmo', color: 'bg-green-400', hover: 'bg-green-500' }
+        };
+
+        let score = 0;
+        let currentVideoIndex = 0;
+        let shuffledVideos = [];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        
+        function startGame() {
+            score = 0;
+            currentVideoIndex = 0;
+            shuffledVideos = [...videos];
+            shuffleArray(shuffledVideos);
+            
+            startScreen.classList.add('hidden');
+            endScreen.classList.add('hidden');
+            mainGame.classList.remove('hidden');
+            
+            loadNextVideo();
+        }
+
+        function loadNextVideo() {
+            if (currentVideoIndex >= shuffledVideos.length) {
+                endGame();
+                return;
+            }
+
+            const currentVideo = shuffledVideos[currentVideoIndex];
+            videoPlayer.src = currentVideo.src;
+            videoPlayer.load();
+            videoPlayer.play().catch(error => {
+                console.log("A reprodução automática do vídeo foi bloqueada pelo navegador.");
+            });
+
+            updateScore();
+            resetFeedback();
+            generateEmotionButtons();
+            nextButton.classList.add('hidden');
+        }
+
+        function generateEmotionButtons() {
+            emotionChoicesContainer.innerHTML = '';
+            Object.keys(emotions).forEach(key => {
+                const emotion = emotions[key];
+                const button = document.createElement('button');
+                button.dataset.emotion = key;
+                button.className = `emoji-btn w-full p-4 rounded-xl shadow-md text-white text-5xl ${emotion.color} hover:${emotion.hover}`;
+                button.textContent = emotion.emoji;
+                button.onclick = () => checkAnswer(key);
+                emotionChoicesContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedEmotion) {
+            const correctEmotion = shuffledVideos[currentVideoIndex].emotion;
+
+            if (selectedEmotion === correctEmotion) {
+                score += 10;
+                updateScore();
+                showFeedback('Isso, muito bem!', true);
+                
+                if (audios[correctEmotion]) {
+                    audios[correctEmotion].currentTime = 0;
+                    audios[correctEmotion].play();
+                }
+                emojiRain(emotions[correctEmotion].emoji);
+                
+                const buttons = emotionChoicesContainer.querySelectorAll('button');
+                buttons.forEach(button => {
+                    button.disabled = true;
+                    if (button.dataset.emotion === correctEmotion) {
+                        button.classList.add('ring-4', 'ring-offset-2', 'ring-green-400', 'scale-110');
+                    } else {
+                        button.classList.add('opacity-50');
+                    }
+                });
+
+                nextButton.classList.remove('hidden');
+
+            } else {
+                const wrongButton = emotionChoicesContainer.querySelector(`button[data-emotion="${selectedEmotion}"]`);
+                if (wrongButton) {
+                    wrongButton.disabled = true;
+                    wrongButton.className = `emoji-btn w-full p-4 rounded-xl shadow-md text-white text-5xl bg-gray-400 cursor-not-allowed`;
+                }
+                
+                showFeedback('Não foi essa. Tente de novo!', false);
+                // --- ALTERAÇÃO 2: GARANTE QUE O ÁUDIO DE ERRO TOQUE DO INÍCIO ---
+                if (audios.erro) {
+                    audios.erro.currentTime = 0;
+                    audios.erro.play();
+                }
+            }
+        }
+
+        function showFeedback(message, isCorrect) {
+            feedbackText.textContent = message;
+            feedbackText.className = `text-2xl font-bold ${isCorrect ? 'correct' : 'incorrect'} fade-in`;
+        }
+
+        function resetFeedback() {
+            feedbackText.textContent = '';
+            feedbackText.className = 'text-2xl font-bold opacity-0';
+        }
+        
+        function updateScore() {
+            scoreDisplay.textContent = `Pontos: ${score}`;
+        }
+
+        function endGame() {
+            mainGame.classList.add('hidden');
+            endScreen.classList.remove('hidden');
+            finalScoreDisplay.textContent = score;
+        }
+
+        function emojiRain(emoji) {
+            const container = document.body;
+            for (let i = 0; i < 50; i++) {
+                const emojiEl = document.createElement('div');
+                emojiEl.className = 'emoji-rain';
+                emojiEl.textContent = emoji;
+                emojiEl.style.left = `${Math.random() * 100}vw`;
+                emojiEl.style.animationDuration = `${Math.random() * 2 + 3}s`;
+                emojiEl.style.animationDelay = `${Math.random() * 2}s`;
+                container.appendChild(emojiEl);
+                
+                emojiEl.addEventListener('animationend', () => {
+                    emojiEl.remove();
+                });
+            }
+        }
+
+        startButton.addEventListener('click', startGame);
+        restartButton.addEventListener('click', startGame);
+        nextButton.addEventListener('click', () => {
+            currentVideoIndex++;
+            loadNextVideo();
         });
-    </script>
+    });
+</script>
 </body>
 
 </html>
+
 
