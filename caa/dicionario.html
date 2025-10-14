@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dicionário de Emojis e Figuras</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        :root {
+            --bg-color: #f0f7ff;
+            --card-bg: #ffffff;
+            --primary-color: #007bff;
+            --text-color: #333;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --font-family: 'Poppins', sans-serif;
+        }
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 1.5rem;
+            box-sizing: border-box;
+        }
+        #main-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+        }
+        h1 {
+            color: var(--primary-color);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        #json-selector, #search-input {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-family: var(--font-family);
+            font-size: 1rem;
+        }
+        #json-selector {
+            flex-grow: 1;
+            cursor: pointer;
+        }
+        #search-input {
+            flex-grow: 2;
+        }
+        #table-container {
+            overflow-x: auto;
+            max-height: 60vh;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .emoji-cell {
+            font-size: 1.8rem;
+            text-align: center;
+            width: 80px;
+        }
+        .keywords-cell {
+            font-style: italic;
+            color: #555;
+        }
+        .not-found {
+            text-align: center;
+            padding: 2rem;
+            font-weight: 600;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div id="main-container">
+        <h1>Meu Dicionário Dinâmico</h1>
+        <div class="controls">
+            <select id="json-selector">
+                </select>
+            <input type="text" id="search-input" placeholder="Buscar por palavra-chave...">
+        </div>
+        <div id="table-container">
+            <table id="dictionary-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Palavras-chave</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const selector = document.getElementById('json-selector');
+            const searchInput = document.getElementById('search-input');
+            const tableBody = document.getElementById('table-body');
+
+            // Lista dos seus arquivos JSON. Adicione mais arquivos aqui.
+            // O "displayName" é o que aparece no menu.
+            const jsonFiles = [
+                { displayName: 'Emojis', filePath: 'dados/emojis.json' },
+                // { displayName: 'Figuras', filePath: 'dados/figuras.json' }
+                // Ex: { displayName: 'Animais', filePath: 'dados/animais.json' },
+            ];
+
+            let currentData = [];
+
+            // Preenche o menu de seleção
+            jsonFiles.forEach(file => {
+                const option = document.createElement('option');
+                option.value = file.filePath;
+                option.textContent = file.displayName;
+                selector.appendChild(option);
+            });
+
+            // Função para carregar e exibir o JSON
+            async function loadAndDisplayJSON(filePath) {
+                try {
+                    const response = await fetch(filePath);
+                    if (!response.ok) {
+                        throw new Error(`Erro ao carregar o arquivo: ${response.statusText}`);
+                    }
+                    const data = await response.json();
+                    currentData = data;
+                    renderTable(data);
+                } catch (error) {
+                    console.error('Falha ao carregar JSON:', error);
+                    tableBody.innerHTML = `<tr><td colspan="2" class="not-found">Não foi possível carregar os dados. Verifique o caminho do arquivo e a estrutura do JSON.</td></tr>`;
+                }
+            }
+
+            // Função para renderizar a tabela
+            function renderTable(data) {
+                tableBody.innerHTML = ''; // Limpa a tabela
+                if (!data || data.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="2" class="not-found">Nenhum item encontrado.</td></tr>`;
+                    return;
+                }
+
+                data.forEach(item => {
+                    const row = tableBody.insertRow();
+                    const cellItem = row.insertCell(0);
+                    const cellKeywords = row.insertCell(1);
+
+                    // Detecta se é um emoji ou uma imagem
+                    const itemKey = Object.keys(item)[0]; // Assume que o primeiro campo é o emoji/imagem
+                    const keywordsKey = Object.keys(item)[1]; // Assume que o segundo campo são as palavras-chave
+
+                    cellItem.classList.add('emoji-cell');
+                    cellItem.textContent = item[itemKey];
+                    
+                    cellKeywords.classList.add('keywords-cell');
+                    cellKeywords.textContent = Array.isArray(item[keywordsKey]) ? item[keywordsKey].join(', ') : item[keywordsKey];
+                });
+            }
+            
+            // Função de busca
+            function filterData() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                if (!searchTerm) {
+                    renderTable(currentData);
+                    return;
+                }
+
+                const filteredData = currentData.filter(item => {
+                    const keywordsKey = Object.keys(item)[1];
+                    const keywords = Array.isArray(item[keywordsKey]) ? item[keywordsKey].join(' ') : String(item[keywordsKey]);
+                    return keywords.toLowerCase().includes(searchTerm);
+                });
+
+                renderTable(filteredData);
+            }
+
+            // Event Listeners
+            selector.addEventListener('change', (e) => {
+                loadAndDisplayJSON(e.target.value);
+                searchInput.value = ''; // Limpa a busca ao trocar de dicionário
+            });
+
+            searchInput.addEventListener('input', filterData);
+
+            // Carrega o primeiro JSON da lista por padrão
+            if (jsonFiles.length > 0) {
+                loadAndDisplayJSON(jsonFiles[0].filePath);
+            }
+        });
+    </script>
+</body>
+</html>
