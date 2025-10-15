@@ -3,32 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verbos com Vídeo</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Meu Jogo de Verbos com Vídeo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos básicos para garantir a fonte e o fundo */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e5e7eb; /* cinza-200 */
+        }
+        /* Estilos do jogo original para o drag-and-drop */
+        .verb-option {
+            cursor: grab;
+            transition: transform 0.1s, box-shadow 0.1s;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+        }
+        .verb-option:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+            box-shadow: 0 0 0 4px #facc15; /* amarelo-400 */
+        }
+        .drop-target {
+            min-width: 100px;
+            min-height: 48px;
+            border: 3px dashed #9ca3af; /* cinza-400 */
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .drop-target.drag-over {
+            border-color: #10b981; /* esmeralda-500 */
+            background-color: #ecfdf5; /* esmeralda-50 */
+        }
+        .dragged {
+            opacity: 0.5;
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Complete a frase!</h1>
-        <div id="game-container">
-            <div id="question-container">
-                <video id="video-player" width="400" controls autoplay muted loop>
-                    <source src="" type="video/mp4">
-                    O seu navegador não suporta a tag de vídeo.
-                </video>
-                <p id="question-text"></p>
+<body class="p-4 flex items-center justify-center min-h-screen">
+
+    <div id="game-container" class="w-full max-w-2xl mx-auto p-4 md:p-8 rounded-xl bg-white shadow-lg flex flex-col gap-6">
+        
+        <div class="video-container rounded-lg overflow-hidden border-4 border-gray-200">
+            <video id="video-player" controls autoplay muted loop class="w-full h-auto">
+                O seu navegador não suporta a tag de vídeo.
+            </video>
+        </div>
+
+        <h1 class="text-3xl md:text-4xl font-black text-center text-gray-800">Complete a Frase!</h1>
+
+        <div id="verb-options" class="flex justify-around items-center p-4 bg-yellow-100 rounded-lg shadow-inner flex-wrap gap-4">
             </div>
-            <div id="options-container" class="options-grid"></div>
+        
+        <div class="text-center p-6 bg-white rounded-xl border-4 border-gray-100 min-h-[150px] flex items-center justify-center">
+            <div id="sentence-display" class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 flex-wrap text-xl md:text-2xl font-bold text-gray-700">
+                </div>
         </div>
-        <div id="feedback-container">
-            <p id="feedback-text"></p>
-        </div>
-        <div id="score-container">
-            <p>Pontos: <span id="score">0</span></p>
-            <p>Estrelas: <span id="stars"></span></p>
-        </div>
-        <button id="next-button" class="hidden">Próxima Pergunta</button>
+
+        <div id="feedback-container" class="text-center text-2xl font-bold h-8"></div>
+        <button id="next-level-button" class="hidden w-full py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition-colors">
+            Próxima Frase!
+        </button>
+
     </div>
 
-    <script src="script-videos.js"></script>
+    <script type="text/javascript">
+        // --- ESTRUTURA DE DADOS DO JOGO ---
+        // É aqui que adicionas as tuas frases e vídeos!
+        const levels = [
+            {
+                id: "menina_come_salada",
+                videoUrl: "videos/Menina_Comendo_Salada.mp4", // Caminho para o teu vídeo
+                subject: { text: "A Menina", icon: "👧" },
+                object: { text: "Salada", icon: "🥗" },
+                correctVerb: { text: "come", icon: "👄" },
+                distractorVerb: { text: "bebe", icon: "🥤" }
+            },
+            {
+                id: "menino_chuta_bola",
+                videoUrl: "videos/Menino_Bebendo_Suco_de_Uva.mp4",
+                subject: { text: "O Menino", icon: "👦" },
+                object: { text: "suco de uva", icon: "🧃🍇" },
+                correctVerb: { text: "chuta", icon: "👟" },
+                distractorVerb: { text: "lê", icon: "📖" }
+            }
+            // Adiciona mais níveis aqui!
+        ];
+
+        let currentLevelIndex = 0;
+        let currentDragElement = null;
+
+        // --- Elementos do DOM ---
+        const videoPlayer = document.getElementById('video-player');
+        const verbOptionsContainer = document.getElementById('verb-options');
+        const sentenceDisplay = document.getElementById('sentence-display');
+        const nextLevelButton = document.getElementById('next-level-button');
+        const feedbackContainer = document.getElementById('feedback-container');
+
+        // --- Funções de Arrastar e Soltar (Drag and Drop) ---
+        function dragStart(event) {
+            const target = event.target.closest('.verb-option');
+            if (target) {
+                event.dataTransfer.setData("text/plain", target.dataset.verb);
+                currentDragElement = target;
+                setTimeout(() => target.classList.add('dragged'), 0);
+            }
+        }
+
+        function dragEnd() {
+            if (currentDragElement) {
+                currentDragElement.classList.remove('dragged');
+                currentDragElement = null;
+            }
+        }
+
+        function dragOver(event) {
+            event.preventDefault();
+            const target = event.target.closest('.drop-target');
+            if (target) target.classList.add('drag-over');
+        }
+
+        function dragLeave(event) {
+            const target = event.target.closest('.drop-target');
+            if (target) target.classList.remove('drag-over');
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            const droppedVerb = event.dataTransfer.getData("text/plain");
+            const target = event.target.closest('.drop-target');
+            if (target) {
+                target.classList.remove('drag-over');
+                checkAnswer(droppedVerb);
+            }
+        }
+
+        // --- Funções do Jogo ---
+
+        // Cria os blocos de verbos que podem ser arrastados
+        function createVerbOption(verb) {
+            const div = document.createElement('div');
+            div.className = 'verb-option p-3 md:p-5 flex flex-col items-center justify-center bg-white rounded-xl shadow-lg hover:shadow-xl transition-all w-32 h-32';
+            div.setAttribute('draggable', true);
+            div.dataset.verb = verb.text;
+            div.ondragstart = dragStart;
+            div.ondragend = dragEnd;
+
+            div.innerHTML = `
+                <span class="text-5xl md:text-6xl mb-1">${verb.icon}</span>
+                <span class="text-lg font-bold text-gray-800">${verb.text.toUpperCase()}</span>
+            `;
+            return div;
+        }
+
+        // Cria as partes da frase (sujeito e objeto com emojis)
+        function createSentencePart(part) {
+            const span = document.createElement('span');
+            span.className = 'flex flex-col items-center justify-center p-2';
+            span.innerHTML = `
+                <span class="text-5xl md:text-6xl">${part.icon}</span>
+                <span class="text-base font-bold text-gray-800 mt-1">${part.text}</span>
+            `;
+            return span;
+        }
+
+        // Carrega o nível atual do jogo
+        function loadLevel(index) {
+            if (index >= levels.length) {
+                // Fim de Jogo
+                sentenceDisplay.innerHTML = `<p class="text-3xl text-purple-600">Parabéns, você completou o jogo! 🎉</p>`;
+                verbOptionsContainer.innerHTML = '';
+                videoPlayer.style.display = 'none';
+                document.querySelector('h1').style.display = 'none';
+                nextLevelButton.classList.add('hidden');
+                feedbackContainer.innerHTML = '';
+                return;
+            }
+
+            const level = levels[index];
+
+            // Carrega o vídeo
+            videoPlayer.src = level.videoUrl;
+            videoPlayer.load();
+            videoPlayer.play().catch(e => console.log("Autoplay bloqueado pelo navegador."));
+
+            // Limpa o feedback e esconde o botão
+            feedbackContainer.innerHTML = '';
+            nextLevelButton.classList.add('hidden');
+            
+            // Cria a frase com o espaço para soltar
+            const subjectElement = createSentencePart(level.subject);
+            const objectElement = createSentencePart(level.object);
+            const dropZoneHTML = `
+                <span id="drop-zone" class="drop-target inline-flex items-center justify-center text-lg md:text-2xl font-extrabold rounded-lg align-middle mx-4 p-3 shadow-inner bg-gray-50">?</span>`;
+            
+            sentenceDisplay.innerHTML = '';
+            sentenceDisplay.appendChild(subjectElement);
+            sentenceDisplay.insertAdjacentHTML('beforeend', dropZoneHTML);
+            sentenceDisplay.appendChild(objectElement);
+
+            const dropZone = document.getElementById('drop-zone');
+            dropZone.ondragover = dragOver;
+            dropZone.ondragleave = dragLeave;
+            dropZone.ondrop = drop;
+
+            // Cria as opções de verbos (embaralhadas)
+            verbOptionsContainer.innerHTML = '';
+            const options = [level.correctVerb, level.distractorVerb];
+            if (Math.random() > 0.5) options.reverse();
+            options.forEach(verb => verbOptionsContainer.appendChild(createVerbOption(verb)));
+        }
+
+        // Verifica a resposta
+        function checkAnswer(droppedVerb) {
+            const currentLevel = levels[currentLevelIndex];
+            const dropZone = document.getElementById('drop-zone');
+            
+            // Desativa a possibilidade de arrastar novas opções
+            verbOptionsContainer.querySelectorAll('.verb-option').forEach(el => el.setAttribute('draggable', false));
+            dropZone.ondragover = null;
+            dropZone.ondrop = null;
+
+            if (droppedVerb === currentLevel.correctVerb.text) {
+                // Resposta Correta
+                feedbackContainer.textContent = 'Muito bem! 🎉';
+                feedbackContainer.style.color = 'green';
+                dropZone.classList.remove('bg-gray-50');
+                dropZone.classList.add('bg-green-500', 'border-green-700', 'text-white');
+                dropZone.textContent = droppedVerb.toUpperCase();
+                // Mostra o botão para ir para a próxima fase
+                nextLevelButton.classList.remove('hidden');
+            } else {
+                // Resposta Errada
+                feedbackContainer.textContent = 'Tenta de novo na próxima!';
+                feedbackContainer.style.color = 'red';
+                dropZone.classList.add('bg-red-400', 'border-red-600', 'text-white');
+                dropZone.textContent = '❌';
+                // Mostra o botão para ir para a próxima fase mesmo errando
+                nextLevelButton.classList.remove('hidden');
+            }
+        }
+
+        // Passa para o próximo nível
+        nextLevelButton.addEventListener('click', () => {
+            currentLevelIndex++;
+            loadLevel(currentLevelIndex);
+        });
+
+        // Inicia o jogo quando a página carregar
+        window.onload = () => {
+            loadLevel(currentLevelIndex);
+        };
+    </script>
 </body>
 </html>
