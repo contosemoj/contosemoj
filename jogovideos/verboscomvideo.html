@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verbos com Vídeo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Complete a frase!</h1>
+        <div id="game-container">
+            <div id="question-container">
+                <video id="video-player" width="400" controls autoplay muted loop>
+                    <source src="" type="video/mp4">
+                    O seu navegador não suporta a tag de vídeo.
+                </video>
+                <p id="question-text"></p>
+            </div>
+            <div id="options-container" class="options-grid"></div>
+        </div>
+        <div id="feedback-container">
+            <p id="feedback-text"></p>
+        </div>
+        <div id="score-container">
+            <p>Pontos: <span id="score">0</span></p>
+            <p>Estrelas: <span id="stars"></span></p>
+        </div>
+        <button id="next-button" class="hidden">Próxima Pergunta</button>
+    </div>
+
+    <script src="script-videos.js"></script>
+</body>
+</html>
