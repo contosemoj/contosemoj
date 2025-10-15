@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Adicione as tuas perguntas aqui!
     const questions = [
         {
-            video: "videos/menina_comendo.mp4", // Caminho para o teu vídeo
+            video: "videos/Menina_Comendo_Salada.mp4", // Caminho para o teu vídeo
             question: "A menina ____ salada.",     // Frase a ser completada
             options: [
                 { emoji: "🥗", word: "come" },
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
             answer: "come" // A palavra correta
         },
         {
-            video: "videos/menino_chutando.mp4",
+            video: "videos/Menino_Bebendo_Suco_de_Uva.mp4",
             question: "O menino ____ a bola.",
             options: [
                 { emoji: "⚽", word: "chuta" },
