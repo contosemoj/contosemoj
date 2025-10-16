@@ -44,9 +44,29 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- FUNÇÕES DO JOGO ---
     function showSlide(index) {
         const part = storyData.storyParts[index];
+        let audioPlayer = '';
+        if (part.audio) {
+            audioPlayer = `
+                <audio controls class="w-full mt-4">
+                    <source src="${part.audio}" type="audio/mpeg">
+                    O seu navegador não suporta o elemento de áudio.
+                </audio>
+            `;
+        }
+
+        // --- MODIFICAÇÃO PARA EXIBIR A IMAGEM ---
+        let imageElement = '';
+        if (part.image) {
+            // Supondo que as imagens estão na mesma pasta que o contos.html
+            // Se estiverem em outra pasta (ex: 'imagens/'), mude para `imagens/${part.image}`
+            imageElement = `<img src="${part.image}" alt="Ilustração do conto" class="mx-auto mb-4 rounded-lg shadow-md max-h-60">`;
+        }
+
         storyContentEl.innerHTML = `
+            ${imageElement}
             <p class="emoji-text mb-4">${part.emoji}</p>
             <p class="portuguese-text">${part.text}</p>
+            ${audioPlayer}
         `;
         slideCounterEl.textContent = `${index + 1} / ${storyData.storyParts.length}`;
         prevButton.disabled = index === 0;
