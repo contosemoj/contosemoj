@@ -1,0 +1,41 @@
+{
+  "title": "Bela Adormecida",
+  "storyParts": [
+    { "emoji": "🤌🤌 🔙⌛, 👑🏰 🤌🤌 🛣️📏⬛, 🤰🤱 😻👶🏾👸🏾.", "text": "Há muito tempo atrás, em um reino muito distante, nasceu um linda bebê princesa." },
+    { "emoji": "👉🏾🤴🏾👸🏾 🎫 👤👤👤 👑🏰 🫱🏾 🥳🎉, 🧚‍♀️🟢 🧚‍♀️🔵, 👉🏾🤴🏾👸🏾 ❌🎫 🧚‍♀️🔴.", "text": "Eles convidaram todos do reino para a festa, fada verde e a fada azul, mas eles não convidaram a fada vermelha." },
+    { "emoji": "🧚‍♀️🔴 😡 ➡️ 🥳🎉. 🧚‍♀️🔴🗯️: 👿🪄 👶🏾👸🏾: 🔮 ⌛1️⃣5️⃣🎂 ☝🏾🪡 🫳🏾🍂 🩸 💀 🔮.", "text": "A fada vermelha ficou brava, ela foi na festa e ela gritou: lançou uma maldição. Quando chegar o 15° aniversario, ele espetara o dedo em um agulha irá cair uma gota de sangue e ela morrerá." },
+    { "emoji": "🧚‍♀️🟢💬: 👉🏾👶🏾👸🏾 ❌💀 ↔️ ✅🛌💤➿.", "text": "A fada disse: Ela não morrera e sim entrara em um sono profundo." },
+    { "emoji": "⌛1️⃣5️⃣🎂 👧🏾👸🏾 ☝🏾🪡 🫳🏾🍂 🩸 🛌💤➿.", "text": "No aniversário de 15 anos, a princesa tocou na agulha, caiu uma gota de sangue e entrou em um sono profundo." },
+    { "emoji": "👦🏾🤴🏾 👀🔍 👧🏾👸🏾 🛌💤➿. 👉🏾🤴🏾 💋💏 👧🏾👸🏾 🛌⏰.", "text": "Um príncipe encontrou a princesa em sono profundo, ele deu um beijo de amor na princesa e a despertou." },
+    { "emoji": "👧🏾👸🏾 👦🏾🤴🏾, 👰🏾🤵🏾💍.", "text": "A princesa e o príncipe se casaram." },
+    { "emoji": "🏁 FIM", "text": "" }
+  ],
+  "quizQuestions": [
+    {
+      "emoji_question": "🤷‍♀️👤 👿🪄 👶🏾👸🏾❓",
+      "question": "Quem lançou uma maldição na princesa?",
+      "options": ["🧚‍♀️🟢", "🧚‍♀️🔴", "🤴🏾👸🏾"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "🤷‍♀️📦 ​🏗️ 👧🏾👸🏾 🛌💤➿❓",
+      "question": "O que fez a princesa entrar em um sono profundo?",
+      "options": ["🎂", "☝🏾🪡", "💋💏"],
+      "correct": 1
+    },
+    {
+      "emoji_question": "🤷‍♀️👤 🛌⏰ 👧🏾👸🏾❓",
+      "question": "Quem despertou a princesa?",
+      "options": ["👦🏾🤴🏾", "🧚‍♀️🔵", "👑🏰"],
+      "correct": 0
+    }
+  ],
+  "glossary": [
+    { "emoji": "🤌🤌", "definition": "muito" },
+    { "emoji": "👤👤👤", "definition": "Todos" },
+    { "emoji": "👑🏰", "definition": "Reino" },
+    { "emoji": "👰🏾🤵🏾💍", "definition": "Casar" },
+    { "emoji": "🥳🎉", "definition": "Festa" },
+    { "emoji": "🤰🤱", "definition": "Nascer" }
+  ]
+}
