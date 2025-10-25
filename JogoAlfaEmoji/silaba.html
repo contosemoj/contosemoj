@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo das Sílabas</title>
+    <!-- Carrega o Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Fonte Inter */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            touch-action: manipulation;
+        }
+        
+        /* Base para Slot e Sílaba */
+        .box-base {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 0.5rem; /* rounded-lg */
+        }
+        @media (min-width: 640px) {
+            .box-base {
+                width: 90px;
+                height: 90px;
+            }
+        }
+
+        /* Estilo para os slots de resposta */
+        .slot {
+            border: 2px dashed #9ca3af; /* gray-400 */
+            background-color: #f3f4f6; /* gray-100 */
+            transition: background-color 0.2s;
+        }
+
+        /* Estilo para as sílabas clicáveis */
+        .syllable {
+            border: 2px solid #6b7280; /* gray-500 */
+            background-color: #dbeafe; /* blue-100 */
+            color: #1e3a8a; /* blue-800 */
+            cursor: grab;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Quando a sílaba está no slot */
+        .slot .syllable {
+            background-color: #93c5fd; /* blue-300 */
+            border-color: #1e3a8a; /* blue-800 */
+            box-shadow: none;
+        }
+
+        /* --- Estilos de Arrastar e Soltar --- */
+
+        /* Estilo para a sílaba que está sendo arrastada */
+        .dragging {
+            opacity: 0.5;
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilo para um alvo válido (slot ou banco) quando arrastamos por cima */
+        .drag-over {
+            background-color: #c7d2fe !important; /* indigo-200 */
+            border-style: solid;
+        }
+        
+        /* O banco de sílabas também é um alvo */
+        #syllable-bank.drag-over {
+            background-color: #e5e7eb; /* gray-200 */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4">
+
+    <div id="game-container" class="bg-white w-full max-w-md p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-200">
+        
+        <div id="emoji-display" class="text-6xl sm:text-8xl text-center mb-6"></div>
+
+        <div id="answer-slots" class="flex justify-center gap-2 sm:gap-4 mb-6 min-h-[70px] sm:min-h-[90px] sm:min-h-[90px]"></div>
+
+        <div id="syllable-bank" class="flex justify-center flex-wrap gap-2 sm:gap-4 mb-8 min-h-[70px] sm:min-h-[90px] bg-gray-100 p-4 rounded-lg border border-gray-200 transition-colors duration-200"></div>
+
+        <button id="reset-button" class="w-full bg-yellow-500 text-yellow-900 font-bold py-3 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105 active:scale-95">
+            Limpar Tentativa
+        </button>
+
+        <div id="message-box" class="text-center font-semibold mt-6 text-xl h-6"></div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- BANCO DE PALAVRAS ATUALIZADO ---
+            // Apenas palavras que existem na sua lista de áudios
+            const WORDS_DATA = [
+                { emoji: '🏠', word: 'CASA', syllables: ['CA', 'SA'] },
+                { emoji: '⚽', word: 'BOLA', syllables: ['BO', 'LA'] },
+                { emoji: '🎲', word: 'DADO', syllables: ['DA', 'DO'] },
+                { emoji: '🐱', word: 'GATO', syllables: ['GA', 'TO'] },
+                { emoji: '🌙', word: 'LUA', syllables: ['LU', 'A'] },
+                { emoji: '🐸', word: 'SAPO', syllables: ['SA', 'PO'] },
+                { emoji: '🐭', word: 'RATO', syllables: ['RA', 'TO'] },
+                // Palavras com áudio BOCA, BOLO, MALA, CAIXA, BANANA, COCO removidas
+                // Novas palavras com áudios confirmados da sua lista:
+                { emoji: '🐄', word: 'VACA', syllables: ['VA', 'CA'] },
+                { emoji: '🦆', word: 'PATO', syllables: ['PA', 'TO'] },
+                { emoji: '🧃', word: 'SUCO', syllables: ['SU', 'CO'] },
+                { emoji: '🍇', word: 'UVA', syllables: ['U', 'VA'] },
+                { emoji: '🔔', word: 'SINO', syllables: ['SI', 'NO'] },
+                { emoji: '🛣️', word: 'RUA', syllables: ['RU', 'A'] }
+            ];
+
+            // --- VARIÁVEIS DE ESTADO ---
+            let currentWordIndex = 0;
+            // Removido: speechSynth, voices
+            let syllableIdCounter = 0; // Para dar IDs únicos a cada sílaba
+
+            // --- ELEMENTOS DO DOM ---
+            const emojiDisplay = document.getElementById('emoji-display');
+            const answerSlots = document.getElementById('answer-slots');
+            const syllableBank = document.getElementById('syllable-bank');
+            const resetButton = document.getElementById('reset-button');
+            const messageBox = document.getElementById('message-box');
+            const gameContainer = document.getElementById('game-container'); 
+
+            // --- FUNÇÕES DE SÍNTESE DE VOZ REMOVIDAS ---
+            // Removido: initializeSpeech()
+            // Removido: speak()
+
+            // --- NOVA FUNÇÃO DE ÁUDIO ---
+            /**
+             * Toca um arquivo de áudio da pasta 'audios/'.
+             * Formata o nome para corresponder aos seus arquivos (ex: 'CASA' -> 'Casa.mp3', 'CA' -> 'Ca.mp3')
+             */
+            function playAudio(name) {
+                let formattedName;
+                
+                // Se for uma sílaba de 1 letra (vogal), é maiúscula (ex: 'A.mp3')
+                if (name.length === 1) {
+                    formattedName = name.toUpperCase();
+                } 
+                // Se for uma palavra ou sílaba com 2+ letras, é TitleCase (ex: 'Casa.mp3' ou 'Ca.mp3')
+                else {
+                    formattedName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+                }
+
+                const audio = new Audio(`audios/${formattedName}.mp3`);
+                audio.play().catch(e => {
+                    console.error(`Não foi possível tocar o áudio: audios/${formattedName}.mp3`, e);
+                });
+            }
+
+            // --- FUNÇÃO DE EMBARALHAR ---
+            function shuffle(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            // --- LÓGICA DO JOGO ---
+
+            function loadWord(index) {
+                answerSlots.innerHTML = '';
+                syllableBank.innerHTML = '';
+                showMessage('', 'clear');
+
+                const wordData = WORDS_DATA[index];
+                emojiDisplay.textContent = wordData.emoji;
+
+                // 2. Cria os slots de resposta (agora são alvos de soltar)
+                wordData.syllables.forEach(() => {
+                    const slot = document.createElement('div');
+                    slot.className = 'slot box-base';
+                    // Adiciona listeners de "soltar"
+                    slot.addEventListener('dragover', onDragOver);
+                    slot.addEventListener('dragenter', onDragEnter);
+                    slot.addEventListener('dragleave', onDragLeave);
+                    slot.addEventListener('drop', onDropOnSlot);
+                    answerSlots.appendChild(slot);
+                });
+
+                // 3. Cria as sílabas embaralhadas (agora são arrastáveis)
+                const shuffledSyllables = shuffle([...wordData.syllables]);
+                shuffledSyllables.forEach(syllableText => {
+                    const syllableEl = document.createElement('div');
+                    syllableEl.id = `syllable-${syllableIdCounter++}`; // ID Único
+                    syllableEl.className = 'syllable box-base';
+                    syllableEl.textContent = syllableText;
+                    syllableEl.draggable = true; // Torna arrastável
+                    // Adiciona listeners de "arrastar"
+                    syllableEl.addEventListener('dragstart', onDragStart);
+                    syllableEl.addEventListener('dragend', onDragEnd);
+                    syllableBank.appendChild(syllableEl);
+                });
+            }
+
+            function resetAttempt() {
+                const slots = answerSlots.querySelectorAll('.slot');
+                slots.forEach(slot => {
+                    const syllableEl = slot.querySelector('.syllable');
+                    if (syllableEl) {
+                        syllableBank.appendChild(syllableEl);
+                    }
+                });
+                showMessage('', 'clear');
+            }
+
+            function checkAnswer() {
+                const allSlotsFilled = Array.from(answerSlots.children).every(slot => slot.hasChildNodes());
+                if (!allSlotsFilled) return;
+
+                const slots = answerSlots.querySelectorAll('.slot');
+                const currentAttempt = Array.from(slots).map(s => s.textContent).join('');
+                const correctAnswer = WORDS_DATA[currentWordIndex].word;
+
+                if (currentAttempt === correctAnswer) {
+                    showMessage('Parabéns!', 'success');
+                    // speak(correctAnswer); // <-- Substituído
+                    playAudio(correctAnswer); // Toca o som da palavra
+                    gameContainer.style.pointerEvents = 'none';
+                    setTimeout(() => {
+                        currentWordIndex = (currentWordIndex + 1) % WORDS_DATA.length;
+                        loadWord(currentWordIndex);
+                        gameContainer.style.pointerEvents = 'auto';
+                    }, 2500);
+                } else {
+                    showMessage('Tente de novo!', 'error');
+                }
+            }
+
+            function showMessage(msg, type) {
+                messageBox.textContent = msg;
+                messageBox.classList.remove('text-green-600', 'text-red-600');
+                if (type === 'success') messageBox.classList.add('text-green-600');
+                else if (type === 'error') messageBox.classList.add('text-red-600');
+            }
+
+            // --- NOVOS HANDLERS DE ARRASTAR E SOLTAR ---
+
+            function onDragStart(event) {
+                // Define o ID do elemento que está sendo arrastado
+                event.dataTransfer.setData('text/plain', event.target.id);
+                // Adiciona classe para feedback visual (opacidade)
+                event.target.classList.add('dragging');
+                // Toca o som da sílaba
+                // speak(event.target.textContent); // <-- Substituído
+                playAudio(event.target.textContent);
+            }
+
+            function onDragEnd(event) {
+                // Limpa a classe de feedback visual
+                event.target.classList.remove('dragging');
+            }
+
+            function onDragOver(event) {
+                event.preventDefault(); // ESSENCIAL: Permite que o 'drop' ocorra
+            }
+
+            function onDragEnter(event) {
+                event.preventDefault();
+                // Adiciona feedback visual ao alvo (slot ou banco)
+                const target = event.currentTarget;
+                if (target.classList.contains('slot') && !target.hasChildNodes()) {
+                    target.classList.add('drag-over');
+                }
+                if (target.id === 'syllable-bank') {
+                    target.classList.add('drag-over');
+                }
+            }
+
+            function onDragLeave(event) {
+                // Remove o feedback visual do alvo
+                event.currentTarget.classList.remove('drag-over');
+            }
+
+            // Soltar em um SLOT de resposta
+            function onDropOnSlot(event) {
+                event.preventDefault();
+                const slot = event.currentTarget;
+                slot.classList.remove('drag-over');
+
+                // Só permite soltar se o slot estiver vazio
+                if (slot.hasChildNodes()) {
+                    return;
+                }
+
+                // Pega o elemento arrastado pelo ID
+                const draggedId = event.dataTransfer.getData('text/plain');
+                const draggedEl = document.getElementById(draggedId);
+
+                // Move o elemento para o slot
+                if (draggedEl) {
+                    slot.appendChild(draggedEl);
+                }
+                
+                checkAnswer(); // Verifica a resposta
+            }
+
+            // Soltar de volta no BANCO de sílabas
+            function onDropOnBank(event) {
+                event.preventDefault();
+                const bank = event.currentTarget;
+                bank.classList.remove('drag-over');
+
+                const draggedId = event.dataTransfer.getData('text/plain');
+                const draggedEl = document.getElementById(draggedId);
+
+                if (draggedEl) {
+                    bank.appendChild(draggedEl);
+                }
+                
+                checkAnswer(); // Re-verifica (pode ter desfeito uma resposta)
+            }
+
+
+            // --- INICIALIZAÇÃO ---
+            // initializeSpeech(); // <-- Removido
+            resetButton.addEventListener('click', resetAttempt);
+            
+            // Adiciona listeners de "soltar" ao banco de sílabas
+            syllableBank.addEventListener('dragover', onDragOver);
+            syllableBank.addEventListener('dragenter', onDragEnter);
+            syllableBank.addEventListener('dragleave', onDragLeave);
+            syllableBank.addEventListener('drop', onDropOnBank);
+
+            loadWord(currentWordIndex); // Carrega a primeira palavra
+
+        });
+    </script>
+
+</body>
+</html>
