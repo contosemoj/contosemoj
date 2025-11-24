@@ -37,7 +37,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* TELA DE INÍCIO (ESSENCIAL PARA IPAD) */
+        /* TELA DE INÍCIO */
         #start-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -190,7 +190,7 @@
             box-shadow: 0 5px 0px rgba(0,0,0,0.2);
             touch-action: none;
             position: relative;
-            z-index: 20; /* Z-index alto para arrastar */
+            z-index: 20; 
             user-select: none;
         }
 
@@ -217,7 +217,6 @@
             display: none;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            /* Z-Index MUITO alto para garantir clique */
             position: relative;
             z-index: 3000; 
         }
@@ -322,10 +321,11 @@
         const scoreEl = document.getElementById('score');
         const levelEl = document.getElementById('level-display');
 
-        // --- SISTEMA DE ÁUDIO ROBUSTO ---
         let globalAudioCtx = null;
+        // VARIÁVEL GLOBAL DE ÁUDIO (CRUCIAL PARA IPAD)
+        let currentAudioPlayer = null; 
 
-        // Tenta reativar o áudio a cada toque na tela (hack para iOS)
+        // Tenta reativar o áudio a cada toque
         document.body.addEventListener('touchstart', function() {
             if (globalAudioCtx && globalAudioCtx.state === 'suspended') {
                 globalAudioCtx.resume();
@@ -342,33 +342,41 @@
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('game-container').classList.add('active');
 
-            // Cria o contexto de áudio
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             if (AudioContext) {
                 globalAudioCtx = new AudioContext();
-                // Toca silêncio para "aquecer"
                 try {
                     const buffer = globalAudioCtx.createBuffer(1, 1, 22050);
                     const source = globalAudioCtx.createBufferSource();
                     source.buffer = buffer;
                     source.connect(globalAudioCtx.destination);
                     source.start(0);
-                } catch(e) { console.error(e); }
+                } catch(e) {}
             }
             initGame();
         }
 
+        // Função de Áudio Refinada para iOS
         function playAudio(name) {
             try {
+                // Se já estiver tocando algo, para (evita sobreposição)
+                if (currentAudioPlayer) {
+                    currentAudioPlayer.pause();
+                    currentAudioPlayer.currentTime = 0;
+                }
+
                 let cleanName = name.toLowerCase()
                                     .normalize("NFD")
                                     .replace(/[\u0300-\u036f]/g, "")
                                     .trim();
                 
-                const audio = new Audio(`audios/${cleanName}.mp3`);
+                // Atribui à variável GLOBAL (Isso impede que o iPad delete o áudio da memória)
+                currentAudioPlayer = new Audio(`audios/${cleanName}.mp3`);
+                
                 // Força carregamento
-                audio.load();
-                const promessa = audio.play();
+                currentAudioPlayer.load();
+                
+                const promessa = currentAudioPlayer.play();
                 if (promessa !== undefined) {
                     promessa.catch(e => console.log("Erro áudio (" + cleanName + "):", e));
                 }
@@ -384,7 +392,6 @@
             }
         }
 
-        // Bips (Acerto/Erro) - Gerados matematicamente para não depender de arquivos
         function tocarSomErro() {
             if (!globalAudioCtx) return;
             try {
@@ -427,7 +434,6 @@
         }
 
         function loadLevel() {
-            // Garante que o botão some
             nextBtn.style.display = 'none';
             
             if (currentLevel >= database.length) {
@@ -483,18 +489,22 @@
             });
         }
 
-        // --- ARRASTAR E SOLTAR ---
+        // --- ARRASTAR E SOLTAR (CORRIGIDO PARA ÁUDIO NO IOS) ---
         function addDragEvents(el) {
             el.addEventListener('mousedown', startDrag);
+            // passive: false é necessário para usar preventDefault
             el.addEventListener('touchstart', startDrag, {passive: false});
         }
 
         function startDrag(e) {
             if (e.target.classList.contains('placed')) return;
-            e.preventDefault();
 
-            // Tocar som ao pegar a peça (Feedback imediato)
+            // --- CORREÇÃO DO ÁUDIO ---
+            // 1. Toca o som PRIMEIRO, antes de qualquer preventDefault
             playAudio(e.target.innerText);
+
+            // 2. Agora sim previne o scroll da tela
+            e.preventDefault();
 
             draggedElement = e.target;
             
@@ -502,12 +512,11 @@
             const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
             const rect = draggedElement.getBoundingClientRect();
             
-            // Centraliza
             const offsetX = rect.width / 2; 
             const offsetY = rect.height / 2;
 
             draggedElement.style.position = 'fixed';
-            draggedElement.style.zIndex = '2000'; // Super alto enquanto arrasta
+            draggedElement.style.zIndex = '2000'; 
             draggedElement.style.width = rect.width + 'px';
             draggedElement.style.height = rect.height + 'px';
             
@@ -519,7 +528,8 @@
             }
 
             function onMove(event) {
-                event.preventDefault();
+                // Impede rolagem enquanto arrasta
+                event.preventDefault(); 
                 const cx = event.type === 'touchmove' ? event.touches[0].clientX : event.clientX;
                 const cy = event.type === 'touchmove' ? event.touches[0].clientY : event.clientY;
                 moveAt(cx, cy, offsetX, offsetY);
@@ -569,7 +579,7 @@
                 if (correctSyllable === draggedSyllable) {
                     snapToSlot(draggedElement, slotBelow);
                     tocarSomSucessoCurto();
-                    checkWin(); // Verifica se ganhou
+                    checkWin(); 
                 } else {
                     returnToPool(draggedElement);
                     tocarSomErro();
@@ -605,16 +615,11 @@
             const filledSlots = document.querySelectorAll('.slot.filled').length;
 
             if (totalSlots === filledSlots) {
-                // Pontuação
                 score += 10;
                 scoreEl.innerText = score;
-                
-                // Animação e Botão
                 triggerConfetti();
                 nextBtn.style.display = 'block';
 
-                // TOCA O SOM IMEDIATAMENTE (Sem setTimeout para não bloquear no iOS)
-                // Isso liga o som ao evento de "soltar" o dedo
                 try {
                     const palavraCompleta = currentWordObj.syllables.join("");
                     playAudio(palavraCompleta);
@@ -622,9 +627,7 @@
             }
         }
 
-        // Função wrapper para garantir que o botão funcione
         function botaoProximoClicado() {
-            // Tenta parar áudios pendentes? Não precisa.
             currentLevel++;
             loadLevel();
         }
@@ -636,7 +639,6 @@
             }
         }
 
-        // --- CONFETES ---
         const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
         let confettiParticles = [];
