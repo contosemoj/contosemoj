@@ -19,7 +19,7 @@
 
         * {
             box-sizing: border-box;
-            touch-action: none; /* Impede zoom e scroll durante o arrasto */
+            touch-action: none; 
         }
 
         body {
@@ -36,7 +36,39 @@
             user-select: none;
         }
 
-        /* Cabeçalho limpo */
+        /* TELA DE INÍCIO (ESSENCIAL PARA IPAD) */
+        #start-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(74, 144, 226, 0.95);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        #start-btn {
+            background: #fff;
+            color: var(--primary);
+            border: none;
+            padding: 20px 60px;
+            font-size: 2rem;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
         header {
             width: 100%;
             padding: 15px;
@@ -45,7 +77,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.4rem; /* Fonte maior */
+            font-size: 1.4rem; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             position: fixed;
             top: 0;
@@ -59,7 +91,6 @@
             font-weight: bold;
         }
 
-        /* Área Principal */
         #game-container {
             display: flex;
             flex-direction: column;
@@ -70,13 +101,21 @@
             margin-top: 80px;
             padding: 10px;
             flex: 1;
+            /* Escondido até clicar no start */
+            opacity: 0.3; 
+            pointer-events: none;
+            transition: opacity 0.5s;
         }
 
-        /* Imagem Maior e Mais Clara */
+        #game-container.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
         .image-area {
             background: white;
-            width: 340px; /* Aumentado */
-            height: 220px; /* Aumentado */
+            width: 340px; 
+            height: 220px; 
             border-radius: 20px;
             border: 4px solid #333;
             display: flex;
@@ -90,9 +129,7 @@
             transition: transform 0.2s;
         }
 
-        .image-area:active {
-            transform: scale(0.95);
-        }
+        .image-area:active { transform: scale(0.95); }
 
         .image-area img {
             max-width: 85%;
@@ -102,31 +139,22 @@
 
         .sound-indicator {
             position: absolute;
-            bottom: 10px;
-            right: 15px;
-            font-size: 2rem;
-            opacity: 0.8;
+            bottom: 10px; right: 15px;
+            font-size: 2rem; opacity: 0.8;
             color: var(--primary);
         }
 
-        /* Slots (Buracos) Maiores para facilitar a motricidade */
         .slots-container {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
-            justify-content: center;
+            display: flex; gap: 15px; margin-bottom: 40px;
+            flex-wrap: wrap; justify-content: center;
         }
 
         .slot {
-            width: 90px; /* Mais largo */
-            height: 90px; /* Mais alto */
+            width: 90px; height: 90px;
             border: 4px dashed #aaa;
             border-radius: 15px;
             background-color: #e0e0e0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             transition: all 0.3s;
         }
 
@@ -142,31 +170,21 @@
             background-color: #fff;
         }
 
-        /* Área das Peças */
         .pieces-pool {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px; /* Mais espaçamento entre peças */
-            justify-content: center;
-            width: 100%;
-            min-height: 120px;
-            padding: 10px;
+            display: flex; flex-wrap: wrap; gap: 20px;
+            justify-content: center; width: 100%;
+            min-height: 120px; padding: 10px;
         }
 
-        /* Peça Arrastável - Maior e mais fácil de pegar */
         .draggable-piece {
-            width: 85px;
-            height: 85px;
+            width: 85px; height: 85px;
             background-color: #fff;
             border: 3px solid #333;
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem; /* Letra maior */
-            font-weight: 800;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; font-weight: 800;
             cursor: grab;
-            box-shadow: 0 5px 0px rgba(0,0,0,0.2); /* Efeito 3D simples */
+            box-shadow: 0 5px 0px rgba(0,0,0,0.2);
             touch-action: none;
             position: relative;
             z-index: 2;
@@ -174,8 +192,7 @@
         }
 
         .draggable-piece:active {
-            cursor: grabbing;
-            transform: translateY(3px);
+            cursor: grabbing; transform: translateY(3px);
             box-shadow: 0 2px 0px rgba(0,0,0,0.2);
             z-index: 1000;
         }
@@ -188,27 +205,18 @@
             cursor: default;
         }
 
-        /* Botão Próximo */
         #next-btn {
-            margin-top: 10px;
-            padding: 15px 50px;
-            background-color: var(--success);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.8rem;
-            font-family: 'Teachers', sans-serif;
-            font-weight: bold;
-            cursor: pointer;
+            margin-top: 10px; padding: 15px 50px;
+            background-color: var(--success); color: white;
+            border: none; border-radius: 50px;
+            font-size: 1.8rem; font-family: 'Teachers', sans-serif;
+            font-weight: bold; cursor: pointer;
             display: none;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        #next-btn:hover {
-            background-color: #43a047;
-            transform: scale(1.05);
-        }
+        #next-btn:hover { background-color: #43a047; transform: scale(1.05); }
 
         @keyframes popIn {
             from { transform: scale(0); opacity: 0; }
@@ -228,19 +236,22 @@
         }
 
         #confetti-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 999;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 999;
         }
     </style>
 </head>
 <body>
 
     <canvas id="confetti-canvas"></canvas>
+
+    <div id="start-overlay">
+        <h1>Vamos Jogar?</h1>
+        <p>Toque no botão para começar</p>
+        <br>
+        <button id="start-btn" onclick="iniciarApp()">▶ JOGAR</button>
+    </div>
 
     <header>
         <div id="level-display">Nível 1</div>
@@ -250,17 +261,10 @@
     </header>
 
     <div id="game-container">
-        <!-- Imagem -->
         <div class="image-area" id="target-image" onclick="tocarPalavraAtual()">
-            <!-- JS insere img aqui -->
-        </div>
-
-        <!-- Buracos -->
+            </div>
         <div class="slots-container" id="slots-area"></div>
-
-        <!-- Peças -->
         <div class="pieces-pool" id="pool-area"></div>
-
         <button id="next-btn" onclick="nextLevel()">PRÓXIMO ➜</button>
     </div>
 
@@ -312,29 +316,54 @@
         const scoreEl = document.getElementById('score');
         const levelEl = document.getElementById('level-display');
 
-        // --- SISTEMA DE ÁUDIO ---
+        // --- SISTEMA DE ÁUDIO GLOBAL PARA IOS ---
+        let globalAudioCtx = null;
+
+        // Função chamada pelo botão de Start
+        function iniciarApp() {
+            // 1. Esconde a tela de início
+            document.getElementById('start-overlay').style.display = 'none';
+            document.getElementById('game-container').classList.add('active');
+
+            // 2. Inicializa o AudioContext (Destrava o áudio no iOS)
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (AudioContext) {
+                globalAudioCtx = new AudioContext();
+                // Cria um som vazio só para garantir que o "motor" de áudio ligou
+                const buffer = globalAudioCtx.createBuffer(1, 1, 22050);
+                const source = globalAudioCtx.createBufferSource();
+                source.buffer = buffer;
+                source.connect(globalAudioCtx.destination);
+                source.start(0);
+                
+                // Se estiver suspenso (comum no iOS), retoma
+                if (globalAudioCtx.state === 'suspended') {
+                    globalAudioCtx.resume();
+                }
+            }
+
+            // 3. Inicia o jogo
+            initGame();
+        }
+
         function playAudio(name) {
-            // 1. Converte para minúsculo (dado)
-            // 2. Remove acentos (bebe em vez de bebê)
-            // 3. Remove espaços extras
             let cleanName = name.toLowerCase()
                                 .normalize("NFD")
                                 .replace(/[\u0300-\u036f]/g, "")
                                 .trim();
             
-            // Console log para te ajudar a ver o que ele está a tentar tocar
-            console.log("Tentando tocar: audios/" + cleanName + ".mp3");
-
+            // Cria elemento de áudio on-the-fly
             const audio = new Audio(`audios/${cleanName}.mp3`);
             
-            // Tenta tocar e avisa se der erro
+            // Importante para iOS: tentar carregar
+            audio.load();
+            
             var playPromise = audio.play();
 
             if (playPromise !== undefined) {
                 playPromise.catch(error => {
-                    console.error("Erro ao tocar o áudio:", error);
-                    // Dica: Se quiseres ver o erro no iPad, descomenta a linha abaixo:
-                    // alert("Não achei o áudio: " + cleanName + ".mp3");
+                    console.error("Erro ao tocar áudio:", error);
+                    // Fallback para debug se necessário
                 });
             }
         }
@@ -346,45 +375,40 @@
             }
         }
 
-        // Sons gerados para feedback imediato
+        // Sons Sintetizados (Beeps) usando o contexto global destravado
         function tocarSomErro() {
+            if (!globalAudioCtx) return;
             try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const ctx = new AudioContext();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
+                const osc = globalAudioCtx.createOscillator();
+                const gain = globalAudioCtx.createGain();
                 osc.type = 'sawtooth';
-                osc.frequency.value = 120; // Mais grave, menos agressivo
+                osc.frequency.value = 120;
                 osc.connect(gain);
-                gain.connect(ctx.destination);
+                gain.connect(globalAudioCtx.destination);
                 osc.start();
-                gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.3);
-                osc.stop(ctx.currentTime + 0.3);
-            } catch (e) {}
+                gain.gain.exponentialRampToValueAtTime(0.00001, globalAudioCtx.currentTime + 0.3);
+                osc.stop(globalAudioCtx.currentTime + 0.3);
+            } catch (e) { console.log(e); }
         }
 
         function tocarSomSucessoCurto() {
+            if (!globalAudioCtx) return;
             try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const ctx = new AudioContext();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
+                const osc = globalAudioCtx.createOscillator();
+                const gain = globalAudioCtx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(400, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.15);
+                osc.frequency.setValueAtTime(400, globalAudioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, globalAudioCtx.currentTime + 0.15);
                 osc.connect(gain);
-                gain.connect(ctx.destination);
+                gain.connect(globalAudioCtx.destination);
                 osc.start();
-                gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.3);
-                osc.stop(ctx.currentTime + 0.3);
-            } catch (e) {}
+                gain.gain.exponentialRampToValueAtTime(0.00001, globalAudioCtx.currentTime + 0.3);
+                osc.stop(globalAudioCtx.currentTime + 0.3);
+            } catch (e) { console.log(e); }
         }
 
         // --- LÓGICA DO JOGO ---
 
-        // Função auxiliar para remover acentos (para comparações)
         function normalizeSy(s) {
             return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         }
@@ -410,7 +434,6 @@
             currentWordObj = database[currentLevel];
             levelEl.innerText = `Palavra ${currentLevel + 1}`;
 
-            // Renderizar Imagem
             let imgContent = '';
             if (currentWordObj.type === 'emoji') {
                 imgContent = currentWordObj.image;
@@ -419,7 +442,6 @@
             }
             imageArea.innerHTML = `${imgContent}<span class="sound-indicator">🔊</span>`;
 
-            // Criar Slots
             currentWordObj.syllables.forEach((syll, index) => {
                 const slot = document.createElement('div');
                 slot.classList.add('slot');
@@ -428,25 +450,14 @@
                 slotsArea.appendChild(slot);
             });
 
-            // --- CRIAÇÃO DE PEÇAS COM FILTRO DE FACILITAÇÃO ---
             let poolSyllables = [...currentWordObj.syllables];
-            
-            // Adiciona APENAS 1 intrusa para facilitar
             let attempts = 0;
             while(poolSyllables.length < currentWordObj.syllables.length + 1 && attempts < 100) {
                 attempts++;
                 const randomWord = database[Math.floor(Math.random() * database.length)];
                 const randomSyll = randomWord.syllables[Math.floor(Math.random() * randomWord.syllables.length)];
-                
-                // LÓGICA IMPORTANTE: 
-                // 1. Verifica se já existe na lista exata
-                // 2. Verifica se existe uma versão "parecida" (ex: não coloca BÁ se já tem BA)
-                
                 const normRandom = normalizeSy(randomSyll);
-                
-                const isSimilar = poolSyllables.some(existing => {
-                    return normalizeSy(existing) === normRandom;
-                });
+                const isSimilar = poolSyllables.some(existing => normalizeSy(existing) === normRandom);
 
                 if (!isSimilar) {
                     poolSyllables.push(randomSyll);
@@ -475,7 +486,8 @@
             if (e.target.classList.contains('placed')) return;
             e.preventDefault();
 
-            playAudio(e.target.innerText); // Fala a sílaba
+            // Tenta tocar som da sílaba ao pegar
+            playAudio(e.target.innerText);
 
             draggedElement = e.target;
             
@@ -483,7 +495,6 @@
             const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
 
             const rect = draggedElement.getBoundingClientRect();
-            // Ajuste para pegar pelo centro (facilita para dedo em tela touch)
             const offsetX = rect.width / 2; 
             const offsetY = rect.height / 2;
 
@@ -492,7 +503,6 @@
             draggedElement.style.width = rect.width + 'px';
             draggedElement.style.height = rect.height + 'px';
             
-            // Centraliza o elemento no dedo/mouse imediatamente
             moveAt(clientX, clientY, offsetX, offsetY);
 
             function moveAt(pageX, pageY, offX, offY) {
@@ -641,26 +651,9 @@
             animateConfetti();
         }
 
-        function animateConfetti() {
-            if (confettiParticles.length === 0) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                return;
-            }
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            confettiParticles.forEach((p, index) => {
-                p.x += p.vx;
-                p.y += p.vy;
-                p.vy += 0.5;
-                p.life--;
-                ctx.fillStyle = p.color;
-                ctx.fillRect(p.x, p.y, p.size, p.size);
-                if (p.life <= 0) confettiParticles.splice(index, 1);
-            });
-            requestAnimationFrame(animateConfetti);
-        }
-
-        initGame();
-
+        // --- INICIALIZAÇÃO CORRIGIDA ---
+        // Não chamamos initGame() direto. Esperamos o botão da tela de início.
+        
     </script>
 </body>
 </html>
