@@ -34,14 +34,15 @@
             min-height: 100vh;
             overflow: hidden;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* TELA DE INÍCIO (ESSENCIAL PARA IPAD) */
         #start-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(74, 144, 226, 0.95);
-            z-index: 2000;
+            background: rgba(74, 144, 226, 0.98);
+            z-index: 5000;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -54,12 +55,12 @@
             background: #fff;
             color: var(--primary);
             border: none;
-            padding: 20px 60px;
-            font-size: 2rem;
-            border-radius: 50px;
-            font-weight: bold;
+            padding: 25px 70px;
+            font-size: 2.2rem;
+            border-radius: 60px;
+            font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             animation: pulse 2s infinite;
         }
 
@@ -101,7 +102,6 @@
             margin-top: 80px;
             padding: 10px;
             flex: 1;
-            /* Escondido até clicar no start */
             opacity: 0.3; 
             pointer-events: none;
             transition: opacity 0.5s;
@@ -127,6 +127,7 @@
             position: relative;
             cursor: pointer;
             transition: transform 0.2s;
+            z-index: 5;
         }
 
         .image-area:active { transform: scale(0.95); }
@@ -147,6 +148,7 @@
         .slots-container {
             display: flex; gap: 15px; margin-bottom: 40px;
             flex-wrap: wrap; justify-content: center;
+            z-index: 5;
         }
 
         .slot {
@@ -174,6 +176,7 @@
             display: flex; flex-wrap: wrap; gap: 20px;
             justify-content: center; width: 100%;
             min-height: 120px; padding: 10px;
+            z-index: 5;
         }
 
         .draggable-piece {
@@ -187,7 +190,7 @@
             box-shadow: 0 5px 0px rgba(0,0,0,0.2);
             touch-action: none;
             position: relative;
-            z-index: 2;
+            z-index: 20; /* Z-index alto para arrastar */
             user-select: none;
         }
 
@@ -206,17 +209,20 @@
         }
 
         #next-btn {
-            margin-top: 10px; padding: 15px 50px;
+            margin-top: 20px; padding: 20px 60px;
             background-color: var(--success); color: white;
             border: none; border-radius: 50px;
-            font-size: 1.8rem; font-family: 'Teachers', sans-serif;
+            font-size: 2rem; font-family: 'Teachers', sans-serif;
             font-weight: bold; cursor: pointer;
             display: none;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* Z-Index MUITO alto para garantir clique */
+            position: relative;
+            z-index: 3000; 
         }
 
-        #next-btn:hover { background-color: #43a047; transform: scale(1.05); }
+        #next-btn:active { background-color: #43a047; transform: scale(0.95); }
 
         @keyframes popIn {
             from { transform: scale(0); opacity: 0; }
@@ -238,7 +244,7 @@
         #confetti-canvas {
             position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            pointer-events: none; z-index: 999;
+            pointer-events: none; z-index: 100;
         }
     </style>
 </head>
@@ -248,9 +254,8 @@
 
     <div id="start-overlay">
         <h1>Vamos Jogar?</h1>
-        <p>Toque no botão para começar</p>
         <br>
-        <button id="start-btn" onclick="iniciarApp()">▶ JOGAR</button>
+        <button id="start-btn" onclick="iniciarApp()">▶ INICIAR</button>
     </div>
 
     <header>
@@ -265,7 +270,8 @@
             </div>
         <div class="slots-container" id="slots-area"></div>
         <div class="pieces-pool" id="pool-area"></div>
-        <button id="next-btn" onclick="nextLevel()">PRÓXIMO ➜</button>
+        
+        <button id="next-btn" onclick="botaoProximoClicado()">PRÓXIMO ➜</button>
     </div>
 
     <script>
@@ -316,55 +322,58 @@
         const scoreEl = document.getElementById('score');
         const levelEl = document.getElementById('level-display');
 
-        // --- SISTEMA DE ÁUDIO GLOBAL PARA IOS ---
+        // --- SISTEMA DE ÁUDIO ROBUSTO ---
         let globalAudioCtx = null;
 
-        // Função chamada pelo botão de Start
+        // Tenta reativar o áudio a cada toque na tela (hack para iOS)
+        document.body.addEventListener('touchstart', function() {
+            if (globalAudioCtx && globalAudioCtx.state === 'suspended') {
+                globalAudioCtx.resume();
+            }
+        }, { passive: true });
+
+        document.body.addEventListener('click', function() {
+            if (globalAudioCtx && globalAudioCtx.state === 'suspended') {
+                globalAudioCtx.resume();
+            }
+        });
+
         function iniciarApp() {
-            // 1. Esconde a tela de início
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('game-container').classList.add('active');
 
-            // 2. Inicializa o AudioContext (Destrava o áudio no iOS)
+            // Cria o contexto de áudio
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             if (AudioContext) {
                 globalAudioCtx = new AudioContext();
-                // Cria um som vazio só para garantir que o "motor" de áudio ligou
-                const buffer = globalAudioCtx.createBuffer(1, 1, 22050);
-                const source = globalAudioCtx.createBufferSource();
-                source.buffer = buffer;
-                source.connect(globalAudioCtx.destination);
-                source.start(0);
-                
-                // Se estiver suspenso (comum no iOS), retoma
-                if (globalAudioCtx.state === 'suspended') {
-                    globalAudioCtx.resume();
-                }
+                // Toca silêncio para "aquecer"
+                try {
+                    const buffer = globalAudioCtx.createBuffer(1, 1, 22050);
+                    const source = globalAudioCtx.createBufferSource();
+                    source.buffer = buffer;
+                    source.connect(globalAudioCtx.destination);
+                    source.start(0);
+                } catch(e) { console.error(e); }
             }
-
-            // 3. Inicia o jogo
             initGame();
         }
 
         function playAudio(name) {
-            let cleanName = name.toLowerCase()
-                                .normalize("NFD")
-                                .replace(/[\u0300-\u036f]/g, "")
-                                .trim();
-            
-            // Cria elemento de áudio on-the-fly
-            const audio = new Audio(`audios/${cleanName}.mp3`);
-            
-            // Importante para iOS: tentar carregar
-            audio.load();
-            
-            var playPromise = audio.play();
-
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.error("Erro ao tocar áudio:", error);
-                    // Fallback para debug se necessário
-                });
+            try {
+                let cleanName = name.toLowerCase()
+                                    .normalize("NFD")
+                                    .replace(/[\u0300-\u036f]/g, "")
+                                    .trim();
+                
+                const audio = new Audio(`audios/${cleanName}.mp3`);
+                // Força carregamento
+                audio.load();
+                const promessa = audio.play();
+                if (promessa !== undefined) {
+                    promessa.catch(e => console.log("Erro áudio (" + cleanName + "):", e));
+                }
+            } catch (err) {
+                console.log("Erro fatal áudio:", err);
             }
         }
 
@@ -375,7 +384,7 @@
             }
         }
 
-        // Sons Sintetizados (Beeps) usando o contexto global destravado
+        // Bips (Acerto/Erro) - Gerados matematicamente para não depender de arquivos
         function tocarSomErro() {
             if (!globalAudioCtx) return;
             try {
@@ -388,7 +397,7 @@
                 osc.start();
                 gain.gain.exponentialRampToValueAtTime(0.00001, globalAudioCtx.currentTime + 0.3);
                 osc.stop(globalAudioCtx.currentTime + 0.3);
-            } catch (e) { console.log(e); }
+            } catch (e) {}
         }
 
         function tocarSomSucessoCurto() {
@@ -397,18 +406,17 @@
                 const osc = globalAudioCtx.createOscillator();
                 const gain = globalAudioCtx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(400, globalAudioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(800, globalAudioCtx.currentTime + 0.15);
+                osc.frequency.setValueAtTime(500, globalAudioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1000, globalAudioCtx.currentTime + 0.1);
                 osc.connect(gain);
                 gain.connect(globalAudioCtx.destination);
                 osc.start();
                 gain.gain.exponentialRampToValueAtTime(0.00001, globalAudioCtx.currentTime + 0.3);
                 osc.stop(globalAudioCtx.currentTime + 0.3);
-            } catch (e) { console.log(e); }
+            } catch (e) {}
         }
 
         // --- LÓGICA DO JOGO ---
-
         function normalizeSy(s) {
             return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         }
@@ -419,6 +427,9 @@
         }
 
         function loadLevel() {
+            // Garante que o botão some
+            nextBtn.style.display = 'none';
+            
             if (currentLevel >= database.length) {
                 alert("Parabéns! Você completou tudo!");
                 currentLevel = 0;
@@ -427,7 +438,6 @@
                 shuffleArray(database);
             }
 
-            nextBtn.style.display = 'none';
             slotsArea.innerHTML = '';
             poolArea.innerHTML = '';
             
@@ -458,10 +468,7 @@
                 const randomSyll = randomWord.syllables[Math.floor(Math.random() * randomWord.syllables.length)];
                 const normRandom = normalizeSy(randomSyll);
                 const isSimilar = poolSyllables.some(existing => normalizeSy(existing) === normRandom);
-
-                if (!isSimilar) {
-                    poolSyllables.push(randomSyll);
-                }
+                if (!isSimilar) poolSyllables.push(randomSyll);
             }
 
             shuffleArray(poolSyllables);
@@ -486,20 +493,21 @@
             if (e.target.classList.contains('placed')) return;
             e.preventDefault();
 
-            // Tenta tocar som da sílaba ao pegar
+            // Tocar som ao pegar a peça (Feedback imediato)
             playAudio(e.target.innerText);
 
             draggedElement = e.target;
             
             const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
             const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
-
             const rect = draggedElement.getBoundingClientRect();
+            
+            // Centraliza
             const offsetX = rect.width / 2; 
             const offsetY = rect.height / 2;
 
             draggedElement.style.position = 'fixed';
-            draggedElement.style.zIndex = '1000';
+            draggedElement.style.zIndex = '2000'; // Super alto enquanto arrasta
             draggedElement.style.width = rect.width + 'px';
             draggedElement.style.height = rect.height + 'px';
             
@@ -526,7 +534,6 @@
 
                 const cx = event.type === 'touchend' ? event.changedTouches[0].clientX : event.clientX;
                 const cy = event.type === 'touchend' ? event.changedTouches[0].clientY : event.clientY;
-
                 drop(cx, cy);
             }
 
@@ -549,11 +556,10 @@
         }
 
         function drop(x, y) {
-            draggedElement.style.zIndex = '2';
+            draggedElement.style.zIndex = '20';
             draggedElement.style.visibility = 'hidden';
             let elemBelow = document.elementFromPoint(x, y);
             draggedElement.style.visibility = 'visible';
-
             let slotBelow = elemBelow ? elemBelow.closest('.slot') : null;
 
             if (slotBelow && !slotBelow.classList.contains('filled')) {
@@ -563,7 +569,7 @@
                 if (correctSyllable === draggedSyllable) {
                     snapToSlot(draggedElement, slotBelow);
                     tocarSomSucessoCurto();
-                    checkWin();
+                    checkWin(); // Verifica se ganhou
                 } else {
                     returnToPool(draggedElement);
                     tocarSomErro();
@@ -573,7 +579,6 @@
             } else {
                 returnToPool(draggedElement);
             }
-            
             document.querySelectorAll('.slot').forEach(s => s.classList.remove('active'));
         }
 
@@ -600,19 +605,26 @@
             const filledSlots = document.querySelectorAll('.slot.filled').length;
 
             if (totalSlots === filledSlots) {
+                // Pontuação
                 score += 10;
                 scoreEl.innerText = score;
+                
+                // Animação e Botão
                 triggerConfetti();
                 nextBtn.style.display = 'block';
-                
-                setTimeout(() => {
+
+                // TOCA O SOM IMEDIATAMENTE (Sem setTimeout para não bloquear no iOS)
+                // Isso liga o som ao evento de "soltar" o dedo
+                try {
                     const palavraCompleta = currentWordObj.syllables.join("");
                     playAudio(palavraCompleta);
-                }, 600);
+                } catch(e) { console.log("Erro som final", e); }
             }
         }
 
-        function nextLevel() {
+        // Função wrapper para garantir que o botão funcione
+        function botaoProximoClicado() {
+            // Tenta parar áudios pendentes? Não precisa.
             currentLevel++;
             loadLevel();
         }
@@ -624,6 +636,7 @@
             }
         }
 
+        // --- CONFETES ---
         const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
         let confettiParticles = [];
@@ -651,9 +664,24 @@
             animateConfetti();
         }
 
-        // --- INICIALIZAÇÃO CORRIGIDA ---
-        // Não chamamos initGame() direto. Esperamos o botão da tela de início.
-        
+        function animateConfetti() {
+            if (confettiParticles.length === 0) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                return;
+            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            confettiParticles.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.5;
+                p.life--;
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, p.size, p.size);
+                if (p.life <= 0) confettiParticles.splice(index, 1);
+            });
+            requestAnimationFrame(animateConfetti);
+        }
+
     </script>
 </body>
 </html>
