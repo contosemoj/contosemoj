@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jogo das Sílabas Inclusivo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Teachers:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --success: #4caf50;
+            --error: #f44336;
+            --bg: #f0f4f8;
+            --card-bg: #ffffff;
+            --text: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            touch-action: none; /* Impede zoom e scroll durante o arrasto */
+        }
+
+        body {
+            font-family: 'Teachers', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Cabeçalho limpo */
+        header {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.4rem; /* Fonte maior */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            z-index: 10;
+        }
+
+        .progress-container {
+            background: rgba(255,255,255,0.25);
+            border-radius: 15px;
+            padding: 5px 20px;
+            font-weight: bold;
+        }
+
+        /* Área Principal */
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 700px;
+            margin-top: 80px;
+            padding: 10px;
+            flex: 1;
+        }
+
+        /* Imagem Maior e Mais Clara */
+        .image-area {
+            background: white;
+            width: 340px; /* Aumentado */
+            height: 220px; /* Aumentado */
+            border-radius: 20px;
+            border: 4px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            font-size: 6rem;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .image-area:active {
+            transform: scale(0.95);
+        }
+
+        .image-area img {
+            max-width: 85%;
+            max-height: 85%;
+            object-fit: contain;
+        }
+
+        .sound-indicator {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 2rem;
+            opacity: 0.8;
+            color: var(--primary);
+        }
+
+        /* Slots (Buracos) Maiores para facilitar a motricidade */
+        .slots-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .slot {
+            width: 90px; /* Mais largo */
+            height: 90px; /* Mais alto */
+            border: 4px dashed #aaa;
+            border-radius: 15px;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .slot.active {
+            border-color: var(--primary);
+            background-color: #dbeafe;
+            transform: scale(1.1);
+        }
+
+        .slot.filled {
+            border-style: solid;
+            border-color: var(--success);
+            background-color: #fff;
+        }
+
+        /* Área das Peças */
+        .pieces-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px; /* Mais espaçamento entre peças */
+            justify-content: center;
+            width: 100%;
+            min-height: 120px;
+            padding: 10px;
+        }
+
+        /* Peça Arrastável - Maior e mais fácil de pegar */
+        .draggable-piece {
+            width: 85px;
+            height: 85px;
+            background-color: #fff;
+            border: 3px solid #333;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem; /* Letra maior */
+            font-weight: 800;
+            cursor: grab;
+            box-shadow: 0 5px 0px rgba(0,0,0,0.2); /* Efeito 3D simples */
+            touch-action: none;
+            position: relative;
+            z-index: 2;
+            user-select: none;
+        }
+
+        .draggable-piece:active {
+            cursor: grabbing;
+            transform: translateY(3px);
+            box-shadow: 0 2px 0px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .draggable-piece.placed {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-color: #2e7d32;
+            box-shadow: none;
+            cursor: default;
+        }
+
+        /* Botão Próximo */
+        #next-btn {
+            margin-top: 10px;
+            padding: 15px 50px;
+            background-color: var(--success);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.8rem;
+            font-family: 'Teachers', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #next-btn:hover {
+            background-color: #43a047;
+            transform: scale(1.05);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .shake {
+            animation: shake 0.4s ease-in-out;
+            border-color: var(--error) !important;
+            background-color: #ffebee !important;
+        }
+
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <header>
+        <div id="level-display">Nível 1</div>
+        <div class="progress-container">
+            ⭐ <span id="score">0</span>
+        </div>
+    </header>
+
+    <div id="game-container">
+        <!-- Imagem -->
+        <div class="image-area" id="target-image" onclick="tocarPalavraAtual()">
+            <!-- JS insere img aqui -->
+        </div>
+
+        <!-- Buracos -->
+        <div class="slots-container" id="slots-area"></div>
+
+        <!-- Peças -->
+        <div class="pieces-pool" id="pool-area"></div>
+
+        <button id="next-btn" onclick="nextLevel()">PRÓXIMO ➜</button>
+    </div>
+
+    <script>
+        // --- DADOS DO JOGO ---
+        const database = [
+            { syllables: ["DA", "DO"], image: "🎲", type: "emoji" },
+            { syllables: ["DA", "TA"], image: "📅", type: "emoji" },
+            { syllables: ["DE", "DO"], image: "☝️", type: "emoji" },
+            { syllables: ["DI", "A"], image: "🌄🕛", type: "emoji" },
+            { syllables: ["TU", "DO"], image: "☑️☑️", type: "emoji" },
+            { syllables: ["BA", "TA", "TA"], image: "🥔", type: "emoji" },
+            { syllables: ["BA", "Ú"], image: "img/bau.png", type: "img" },
+            { syllables: ["BA", "BÁ"], image: "img/baba.png", type: "img" },
+            { syllables: ["A", "BA"], image: "img/aba.png", type: "img" },
+            { syllables: ["BE", "BÊ"], image: "👶", type: "emoji" },
+            { syllables: ["BO", "I"], image: "🐂", type: "emoji" },
+            { syllables: ["BO", "TE"], image: "img/bote.png", type: "img" },
+            { syllables: ["BO", "DE"], image: "🐐", type: "emoji" },
+            { syllables: ["BO", "TA"], image: "👢", type: "emoji" },
+            { syllables: ["PA", "TO"], image: "🦆", type: "emoji" },
+            { syllables: ["PÁ"], image: "🪏", type: "emoji" },
+            { syllables: ["PÉ"], image: "🦶", type: "emoji" },
+            { syllables: ["PI", "PA"], image: "🪁", type: "emoji" },
+            { syllables: ["A", "PI", "TO"], image: "img/apito.png", type: "img" },
+            { syllables: ["PO", "TE"], image: "🫙", type: "emoji" },
+            { syllables: ["TA", "TU"], image: "img/tatu.png", type: "img" },
+            { syllables: ["TA", "PE", "TE"], image: "img/tapete.png", type: "img" },
+            { syllables: ["TÁ", "BU", "A"], image: "img/tabua.png", type: "img" },
+            { syllables: ["PA", "TA"], image: "img/pata.png", type: "img" },
+            { syllables: ["BA", "TE"], image: "👊", type: "emoji" },
+            { syllables: ["PA", "TE", "TA"], image: "🤪", type: "emoji" },
+            { syllables: ["TI", "A"], image: "👩", type: "emoji" },
+            { syllables: ["TI", "O"], image: "👨", type: "emoji" },
+            { syllables: ["TU", "BO"], image: "🧪", type: "emoji" },
+            { syllables: ["TU", "TU"], image: "img/tutu.png", type: "img" },
+            { syllables: ["TU", "BA"], image: "img/tuba.png", type: "img" }
+        ];
+
+        let currentLevel = 0;
+        let score = 0;
+        let currentWordObj = null;
+        let draggedElement = null;
+
+        const imageArea = document.getElementById('target-image');
+        const slotsArea = document.getElementById('slots-area');
+        const poolArea = document.getElementById('pool-area');
+        const nextBtn = document.getElementById('next-btn');
+        const scoreEl = document.getElementById('score');
+        const levelEl = document.getElementById('level-display');
+
+        // --- SISTEMA DE ÁUDIO ---
+        function playAudio(name) {
+            let formattedName;
+            if (name.length === 1) {
+                formattedName = name.toUpperCase();
+            } else {
+                formattedName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+            }
+            const audio = new Audio(`audios/${formattedName}.mp3`);
+            audio.play().catch(e => {
+                // Silencioso se falhar, sem alertas
+            });
+        }
+
+        function tocarPalavraAtual() {
+            if(currentWordObj) {
+                const palavraCompleta = currentWordObj.syllables.join("");
+                playAudio(palavraCompleta);
+            }
+        }
+
+        // Sons gerados para feedback imediato
+        function tocarSomErro() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.value = 120; // Mais grave, menos agressivo
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.3);
+                osc.stop(ctx.currentTime + 0.3);
+            } catch (e) {}
+        }
+
+        function tocarSomSucessoCurto() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.15);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.3);
+                osc.stop(ctx.currentTime + 0.3);
+            } catch (e) {}
+        }
+
+        // --- LÓGICA DO JOGO ---
+
+        // Função auxiliar para remover acentos (para comparações)
+        function normalizeSy(s) {
+            return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        }
+
+        function initGame() {
+            shuffleArray(database);
+            loadLevel();
+        }
+
+        function loadLevel() {
+            if (currentLevel >= database.length) {
+                alert("Parabéns! Você completou tudo!");
+                currentLevel = 0;
+                score = 0;
+                scoreEl.innerText = score;
+                shuffleArray(database);
+            }
+
+            nextBtn.style.display = 'none';
+            slotsArea.innerHTML = '';
+            poolArea.innerHTML = '';
+            
+            currentWordObj = database[currentLevel];
+            levelEl.innerText = `Palavra ${currentLevel + 1}`;
+
+            // Renderizar Imagem
+            let imgContent = '';
+            if (currentWordObj.type === 'emoji') {
+                imgContent = currentWordObj.image;
+            } else {
+                imgContent = `<img src="${currentWordObj.image}" alt="Imagem" onerror="this.style.display='none'; this.parentElement.innerText='🖼️'">`;
+            }
+            imageArea.innerHTML = `${imgContent}<span class="sound-indicator">🔊</span>`;
+
+            // Criar Slots
+            currentWordObj.syllables.forEach((syll, index) => {
+                const slot = document.createElement('div');
+                slot.classList.add('slot');
+                slot.dataset.correctSyllable = syll;
+                slot.dataset.index = index;
+                slotsArea.appendChild(slot);
+            });
+
+            // --- CRIAÇÃO DE PEÇAS COM FILTRO DE FACILITAÇÃO ---
+            let poolSyllables = [...currentWordObj.syllables];
+            
+            // Adiciona APENAS 1 intrusa para facilitar
+            let attempts = 0;
+            while(poolSyllables.length < currentWordObj.syllables.length + 1 && attempts < 100) {
+                attempts++;
+                const randomWord = database[Math.floor(Math.random() * database.length)];
+                const randomSyll = randomWord.syllables[Math.floor(Math.random() * randomWord.syllables.length)];
+                
+                // LÓGICA IMPORTANTE: 
+                // 1. Verifica se já existe na lista exata
+                // 2. Verifica se existe uma versão "parecida" (ex: não coloca BÁ se já tem BA)
+                
+                const normRandom = normalizeSy(randomSyll);
+                
+                const isSimilar = poolSyllables.some(existing => {
+                    return normalizeSy(existing) === normRandom;
+                });
+
+                if (!isSimilar) {
+                    poolSyllables.push(randomSyll);
+                }
+            }
+
+            shuffleArray(poolSyllables);
+
+            poolSyllables.forEach(txt => {
+                const piece = document.createElement('div');
+                piece.classList.add('draggable-piece');
+                piece.innerText = txt;
+                piece.dataset.syllable = txt;
+                addDragEvents(piece);
+                poolArea.appendChild(piece);
+            });
+        }
+
+        // --- ARRASTAR E SOLTAR ---
+        function addDragEvents(el) {
+            el.addEventListener('mousedown', startDrag);
+            el.addEventListener('touchstart', startDrag, {passive: false});
+        }
+
+        function startDrag(e) {
+            if (e.target.classList.contains('placed')) return;
+            e.preventDefault();
+
+            playAudio(e.target.innerText); // Fala a sílaba
+
+            draggedElement = e.target;
+            
+            const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+
+            const rect = draggedElement.getBoundingClientRect();
+            // Ajuste para pegar pelo centro (facilita para dedo em tela touch)
+            const offsetX = rect.width / 2; 
+            const offsetY = rect.height / 2;
+
+            draggedElement.style.position = 'fixed';
+            draggedElement.style.zIndex = '1000';
+            draggedElement.style.width = rect.width + 'px';
+            draggedElement.style.height = rect.height + 'px';
+            
+            // Centraliza o elemento no dedo/mouse imediatamente
+            moveAt(clientX, clientY, offsetX, offsetY);
+
+            function moveAt(pageX, pageY, offX, offY) {
+                draggedElement.style.left = (pageX - offX) + 'px';
+                draggedElement.style.top = (pageY - offY) + 'px';
+            }
+
+            function onMove(event) {
+                event.preventDefault();
+                const cx = event.type === 'touchmove' ? event.touches[0].clientX : event.clientX;
+                const cy = event.type === 'touchmove' ? event.touches[0].clientY : event.clientY;
+                moveAt(cx, cy, offsetX, offsetY);
+                checkHover(cx, cy);
+            }
+
+            function onEnd(event) {
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onEnd);
+                document.removeEventListener('touchmove', onMove);
+                document.removeEventListener('touchend', onEnd);
+
+                const cx = event.type === 'touchend' ? event.changedTouches[0].clientX : event.clientX;
+                const cy = event.type === 'touchend' ? event.changedTouches[0].clientY : event.clientY;
+
+                drop(cx, cy);
+            }
+
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onEnd);
+            document.addEventListener('touchmove', onMove, {passive: false});
+            document.addEventListener('touchend', onEnd);
+        }
+
+        function checkHover(x, y) {
+            document.querySelectorAll('.slot').forEach(s => s.classList.remove('active'));
+            draggedElement.style.visibility = 'hidden';
+            let elemBelow = document.elementFromPoint(x, y);
+            draggedElement.style.visibility = 'visible';
+            if (!elemBelow) return;
+            let slotBelow = elemBelow.closest('.slot');
+            if (slotBelow && !slotBelow.classList.contains('filled')) {
+                slotBelow.classList.add('active');
+            }
+        }
+
+        function drop(x, y) {
+            draggedElement.style.zIndex = '2';
+            draggedElement.style.visibility = 'hidden';
+            let elemBelow = document.elementFromPoint(x, y);
+            draggedElement.style.visibility = 'visible';
+
+            let slotBelow = elemBelow ? elemBelow.closest('.slot') : null;
+
+            if (slotBelow && !slotBelow.classList.contains('filled')) {
+                const correctSyllable = slotBelow.dataset.correctSyllable;
+                const draggedSyllable = draggedElement.dataset.syllable;
+
+                if (correctSyllable === draggedSyllable) {
+                    snapToSlot(draggedElement, slotBelow);
+                    tocarSomSucessoCurto();
+                    checkWin();
+                } else {
+                    returnToPool(draggedElement);
+                    tocarSomErro();
+                    slotBelow.classList.add('shake');
+                    setTimeout(() => slotBelow.classList.remove('shake'), 500);
+                }
+            } else {
+                returnToPool(draggedElement);
+            }
+            
+            document.querySelectorAll('.slot').forEach(s => s.classList.remove('active'));
+        }
+
+        function snapToSlot(piece, slot) {
+            piece.style.position = 'relative';
+            piece.style.left = 'auto';
+            piece.style.top = 'auto';
+            piece.style.zIndex = '1';
+            piece.classList.add('placed');
+            slot.innerHTML = '';
+            slot.appendChild(piece);
+            slot.classList.add('filled');
+        }
+
+        function returnToPool(piece) {
+            piece.style.position = 'relative';
+            piece.style.left = 'auto';
+            piece.style.top = 'auto';
+            poolArea.appendChild(piece);
+        }
+
+        function checkWin() {
+            const totalSlots = document.querySelectorAll('.slot').length;
+            const filledSlots = document.querySelectorAll('.slot.filled').length;
+
+            if (totalSlots === filledSlots) {
+                score += 10;
+                scoreEl.innerText = score;
+                triggerConfetti();
+                nextBtn.style.display = 'block';
+                
+                setTimeout(() => {
+                    const palavraCompleta = currentWordObj.syllables.join("");
+                    playAudio(palavraCompleta);
+                }, 600);
+            }
+        }
+
+        function nextLevel() {
+            currentLevel++;
+            loadLevel();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let confettiParticles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function triggerConfetti() {
+            confettiParticles = [];
+            for (let i = 0; i < 100; i++) {
+                confettiParticles.push({
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight / 2,
+                    vx: (Math.random() - 0.5) * 20,
+                    vy: (Math.random() - 0.5) * 20,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+                    size: Math.random() * 12 + 6,
+                    life: 120
+                });
+            }
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            if (confettiParticles.length === 0) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                return;
+            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            confettiParticles.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.5;
+                p.life--;
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, p.size, p.size);
+                if (p.life <= 0) confettiParticles.splice(index, 1);
+            });
+            requestAnimationFrame(animateConfetti);
+        }
+
+        initGame();
+
+    </script>
+</body>
+</html>
