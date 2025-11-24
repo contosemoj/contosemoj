@@ -314,16 +314,29 @@
 
         // --- SISTEMA DE ÁUDIO ---
         function playAudio(name) {
-            let formattedName;
-            if (name.length === 1) {
-                formattedName = name.toUpperCase();
-            } else {
-                formattedName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+            // 1. Converte para minúsculo (dado)
+            // 2. Remove acentos (bebe em vez de bebê)
+            // 3. Remove espaços extras
+            let cleanName = name.toLowerCase()
+                                .normalize("NFD")
+                                .replace(/[\u0300-\u036f]/g, "")
+                                .trim();
+            
+            // Console log para te ajudar a ver o que ele está a tentar tocar
+            console.log("Tentando tocar: audios/" + cleanName + ".mp3");
+
+            const audio = new Audio(`audios/${cleanName}.mp3`);
+            
+            // Tenta tocar e avisa se der erro
+            var playPromise = audio.play();
+
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.error("Erro ao tocar o áudio:", error);
+                    // Dica: Se quiseres ver o erro no iPad, descomenta a linha abaixo:
+                    // alert("Não achei o áudio: " + cleanName + ".mp3");
+                });
             }
-            const audio = new Audio(`audios/${formattedName}.mp3`);
-            audio.play().catch(e => {
-                // Silencioso se falhar, sem alertas
-            });
         }
 
         function tocarPalavraAtual() {
