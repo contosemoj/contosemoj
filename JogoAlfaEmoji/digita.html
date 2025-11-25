@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Teclado das Sílabas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Teachers:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --success: #4caf50;
+            --error: #f44336;
+            --bg: #eef2f5;
+            --key-bg: #ffffff;
+            --key-shadow: #b0b0b0;
+        }
+
+        * { box-sizing: border-box; touch-action: manipulation; }
+
+        body {
+            font-family: 'Teachers', sans-serif;
+            background-color: var(--bg);
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: space-between;
+            height: 100vh; overflow: hidden;
+            user-select: none;
+        }
+
+        /* TELA DE INÍCIO */
+        #start-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(74, 144, 226, 0.98);
+            z-index: 5000;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            color: white; text-align: center;
+        }
+
+        #start-btn {
+            background: #fff; color: var(--primary);
+            border: none; padding: 25px 70px;
+            font-size: 2.2rem; border-radius: 60px;
+            font-weight: 800; cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* ÁREA SUPERIOR (Imagem e Palavra) */
+        .game-stage {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .image-container {
+            width: 200px; height: 160px;
+            background: white;
+            border-radius: 20px;
+            border: 4px solid #333;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 5rem;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .image-container img {
+            max-width: 90%; max-height: 90%; object-fit: contain;
+        }
+
+        .word-display {
+            display: flex; gap: 10px;
+            font-size: 3rem; font-weight: bold;
+            background: #fff;
+            padding: 15px 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .syllable {
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+
+        .syllable.missing {
+            color: var(--primary);
+            border-bottom: 4px solid var(--primary);
+            min-width: 80px;
+            text-align: center;
+            background-color: #e3f2fd;
+        }
+
+        .syllable.filled {
+            color: var(--success);
+            border-bottom: 4px solid var(--success);
+            background-color: #e8f5e9;
+        }
+
+        /* TECLADO VIRTUAL */
+        .keyboard-container {
+            width: 100%;
+            max-width: 900px;
+            background: #d1d5db;
+            padding: 15px 5px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-bottom: 30px;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .key {
+            width: 8vw; max-width: 60px;
+            height: 55px;
+            background: var(--key-bg);
+            border-radius: 8px;
+            border: none;
+            box-shadow: 0 4px 0 var(--key-shadow);
+            font-family: 'Teachers', sans-serif;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.1s;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+
+        .key:active, .key.pressed {
+            transform: translateY(4px);
+            box-shadow: none;
+            background-color: #e0e0e0;
+        }
+
+        /* Teclas desativadas */
+        .key.disabled {
+            opacity: 0.3;
+            pointer-events: none;
+            background: #f0f0f0;
+            box-shadow: 0 2px 0 #ccc;
+        }
+
+        /* Teclas alvo (Visual Aid) */
+        .key:not(.disabled) {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        #next-btn {
+            position: absolute;
+            bottom: 20%;
+            background-color: var(--success);
+            color: white;
+            padding: 15px 40px;
+            border: none; border-radius: 50px;
+            font-size: 1.8rem; font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 100;
+            animation: popIn 0.5s;
+        }
+
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+        
+        .shake { animation: shake 0.4s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Confete */
+        #confetti-canvas {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 90;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="confetti-canvas"></canvas>
+
+    <div id="start-overlay">
+        <h1>Treino de Teclado</h1>
+        <p>Complete a sílaba que falta!</p>
+        <br>
+        <button id="start-btn" onclick="iniciarApp()">▶ COMEÇAR</button>
+    </div>
+
+    <div class="game-stage">
+        <div class="image-container" id="target-image"></div>
+        <div class="word-display" id="word-area"></div>
+        <button id="next-btn" onclick="nextLevel()">PRÓXIMO ➜</button>
+    </div>
+
+    <div class="keyboard-container" id="virtual-keyboard">
+        <!-- Teclado gerado via JS -->
+    </div>
+
+    <script>
+        // --- CONFIGURAÇÃO ---
+        const ALLOWED_KEYS = ['A', 'E', 'I', 'O', 'U', 'P', 'B', 'T', 'D'];
+        
+        const database = [
+            { syllables: ["DA", "DO"], image: "🎲", type: "emoji" },
+            { syllables: ["DA", "TA"], image: "📅", type: "emoji" },
+            { syllables: ["DE", "DO"], image: "☝️", type: "emoji" },
+            { syllables: ["DI", "A"], image: "🌄🕛", type: "emoji" },
+            { syllables: ["TU", "DO"], image: "☑️☑️", type: "emoji" },
+            { syllables: ["BA", "TA", "TA"], image: "🥔", type: "emoji" },
+            { syllables: ["BA", "Ú"], image: "img/bau.png", type: "img" },
+            { syllables: ["BA", "BÁ"], image: "img/baba.png", type: "img" },
+            { syllables: ["A", "BA"], image: "img/aba.png", type: "img" },
+            { syllables: ["BE", "BÊ"], image: "👶", type: "emoji" },
+            { syllables: ["BO", "I"], image: "🐂", type: "emoji" },
+            { syllables: ["BO", "TE"], image: "img/bote.png", type: "img" },
+            { syllables: ["BO", "DE"], image: "🐐", type: "emoji" },
+            { syllables: ["BO", "TA"], image: "👢", type: "emoji" },
+            { syllables: ["PA", "TO"], image: "🦆", type: "emoji" },
+            { syllables: ["PÁ"], image: "🪏", type: "emoji" },
+            { syllables: ["PÉ"], image: "🦶", type: "emoji" },
+            { syllables: ["PI", "PA"], image: "🪁", type: "emoji" },
+            { syllables: ["A", "PI", "TO"], image: "img/apito.png", type: "img" },
+            { syllables: ["PO", "TE"], image: "🫙", type: "emoji" },
+            { syllables: ["TA", "TU"], image: "img/tatu.png", type: "img" },
+            { syllables: ["TA", "PE", "TE"], image: "img/tapete.png", type: "img" },
+            { syllables: ["TÁ", "BU", "A"], image: "img/tabua.png", type: "img" },
+            { syllables: ["PA", "TA"], image: "img/pata.png", type: "img" },
+            { syllables: ["BA", "TE"], image: "👊", type: "emoji" },
+            { syllables: ["PA", "TE", "TA"], image: "🤪", type: "emoji" },
+            { syllables: ["TI", "A"], image: "👩", type: "emoji" },
+            { syllables: ["TI", "O"], image: "👨", type: "emoji" },
+            { syllables: ["TU", "BO"], image: "🧪", type: "emoji" },
+            { syllables: ["TU", "TU"], image: "img/tutu.png", type: "img" },
+            { syllables: ["TU", "BA"], image: "img/tuba.png", type: "img" }
+        ];
+
+        let currentLevel = 0;
+        let currentWordObj = null;
+        let missingSyllableIndex = 0;
+        let currentTyped = ""; // O que a criança já digitou da sílaba faltante
+        let targetSyllableClean = ""; // A sílaba alvo sem acentos
+        let globalAudioCtx = null;
+
+        // --- INICIALIZAÇÃO ---
+        function iniciarApp() {
+            document.getElementById('start-overlay').style.display = 'none';
+            initAudio();
+            generateKeyboard();
+            initGame();
+        }
+
+        // --- TECLADO VIRTUAL QWERTY ---
+        function generateKeyboard() {
+            const layout = [
+                "QWERTYUIOP",
+                "ASDFGHJKL",
+                "ZXCVBNM"
+            ];
+            const kbContainer = document.getElementById('virtual-keyboard');
+            kbContainer.innerHTML = '';
+
+            layout.forEach(rowStr => {
+                const rowDiv = document.createElement('div');
+                rowDiv.classList.add('keyboard-row');
+                
+                rowStr.split('').forEach(char => {
+                    const btn = document.createElement('button');
+                    btn.classList.add('key');
+                    btn.innerText = char;
+                    btn.dataset.key = char;
+                    
+                    // Lógica de Desativação
+                    if (!ALLOWED_KEYS.includes(char)) {
+                        btn.classList.add('disabled');
+                    } else {
+                        btn.onclick = () => handleInput(char);
+                    }
+                    
+                    rowDiv.appendChild(btn);
+                });
+                kbContainer.appendChild(rowDiv);
+            });
+        }
+
+        // --- INPUT HANDLING (Físico e Virtual) ---
+        document.addEventListener('keydown', (e) => {
+            const key = e.key.toUpperCase();
+            if (ALLOWED_KEYS.includes(key)) {
+                handleInput(key);
+                // Efeito visual na tecla virtual
+                const virtualKey = document.querySelector(`.key[data-key="${key}"]`);
+                if (virtualKey) {
+                    virtualKey.classList.add('pressed');
+                    setTimeout(() => virtualKey.classList.remove('pressed'), 150);
+                }
+            }
+        });
+
+        function handleInput(char) {
+            if (document.getElementById('next-btn').style.display === 'block') return; // Jogo pausado
+
+            // 1. Verificar se a letra está correta na posição atual
+            const expectedChar = targetSyllableClean[currentTyped.length];
+            
+            if (char === expectedChar) {
+                // Acertou a letra
+                currentTyped += char;
+                updateDisplay();
+                playTone('high');
+                
+                // Verificou se completou a sílaba
+                if (currentTyped === targetSyllableClean) {
+                    completeSyllable();
+                }
+            } else {
+                // Errou a letra
+                playTone('low');
+                const activeSyllableEl = document.querySelector('.syllable.missing');
+                if (activeSyllableEl) {
+                    activeSyllableEl.classList.add('shake');
+                    setTimeout(() => activeSyllableEl.classList.remove('shake'), 400);
+                }
+            }
+        }
+
+        function updateDisplay() {
+            const missingEl = document.querySelector('.syllable.missing');
+            if (missingEl) {
+                // Mostra o que já foi digitado + underlines para o que falta
+                let displayTxt = currentTyped;
+                const remaining = targetSyllableClean.length - currentTyped.length;
+                for(let i=0; i<remaining; i++) displayTxt += "_";
+                missingEl.innerText = displayTxt;
+            }
+        }
+
+        function completeSyllable() {
+            const missingEl = document.querySelector('.syllable.missing');
+            // Coloca a sílaba original (com acento se tiver)
+            missingEl.innerText = currentWordObj.syllables[missingSyllableIndex];
+            missingEl.classList.remove('missing');
+            missingEl.classList.add('filled');
+            
+            // Vitória
+            triggerConfetti();
+            document.getElementById('next-btn').style.display = 'block';
+            
+            // Tocar som da palavra
+            setTimeout(() => {
+                const palavra = currentWordObj.syllables.join("");
+                playAudio(palavra);
+            }, 300);
+        }
+
+        // --- LÓGICA DO JOGO ---
+        function initGame() {
+            shuffleArray(database);
+            loadLevel();
+        }
+
+        function loadLevel() {
+            if (currentLevel >= database.length) {
+                currentLevel = 0;
+                shuffleArray(database);
+            }
+
+            document.getElementById('next-btn').style.display = 'none';
+            currentWordObj = database[currentLevel];
+            
+            // Escolher uma sílaba aleatória para esconder
+            // Preferência: esconder sílabas que contenham as letras permitidas (o banco só tem essas, mas ok)
+            missingSyllableIndex = Math.floor(Math.random() * currentWordObj.syllables.length);
+            
+            // Preparar alvo limpo (sem acentos) para comparação de digitação
+            const rawSyllable = currentWordObj.syllables[missingSyllableIndex];
+            targetSyllableClean = rawSyllable.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+            
+            currentTyped = "";
+
+            renderUI();
+        }
+
+        function renderUI() {
+            const imgArea = document.getElementById('target-image');
+            const wordArea = document.getElementById('word-area');
+
+            // Renderizar Imagem
+            if (currentWordObj.type === 'emoji') {
+                imgArea.innerHTML = currentWordObj.image;
+            } else {
+                imgArea.innerHTML = `<img src="${currentWordObj.image}" onerror="this.parentElement.innerText='🖼️'">`;
+            }
+
+            // Renderizar Palavra
+            wordArea.innerHTML = '';
+            currentWordObj.syllables.forEach((syl, idx) => {
+                const span = document.createElement('span');
+                span.classList.add('syllable');
+                if (idx === missingSyllableIndex) {
+                    span.classList.add('missing');
+                    // Cria underlines baseados no tamanho da sílaba
+                    let underlines = "";
+                    for(let i=0; i<targetSyllableClean.length; i++) underlines += "_";
+                    span.innerText = underlines;
+                } else {
+                    span.innerText = syl;
+                }
+                wordArea.appendChild(span);
+            });
+        }
+
+        function nextLevel() {
+            currentLevel++;
+            loadLevel();
+        }
+
+        // --- ÁUDIO ROBUSTO ---
+        function initAudio() {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (AudioContext) {
+                globalAudioCtx = new AudioContext();
+                // Resume se suspenso
+                if (globalAudioCtx.state === 'suspended') globalAudioCtx.resume();
+            }
+        }
+
+        function playTone(type) {
+            if (!globalAudioCtx) return;
+            const osc = globalAudioCtx.createOscillator();
+            const gain = globalAudioCtx.createGain();
+            
+            if (type === 'high') { // Acerto
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, globalAudioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1000, globalAudioCtx.currentTime + 0.1);
+            } else { // Erro
+                osc.type = 'sawtooth';
+                osc.frequency.value = 150;
+                gain.gain.value = 0.5;
+            }
+
+            osc.connect(gain);
+            gain.connect(globalAudioCtx.destination);
+            osc.start();
+            gain.gain.exponentialRampToValueAtTime(0.0001, globalAudioCtx.currentTime + 0.2);
+            osc.stop(globalAudioCtx.currentTime + 0.2);
+        }
+
+        function playAudio(name) {
+            // Normalização rigorosa para encontrar o arquivo
+            let cleanName = name.toLowerCase()
+                                .normalize("NFD")
+                                .replace(/[\u0300-\u036f]/g, "")
+                                .trim();
+            const path = `audios/${cleanName}.mp3`;
+            const audio = new Audio(path);
+            
+            // Fallback se não encontrar
+            audio.onerror = () => { console.log("Áudio não encontrado, usando bip."); playTone('high'); };
+            
+            audio.play().catch(e => console.log(e));
+        }
+
+        // --- UTILITÁRIOS ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // --- CONFETES ---
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let confettiParticles = [];
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas); resizeCanvas();
+
+        function triggerConfetti() {
+            confettiParticles = [];
+            for (let i = 0; i < 100; i++) {
+                confettiParticles.push({
+                    x: window.innerWidth / 2, y: window.innerHeight / 2,
+                    vx: (Math.random() - 0.5) * 20, vy: (Math.random() - 0.5) * 20,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`, size: Math.random() * 12 + 6, life: 120
+                });
+            }
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            if (confettiParticles.length === 0) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            confettiParticles.forEach((p, index) => {
+                p.x += p.vx; p.y += p.vy; p.vy += 0.5; p.life--;
+                ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, p.size, p.size);
+                if (p.life <= 0) confettiParticles.splice(index, 1);
+            });
+            requestAnimationFrame(animateConfetti);
+        }
+    </script>
+</body>
+</html>
