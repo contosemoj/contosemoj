@@ -3,527 +3,709 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Teclado das Sílabas</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Teachers:wght@400;700&display=swap" rel="stylesheet">
+    <title>Jogo de Digitar - Alfabetização</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-        :root {
-            --primary: #4a90e2;
-            --success: #4caf50;
-            --error: #f44336;
-            --bg: #eef2f5;
-            --key-bg: #ffffff;
-            --key-shadow: #b0b0b0;
-        }
-
-        * { box-sizing: border-box; touch-action: manipulation; }
-
         body {
-            font-family: 'Teachers', sans-serif;
-            background-color: var(--bg);
-            margin: 0; padding: 0;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: space-between;
-            height: 100vh; overflow: hidden;
+            font-family: 'Fredoka', sans-serif;
+            background-color: #f0f9ff;
+            background-image: radial-gradient(#bae6fd 2px, transparent 2px);
+            background-size: 30px 30px;
+            overflow-x: hidden;
+        }
+        
+        /* --- ESTILOS DO JOGO --- */
+        .letter-box {
+            transition: all 0.2s;
+            text-transform: uppercase;
+            cursor: default;
             user-select: none;
         }
-
-        /* TELA DE INÍCIO */
-        #start-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(74, 144, 226, 0.98);
-            z-index: 5000;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            color: white; text-align: center;
+        .correct {
+            background-color: #86efac !important;
+            border-color: #22c55e !important;
+            color: #14532d;
+            transform: scale(1.05);
+        }
+        .incorrect {
+            background-color: #fca5a5 !important;
+            border-color: #ef4444 !important;
+            animation: shake 0.4s ease-in-out;
+        }
+        .active-box {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+            transform: scale(1.1);
+            background-color: #fff;
+            z-index: 10;
+        }
+        .filled-static {
+            background-color: #e5e7eb; 
+            color: #9ca3af; 
+            border-color: #d1d5db;
         }
 
-        #start-btn {
-            background: #fff; color: var(--primary);
-            border: none; padding: 25px 70px;
-            font-size: 2.2rem; border-radius: 60px;
-            font-weight: 800; cursor: pointer;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            animation: pulse 2s infinite;
+        /* --- ESTILOS DO TECLADO --- */
+        .key {
+            transition: transform 0.1s, box-shadow 0.1s, background-color 0.2s;
+            box-shadow: 0 4px 0 #9ca3af;
+            touch-action: manipulation;
+            user-select: none;
+        }
+        .key:active, .key.active-press {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #9ca3af;
+            background-color: #bfdbfe !important;
+        }
+        
+        .key-learned {
+            background-color: #eff6ff;
+            color: #1e40af;
+            border-bottom: 4px solid #3b82f6;
+            box-shadow: 0 4px 0 #1d4ed8;
+        }
+        .key-learned:active, .key-learned.active-press {
+            background-color: #60a5fa !important;
+            color: white;
+            box-shadow: 0 0 0 #1d4ed8;
+            border-bottom: 0;
+            transform: translateY(4px);
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        /* ÁREA SUPERIOR (Imagem e Palavra) */
-        .game-stage {
-            flex: 1;
+        /* --- ÁREA DE IMAGEM --- */
+        .image-monitor {
+            background: white;
+            border: 4px solid #3b82f6;
+            border-radius: 1rem;
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.15);
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 100%;
-            padding: 10px;
-            /* Garante que a área do jogo não seja espremida demais pelo teclado grande */
-            min-height: 40vh; 
-        }
-
-        .image-container {
-            width: 220px; height: 180px;
-            background: white;
-            border-radius: 25px;
-            border: 5px solid #333;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 6rem;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            position: relative;
-            transition: transform 0.3s;
-        }
-        
-        .image-container img {
-            max-width: 85%; max-height: 85%; object-fit: contain;
-        }
-
-        .word-display {
-            display: flex; gap: 15px;
-            font-size: 3.5rem; font-weight: 800;
-            background: #fff;
-            padding: 20px 40px;
-            border-radius: 20px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-        }
-
-        .syllable {
-            padding: 5px 15px;
-            border-radius: 12px;
-        }
-
-        .syllable.missing {
-            color: var(--primary);
-            border-bottom: 5px solid var(--primary);
-            min-width: 100px;
-            text-align: center;
-            background-color: #e3f2fd;
-        }
-
-        .syllable.filled {
-            color: var(--success);
-            border-bottom: 5px solid var(--success);
-            background-color: #e8f5e9;
-        }
-
-        /* TECLADO VIRTUAL GIGANTE */
-        .keyboard-container {
-            width: 100%;
-            max-width: 1000px; /* Mais largo para telas grandes */
-            background: #d1d5db;
-            padding: 25px 10px;
-            border-radius: 30px 30px 0 0;
-            display: flex;
-            flex-direction: column;
-            gap: 12px; /* Mais espaço entre linhas */
-            padding-bottom: 40px; /* Espaço extra embaixo para tablets */
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
-        }
-
-        .keyboard-row {
-            display: flex;
-            justify-content: center;
-            gap: 8px; /* Mais espaço entre teclas */
-        }
-
-        .key {
-            width: 8.5vw; max-width: 85px; /* Aumentado significativamente */
-            height: 72px; /* Mais alta */
-            background: var(--key-bg);
-            border-radius: 12px; /* Mais arredondado */
-            border: none;
-            box-shadow: 0 6px 0 var(--key-shadow); /* Sombra maior para parecer botão físico */
-            font-family: 'Teachers', sans-serif;
-            font-size: 2.2rem; /* Letra maior */
-            font-weight: bold;
-            color: #333;
+            overflow: hidden;
             cursor: pointer;
-            transition: all 0.1s;
-            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s, box-shadow 0.2s;
             position: relative;
         }
-
-        .key:active, .key.pressed {
-            transform: translateY(6px); /* Afunda mais */
-            box-shadow: none;
-            background-color: #e0e0e0;
+        .image-monitor:active {
+            transform: scale(0.98);
         }
-
-        /* Teclas desativadas */
-        .key.disabled {
-            opacity: 0.25;
-            pointer-events: none;
-            background: #e6e6e6;
-            box-shadow: 0 3px 0 #ccc;
-            color: #999;
-        }
-
-        /* Teclas alvo (Visual Aid) */
-        .key:not(.disabled) {
-            border: 3px solid var(--primary);
-            color: var(--primary);
-            background-color: #fff;
-        }
-
-        #next-btn {
+        .sound-hint {
             position: absolute;
-            bottom: 30%; /* Subi um pouco para não ficar em cima do teclado */
-            background-color: var(--success);
-            color: white;
-            padding: 20px 60px;
-            border: none; border-radius: 60px;
-            font-size: 2.5rem; font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            display: none;
-            z-index: 100;
-            animation: popIn 0.5s;
+            top: 8px;
+            right: 8px;
+            color: #3b82f6;
+            opacity: 0.6;
         }
 
-        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
-        
-        .shake { animation: shake 0.4s; }
+        /* --- SÍLABAS INTRO --- */
+        .syllable-card {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .syllable-card:hover {
+            transform: scale(1.1) rotate(2deg);
+            color: #2563eb;
+            border-color: #2563eb;
+        }
+
+        /* --- CONFETES --- */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
-        }
-
-        /* Confete */
-        #confetti-canvas {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none; z-index: 90;
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col items-center justify-start p-2 md:p-4 select-none">
+
     <canvas id="confetti-canvas"></canvas>
 
-    <div id="start-overlay">
-        <h1>Treino de Teclado</h1>
-        <p>Complete a sílaba que falta!</p>
-        <br>
-        <button id="start-btn" onclick="iniciarApp()">▶ COMEÇAR</button>
+    <div class="w-full max-w-4xl flex justify-between items-center mb-2 bg-white p-3 rounded-2xl shadow-lg border-b-4 border-blue-200">
+        <div class="flex flex-col">
+            <span class="text-xs md:text-sm text-gray-500 font-bold uppercase">Fase</span>
+            <span id="levelDisplay" class="text-lg md:text-2xl font-bold text-blue-600">Carregando...</span>
+        </div>
+        <div class="flex items-center gap-4">
+             <div class="flex flex-col items-end">
+                <span class="text-[10px] md:text-xs text-gray-500 font-bold uppercase">Precisão</span>
+                <span id="accuracyDisplay" class="text-lg md:text-xl font-bold text-green-500">100%</span>
+             </div>
+            <div class="flex items-center gap-2 border-l pl-4 border-gray-200">
+                <span class="text-xl md:text-2xl">⭐</span>
+                <span id="scoreDisplay" class="text-2xl md:text-3xl font-bold text-yellow-500">0</span>
+            </div>
+        </div>
     </div>
 
-    <div class="game-stage">
-        <div class="image-container" id="target-image"></div>
-        <div class="word-display" id="word-area"></div>
-        <button id="next-btn" onclick="nextLevel()">PRÓXIMO ➜</button>
+    <div id="introArea" class="hidden bg-white rounded-3xl shadow-xl p-8 max-w-3xl w-full text-center border-4 border-yellow-300 mt-4">
+        <h2 id="introTitle" class="text-2xl font-bold text-blue-600 mb-6">Vamos conhecer a família?</h2>
+        <div class="flex justify-center gap-4 text-5xl md:text-6xl font-bold text-gray-700 mb-8 flex-wrap" id="introContainer">
+            </div>
+        <button onclick="endIntro()" class="bg-green-500 text-white text-xl font-bold py-3 px-8 rounded-xl shadow-[0_4px_0_rgb(21,128,61)] active:translate-y-1 hover:scale-105 transition transform">
+            Continuar ➔
+        </button>
     </div>
 
-    <div class="keyboard-container" id="virtual-keyboard">
-        <!-- Teclado gerado via JS -->
+    <div id="presentationArea" class="hidden bg-white rounded-3xl shadow-xl p-6 max-w-3xl w-full text-center border-4 border-purple-300 mt-4">
+        <h2 class="text-xl md:text-2xl font-bold text-purple-600 mb-4">Observe as palavras:</h2>
+        
+        <div id="presContent" class="flex flex-col items-center gap-4 justify-center">
+            <div class="image-monitor w-64 h-48 md:w-80 md:h-56 bg-white mx-auto">
+                <div id="presImageContainer" class="w-full h-full flex items-center justify-center p-4"></div>
+            </div>
+            <div id="presWord" class="text-4xl md:text-5xl font-bold text-gray-700 tracking-widest mt-2"></div>
+        </div>
+
+        <button id="presNextBtn" onclick="nextPresentationItem()" class="mt-6 bg-purple-500 text-white text-xl font-bold py-3 px-8 rounded-xl shadow-[0_4px_0_rgb(107,33,168)] active:translate-y-1 hover:scale-105 transition transform">
+            Próximo ➔
+        </button>
     </div>
+
+    <div id="gameArea" class="hidden bg-white rounded-3xl shadow-xl p-4 max-w-3xl w-full text-center border-4 border-white relative mt-2 flex flex-col items-center">
+        
+        <div class="absolute top-0 left-0 w-full h-2 bg-gray-100 rounded-t-3xl overflow-hidden">
+            <div id="progressBar" class="h-full bg-green-500 transition-all duration-500" style="width: 0%"></div>
+        </div>
+
+        <div id="phaseInstruction" class="text-lg md:text-xl font-bold text-blue-500 mb-2 mt-2 min-h-[1.75rem]"></div>
+
+        <div class="image-monitor w-full max-w-sm h-40 md:h-52 mb-4" onclick="playCurrentAudio()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 sound-hint" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            </svg>
+            <div id="imageContainer" class="w-full h-full flex items-center justify-center p-2"></div>
+        </div>
+
+        <div id="inputContainer" class="flex flex-wrap justify-center gap-2 mb-4 min-h-[60px]"></div>
+
+        <div class="h-14 flex items-center justify-center relative w-full mb-2">
+            <div id="feedbackMessage" class="text-xl md:text-2xl font-bold text-gray-600 absolute transition-opacity duration-300"></div>
+            <button id="nextButton" onclick="nextGameItem()" class="hidden z-10 bg-green-500 hover:bg-green-400 text-white text-xl font-bold py-2 px-8 rounded-xl shadow-[0_4px_0_rgb(21,128,61)] active:translate-y-1 active:shadow-none animate__animated animate__bounceIn">
+                Próxima ➔
+            </button>
+        </div>
+    </div>
+
+    <div id="keyboardContainer" class="hidden mt-2 w-full max-w-4xl select-none pb-4 px-2">
+        </div>
+
+    <div id="phaseSuccessModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 backdrop-blur-sm">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl text-center max-w-sm mx-4 animate__animated animate__zoomIn border-4 border-blue-400">
+            <div class="text-7xl mb-4">🌟</div>
+            <h2 class="text-3xl font-bold text-blue-600 mb-2">Muito Bem!</h2>
+            <p class="text-gray-600 mb-6 text-lg">Você completou as sílabas!</p>
+            <p class="text-gray-500 mb-6">Agora vamos escrever as <b>palavras inteiras</b>?</p>
+            <button onclick="advanceToFullWordPhase()" class="w-full bg-blue-500 hover:bg-blue-400 text-white text-xl font-bold py-4 px-8 rounded-xl shadow-[0_4px_0_rgb(30,58,138)] active:translate-y-1 transform transition hover:scale-105">
+                Vamos lá! 🚀
+            </button>
+        </div>
+    </div>
+
+    <div id="levelUpModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 backdrop-blur-sm">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl text-center max-w-sm mx-4 animate__animated animate__zoomIn border-4 border-yellow-400">
+            <div class="text-7xl mb-4">🏆</div>
+            <h2 class="text-3xl font-bold text-blue-600 mb-2">Fase Completa!</h2>
+            <p class="text-gray-600 mb-6 text-lg">Você mandou muito bem!</p>
+            <p class="text-gray-500 mb-6">Desbloqueou: <span id="unlockedLetterDisplay" class="font-bold text-2xl text-green-600"></span></p>
+            <button onclick="closeModalAndNextLevel()" class="w-full bg-yellow-400 hover:bg-yellow-300 text-yellow-900 text-xl font-bold py-4 px-8 rounded-xl shadow-[0_4px_0_rgb(161,98,7)] active:translate-y-1 transform transition hover:scale-105">
+                Próxima Fase 🚀
+            </button>
+        </div>
+    </div>
+
+    <div id="retryModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 backdrop-blur-sm">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl text-center max-w-sm mx-4 animate__animated animate__shakeX border-4 border-orange-400">
+            <div class="text-7xl mb-4">💪</div>
+            <h2 class="text-3xl font-bold text-orange-600 mb-2">Vamos praticar mais?</h2>
+            <p class="text-gray-600 mb-6 text-lg">Precisamos acertar pelo menos <b>80%</b> para passar.</p>
+            <button onclick="restartCurrentPhase()" class="w-full bg-orange-400 hover:bg-orange-300 text-white text-xl font-bold py-4 px-8 rounded-xl shadow-[0_4px_0_rgb(194,65,12)] active:translate-y-1 transform transition hover:scale-105">
+                Tentar de Novo 🔄
+            </button>
+        </div>
+    </div>
+
+    <audio id="audioPlayer"></audio>
+    <audio id="sndCorrect" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
+    <audio id="sndError" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
+    <audio id="sndWin" src="https://actions.google.com/sounds/v1/cartoon/clown_horn_surprise.ogg"></audio>
+    <audio id="sndLose" src="https://actions.google.com/sounds/v1/cartoon/cartoon_whistle.ogg"></audio>
 
     <script>
         // --- CONFIGURAÇÃO ---
-        const ALLOWED_KEYS = ['A', 'E', 'I', 'O', 'U', 'P', 'B', 'T', 'D'];
-        
-        const database = [
-            { syllables: ["DA", "DO"], image: "🎲", type: "emoji" },
-            { syllables: ["DA", "TA"], image: "📅", type: "emoji" },
-            { syllables: ["DE", "DO"], image: "☝️", type: "emoji" },
-            //{ syllables: ["DI", "A"], image: "🌄🕛", type: "emoji" },
-            { syllables: ["TU", "DO"], image: "☑️☑️", type: "emoji" },
-            { syllables: ["BA", "TA", "TA"], image: "🥔", type: "emoji" },
-            { syllables: ["BA", "Ú"], image: "img/bau.png", type: "img" },
-            //{ syllables: ["BA", "BÁ"], image: "img/baba.png", type: "img" },
-            { syllables: ["A", "BA"], image: "img/aba.png", type: "img" },
-            { syllables: ["BE", "BÊ"], image: "👶", type: "emoji" },
-            { syllables: ["BO", "I"], image: "🐂", type: "emoji" },
-            //{ syllables: ["BO", "TE"], image: "img/bote.png", type: "img" },
-            //{ syllables: ["BO", "DE"], image: "🐐", type: "emoji" },
-            { syllables: ["BO", "TA"], image: "👢", type: "emoji" },
-            { syllables: ["PA", "TO"], image: "🦆", type: "emoji" },
-            { syllables: ["PÁ"], image: "🪏", type: "emoji" },
-            { syllables: ["PÉ"], image: "🦶", type: "emoji" },
-            { syllables: ["PI", "PA"], image: "🪁", type: "emoji" },
-            { syllables: ["A", "PI", "TO"], image: "img/apito.png", type: "img" },
-            { syllables: ["PO", "TE"], image: "🫙", type: "emoji" },
-            { syllables: ["TA", "TU"], image: "img/tatu.png", type: "img" },
-            { syllables: ["TA", "PE", "TE"], image: "img/tapete.png", type: "img" },
-            //{ syllables: ["TÁ", "BU", "A"], image: "img/tabua.png", type: "img" },
-            { syllables: ["PA", "TA"], image: "img/pata.png", type: "img" },
-            { syllables: ["BA", "TE"], image: "👊", type: "emoji" },
-            //{ syllables: ["PA", "TE", "TA"], image: "🤪", type: "emoji" },
-            { syllables: ["TI", "A"], image: "👩", type: "emoji" },
-            { syllables: ["TI", "O"], image: "👨", type: "emoji" },
-            //{ syllables: ["TU", "BO"], image: "🧪", type: "emoji" },
-            { syllables: ["TU", "TU"], image: "img/tutu.png", type: "img" },
-            { syllables: ["TU", "BA"], image: "img/tuba.png", type: "img" }
-        ];
+        const pathAudio = "audios/";
+        const pathImg = "img/";
 
+        const levels = {
+            0: { letter: "Vogais", unlock: ['A','E','I','O','U','Á','É','Í','Ó','Ú','Â','Ê','Ô','Ã','Õ'], syllables: ['A','E','I','O','U'] },
+            1: { letter: "B", unlock: ['B'], syllables: ['BA','BE','BI','BO','BU'] },
+            2: { letter: "T", unlock: ['T'], syllables: ['TA','TE','TI','TO','TU'] },
+            3: { letter: "P", unlock: ['P'], syllables: ['PA','PE','PI','PO','PU'] },
+            4: { letter: "D", unlock: ['D'], syllables: ['DA','DE','DI','DO','DU'] },
+            5: { letter: "F", unlock: ['F'], syllables: ['FA','FE','FI','FO','FU'] },
+            6: { letter: "V", unlock: ['V'], syllables: ['VA','VE','VI','VO','VU'] },
+            7: { letter: "M", unlock: ['M'], syllables: ['MA','ME','MI','MO','MU'] },
+            8: { letter: "N", unlock: ['N'], syllables: ['NA','NE','NI','NO','NU'] },
+            9: { letter: "L", unlock: ['L'], syllables: ['LA','LE','LI','LO','LU'] }
+        };
+
+        const database = {
+            0: { items: [{ word: "OI", emoji: "👋" }, { word: "AI", emoji: "🤕🗣" }, { word: "EU", image: "eu.png", emoji: "🙋" }, { word: "AU", emoji: "🐶🗣" }] },
+            1: { items: [{ word: "ABA", image: "aba.png", emoji: "🖼️" }, { word: "BAÚ", image: "bau.png", emoji: "📦" }, { word: "BABÁ", image: "baba.png", emoji: "👶" }, { word: "BOI", emoji: "🐂" }, { word: "BEBÊ", emoji: "👶" }, { word: "OBA", emoji: "🙌" }, { word: "BOIA", emoji: "🛟" }] },
+            2: { items: [{ word: "TATU", image: "tatu.png", emoji: "🦔" }, { word: "TUBA", image: "tuba.png", emoji: "🎺" }, { word: "TUTU", image: "tutu.png", emoji: "🩰" }, { word: "BOTE", image: "bote.png", emoji: "🛶" }, { word: "TÁBUA", image: "tabua.png", emoji: "🪵" }, { word: "BOTA", emoji: "👢" }, { word: "TIA", emoji: "👩" }, { word: "OITO", emoji: "8️⃣" }, { word: "TEIA", emoji: "🕸️" }] },
+            3: { items: [{ word: "PATA", image: "pata.png", emoji: "🐾" }, { word: "APITO", image: "apito.png", emoji: "🎺" }, { word: "TAPETE", image: "tapete.png", emoji: "🧶" }, { word: "PIPA", emoji: "🪁" }, { word: "PATO", emoji: "🦆" }, { word: "PÉ", emoji: "🦶" }] },
+            4: { items: [{ word: "DADO", emoji: "🎲" }, { word: "DEDO", emoji: "☝️" }, { word: "DIA", emoji: "☀️" }, { word: "BODE", emoji: "🐐" }, { word: "IDADE", emoji: "🔢🎂" }] },
+            5: { items: [{ word: "FADA", emoji: "🧚" }, { word: "FIFE", emoji: "🪈" }, { word: "FOFO", emoji: "🧸" }, { word: "BIFE", emoji: "🥩" }, { word: "FITA", emoji: "🎗" }, { word: "FOTO", emoji: "📷" }, { word: "FIO", emoji: "🧵" }] },
+            6: { items: [{ word: "VOVÓ", emoji: "👵" }, { word: "UVA", emoji: "🍇" }, { word: "AVE", emoji: "🦅" }, { word: "OVO", emoji: "🥚" }, { word: "VIVA", emoji: "🎉" }] },
+            7: { items: [{ word: "MAMÃO", emoji: "🥭" }, { word: "MIAU", emoji: "🐈" }, { word: "EMA", emoji: "🐦" }, { word: "MEIA", emoji: "🧦" }, { word: "MAPA", emoji: "🗺️" }, { word: "UMA", emoji: "1️⃣" }, { word: "MIMA", emoji: "🫂" }] },
+            8: { items: [{ word: "ANA", emoji: "👧" }, { word: "ANO", emoji: "📅" }, { word: "NAVE", emoji: "🚀" }, { word: "NOVE", emoji: "9️⃣" }, { word: "BONÉ", emoji: "🧢" }, { word: "BANANA", emoji: "🍌" }, { word: "MENINO", emoji: "👦" }] },
+            9: { items: [{ word: "LUA", emoji: "🌙" }, { word: "LOBO", emoji: "🐺" }, { word: "BOLA", emoji: "⚽" }, { word: "BALA", emoji: "🍬" }, { word: "LEÃO", emoji: "🦁" }, { word: "LULA", emoji: "🦑" }, { word: "MULA", emoji: "🐴" }] }
+        };
+
+        // --- ESTADO ---
         let currentLevel = 0;
-        let currentWordObj = null;
-        let missingSyllableIndex = 0;
-        let currentTyped = ""; // O que a criança já digitou da sílaba faltante
-        let targetSyllableClean = ""; // A sílaba alvo sem acentos
-        let globalAudioCtx = null;
+        let score = 0;
+        let learnedLetters = new Set();
+        let gameState = 'INTRO'; 
+        let gameSubState = 'SYLLABLE_PHASE';
+        let phaseTotalAttempts = 0; 
+        let phaseCorrectAttempts = 0;
+        let presentationQueue = [];
+        let gameQueue = [];
+        let currentItem = null;
+        let currentBoxIndex = 0;
+        let presentationIndex = 0;
+        let targetIndices = []; 
 
-        // --- INICIALIZAÇÃO ---
-        function iniciarApp() {
-            document.getElementById('start-overlay').style.display = 'none';
-            initAudio();
-            generateKeyboard();
-            initGame();
+        // --- UTILITÁRIOS ÁUDIO/ARQUIVO ---
+        function getAudioFilename(word) {
+            // Remove acentos e minúsculas para encontrar o arquivo de áudio (ex: "BAÚ" -> "bau.mp3")
+            return word.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") + ".mp3";
+        }
+        function getSyllableFilename(word) {
+             // Remove acentos da sílaba também (ex: "PÉ" -> "pe.mp3")
+            return word.substring(0, 2).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") + ".mp3";
+        }
+        function getIntroSyllableFilename(syllable) {
+            return syllable.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") + ".mp3";
+        }
+        function findSyllableIndices(word, levelLetter) {
+            const indices = [];
+            const regex = new RegExp(`(${levelLetter})[AEOIUÁÉÍÓÚÃÕÂÊÔ]`, 'i');
+            const match = word.match(regex);
+            if (match && match.index !== undefined) {
+                indices.push(match.index);
+                indices.push(match.index + 1);
+            } else {
+                if (word.toUpperCase().startsWith(levelLetter)) indices.push(0, 1);
+            }
+            return indices;
         }
 
-        // --- TECLADO VIRTUAL QWERTY ---
-        function generateKeyboard() {
-            const layout = [
-                "QWERTYUIOP",
-                "ASDFGHJKL",
-                "ZXCVBNM"
-            ];
-            const kbContainer = document.getElementById('virtual-keyboard');
-            kbContainer.innerHTML = '';
-
-            layout.forEach(rowStr => {
-                const rowDiv = document.createElement('div');
-                rowDiv.classList.add('keyboard-row');
-                
-                rowStr.split('').forEach(char => {
-                    const btn = document.createElement('button');
-                    btn.classList.add('key');
-                    btn.innerText = char;
-                    btn.dataset.key = char;
-                    
-                    // Lógica de Desativação
-                    if (!ALLOWED_KEYS.includes(char)) {
-                        btn.classList.add('disabled');
-                    } else {
-                        btn.onclick = () => handleInput(char);
+        window.onload = function() {
+            initLevel(0);
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            document.addEventListener('keydown', (e) => {
+                if (gameState !== 'GAME') return;
+                const key = e.key.toUpperCase();
+                if (/^[A-ZÁÉÍÓÚÂÊÔÃÕÇ]$/.test(key) || (key >= 'A' && key <= 'Z')) {
+                    handleInput(key);
+                    highlightKey(key);
+                } else if (e.key === "Enter") {
+                    if (!document.getElementById('nextButton').classList.contains('hidden')) {
+                        nextGameItem();
                     }
+                }
+            });
+        };
+
+        function initLevel(level) {
+            currentLevel = level;
+            if (!database[level]) { alert("Fim do Jogo!"); currentLevel = 0; }
+            
+            learnedLetters = new Set();
+            for(let i = 0; i <= currentLevel; i++) {
+                if(levels[i]) levels[i].unlock.forEach(l => learnedLetters.add(l));
+            }
+
+            document.getElementById('levelDisplay').textContent = `${level} - ${levels[currentLevel].letter}`;
+            hideAllScreens();
+            presentationQueue = [...database[currentLevel].items];
+            startIntro();
+        }
+
+        function hideAllScreens() {
+            document.getElementById('introArea').classList.add('hidden');
+            document.getElementById('presentationArea').classList.add('hidden');
+            document.getElementById('gameArea').classList.add('hidden');
+            document.getElementById('keyboardContainer').classList.add('hidden');
+            document.getElementById('levelUpModal').classList.add('hidden');
+            document.getElementById('retryModal').classList.add('hidden');
+            document.getElementById('phaseSuccessModal').classList.add('hidden');
+        }
+
+        function updateAccuracyDisplay() {
+            if (phaseTotalAttempts === 0) {
+                document.getElementById('accuracyDisplay').textContent = "100%";
+                document.getElementById('accuracyDisplay').className = "text-xl font-bold text-green-500";
+                return;
+            }
+            const acc = Math.round((phaseCorrectAttempts / phaseTotalAttempts) * 100);
+            document.getElementById('accuracyDisplay').textContent = acc + "%";
+            if(acc >= 80) document.getElementById('accuracyDisplay').className = "text-xl font-bold text-green-500";
+            else if(acc >= 60) document.getElementById('accuracyDisplay').className = "text-xl font-bold text-yellow-500";
+            else document.getElementById('accuracyDisplay').className = "text-xl font-bold text-red-500";
+        }
+
+        // --- INTRO & APRESENTAÇÃO ---
+        function startIntro() {
+            gameState = 'INTRO';
+            document.getElementById('introArea').classList.remove('hidden');
+            
+            const titleElem = document.getElementById('introTitle');
+            if (currentLevel === 0) titleElem.textContent = "Vamos lembrar as vogais?";
+            else titleElem.textContent = `Família da letra ${levels[currentLevel].letter}`;
+
+            const syllables = levels[currentLevel].syllables || [];
+            const container = document.getElementById('introContainer');
+            container.innerHTML = '';
+
+            syllables.forEach((syl, i) => {
+                const span = document.createElement('span');
+                span.textContent = syl;
+                span.className = "syllable-card inline-block animate__animated animate__bounceIn text-gray-700 bg-white border-2 border-blue-100 rounded-lg px-4 py-2 shadow-sm m-2";
+                span.style.animationDelay = `${i * 0.2}s`;
+                span.onclick = () => {
+                    const audio = new Audio(pathAudio + getIntroSyllableFilename(syl));
+                    audio.play().catch(e=>{});
+                    span.classList.remove('animate__bounceIn');
+                    void span.offsetWidth;
+                    span.classList.add('animate__rubberBand', 'text-blue-500', 'border-blue-500');
+                    setTimeout(() => span.classList.remove('text-blue-500', 'border-blue-500'), 500);
+                };
+                container.appendChild(span);
+            });
+        }
+        function endIntro() { document.getElementById('introArea').classList.add('hidden'); startPresentation(); }
+
+        function startPresentation() {
+            gameState = 'PRESENTATION';
+            presentationIndex = 0;
+            document.getElementById('presentationArea').classList.remove('hidden');
+            showPresentationItem();
+        }
+        function showPresentationItem() {
+            if (presentationIndex >= presentationQueue.length) {
+                document.getElementById('presentationArea').classList.add('hidden');
+                if (currentLevel === 0) startFullWordPhase(); else startSyllablePhase();
+                return;
+            }
+            const item = presentationQueue[presentationIndex];
+            const imgContainer = document.getElementById('presImageContainer');
+            imgContainer.innerHTML = '';
+            
+            if (item.image) {
+                const img = document.createElement('img');
+                img.src = pathImg + item.image;
+                img.className = "max-h-full max-w-full object-contain animate__animated animate__fadeIn drop-shadow-xl";
+                img.onerror = () => { imgContainer.innerHTML = `<span class="text-7xl md:text-8xl animate__animated animate__fadeIn">${item.emoji}</span>`; };
+                imgContainer.appendChild(img);
+            } else {
+                imgContainer.innerHTML = `<span class="text-7xl md:text-8xl animate__animated animate__fadeIn">${item.emoji}</span>`;
+            }
+            document.getElementById('presWord').textContent = item.word;
+            const player = document.getElementById('audioPlayer');
+            player.src = pathAudio + getAudioFilename(item.word);
+            player.play().catch(()=>{});
+        }
+        function nextPresentationItem() { presentationIndex++; showPresentationItem(); }
+
+        // --- JOGO ---
+        function startSyllablePhase() {
+            gameState = 'GAME'; gameSubState = 'SYLLABLE_PHASE';
+            resetPhaseStats();
+            document.getElementById('gameArea').classList.remove('hidden');
+            document.getElementById('keyboardContainer').classList.remove('hidden');
+            renderKeyboard();
+            nextGameItem();
+        }
+        function startFullWordPhase() {
+            gameState = 'GAME'; gameSubState = 'FULLWORD_PHASE';
+            resetPhaseStats();
+            document.getElementById('gameArea').classList.remove('hidden');
+            document.getElementById('keyboardContainer').classList.remove('hidden');
+            renderKeyboard();
+            nextGameItem();
+        }
+        function resetPhaseStats() {
+            phaseTotalAttempts = 0; phaseCorrectAttempts = 0;
+            updateAccuracyDisplay();
+            gameQueue = [...database[currentLevel].items].sort(() => Math.random() - 0.5);
+        }
+
+        function nextGameItem() {
+            if (gameQueue.length === 0) { checkPhaseEnd(); return; }
+            currentItem = gameQueue.pop();
+            const total = database[currentLevel].items.length;
+            const progress = ((total - gameQueue.length) / total) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+
+            if (gameSubState === 'SYLLABLE_PHASE') {
+                targetIndices = findSyllableIndices(currentItem.word, levels[currentLevel].letter);
+                if (targetIndices.length === 0) {
+                     targetIndices = []; for(let i=0; i<currentItem.word.length; i++) targetIndices.push(i);
+                }
+            } else {
+                targetIndices = []; for(let i=0; i<currentItem.word.length; i++) targetIndices.push(i);
+            }
+            setupGameRound();
+        }
+
+        function setupGameRound() {
+            currentBoxIndex = targetIndices.length > 0 ? targetIndices[0] : 0;
+            document.getElementById('nextButton').classList.add('hidden');
+            document.getElementById('feedbackMessage').textContent = '';
+            document.getElementById('inputContainer').innerHTML = '';
+
+            const imgContainer = document.getElementById('imageContainer');
+            imgContainer.innerHTML = '';
+            // Renderiza Imagem ou até 3 Emojis (Font grande para caber 3)
+            if (currentItem.image) {
+                const img = document.createElement('img');
+                img.src = pathImg + currentItem.image;
+                img.className = "max-h-full max-w-full object-contain drop-shadow-lg";
+                img.onerror = () => { imgContainer.innerHTML = `<span class="text-6xl md:text-8xl">${currentItem.emoji}</span>`; };
+                imgContainer.appendChild(img);
+            } else {
+                // Ajusta tamanho da fonte se tiver muitos emojis
+                const fontSize = currentItem.emoji.length > 4 ? "text-5xl" : "text-6xl md:text-8xl";
+                imgContainer.innerHTML = `<span class="${fontSize}">${currentItem.emoji}</span>`;
+            }
+
+            const instruction = document.getElementById('phaseInstruction');
+            if (gameSubState === 'SYLLABLE_PHASE') {
+                instruction.textContent = "Complete a sílaba:";
+                playWordAudio(); // AGORA TOCA A PALAVRA INTEIRA
+            } else { 
+                instruction.textContent = "Escreva a palavra:";
+                playWordAudio();
+            }
+            createBoxes(currentItem.word);
+        }
+
+        function createBoxes(word) {
+            const container = document.getElementById('inputContainer');
+            for (let i = 0; i < word.length; i++) {
+                const div = document.createElement('div');
+                div.className = 'letter-box w-12 h-14 md:w-16 md:h-20 border-4 rounded-xl flex items-center justify-center text-3xl md:text-5xl font-bold shadow-sm';
+                div.id = `box-${i}`;
+                if (!targetIndices.includes(i)) {
+                    div.classList.add('filled-static');
+                    div.textContent = word[i];
+                } else {
+                    div.classList.add('bg-white', 'text-gray-700', 'border-gray-300');
+                }
+                container.appendChild(div);
+            }
+            updateActiveBox();
+        }
+
+        // --- ÁUDIO ---
+        function playWordAudio() {
+            const player = document.getElementById('audioPlayer');
+            player.src = pathAudio + getAudioFilename(currentItem.word);
+            player.play().catch(()=>{});
+        }
+        function playSyllableAudio() {
+            // Mantive a função caso queira usar futuramente, mas no jogo agora chamamos playWordAudio
+            const player = document.getElementById('audioPlayer');
+            player.src = pathAudio + getSyllableFilename(currentItem.word);
+            player.play().catch(() => playWordAudio());
+        }
+        function playCurrentAudio() {
+            if (gameState !== 'GAME') return;
+            // AGORA SEMPRE TOCA A PALAVRA NO JOGO (SEJA NA FASE DA SILABA OU DA PALAVRA)
+            playWordAudio(); 
+        }
+
+        // --- INPUT E LÓGICA ---
+        function handleInput(char) {
+            if (!document.getElementById('nextButton').classList.contains('hidden')) return;
+            while (currentBoxIndex < currentItem.word.length && !targetIndices.includes(currentBoxIndex)) { currentBoxIndex++; }
+            if (currentBoxIndex >= currentItem.word.length) return;
+
+            phaseTotalAttempts++;
+            const targetChar = currentItem.word[currentBoxIndex];
+            const normInput = char.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const normTarget = targetChar.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            if (normInput === normTarget) {
+                phaseCorrectAttempts++;
+                const box = document.getElementById(`box-${currentBoxIndex}`);
+                box.textContent = targetChar;
+                box.classList.remove('active-box');
+                box.classList.add('correct', 'animate__animated', 'animate__bounceIn');
+                document.getElementById('sndCorrect').currentTime = 0;
+                document.getElementById('sndCorrect').play();
+                
+                currentBoxIndex++;
+                while (currentBoxIndex < currentItem.word.length && !targetIndices.includes(currentBoxIndex)) { currentBoxIndex++; }
+
+                if (currentBoxIndex >= currentItem.word.length) {
+                    itemComplete();
+                } else {
+                    updateActiveBox();
+                }
+            } else {
+                const box = document.getElementById(`box-${currentBoxIndex}`);
+                box.classList.add('incorrect');
+                document.getElementById('sndError').currentTime = 0;
+                document.getElementById('sndError').play();
+                setTimeout(() => box.classList.remove('incorrect'), 400);
+            }
+            updateAccuracyDisplay();
+        }
+
+        function updateActiveBox() {
+            document.querySelectorAll('.letter-box').forEach(b => b.classList.remove('active-box'));
+            let tempIndex = currentBoxIndex;
+            while (tempIndex < currentItem.word.length && !targetIndices.includes(tempIndex)) { tempIndex++; }
+            if (tempIndex < currentItem.word.length) {
+                const current = document.getElementById(`box-${tempIndex}`);
+                if (current) current.classList.add('active-box');
+            }
+        }
+
+        function itemComplete() {
+            document.getElementById('feedbackMessage').textContent = "MUITO BEM! 🎉";
+            document.getElementById('feedbackMessage').className = "text-2xl md:text-3xl font-bold text-green-600 animate__animated animate__fadeInUp";
+            document.getElementById('nextButton').classList.remove('hidden');
+            document.getElementById('nextButton').focus();
+            
+            // Toca som de vitória
+            document.getElementById('sndWin').play();
+            
+            // TOCA A PALAVRA DEPOIS DE ACERTAR (com pequeno atraso para não encavalar com o som de vitória)
+            setTimeout(() => {
+                playWordAudio();
+            }, 500);
+
+            score += 10;
+            document.getElementById('scoreDisplay').textContent = score;
+            
+            // Disparar Confetes!
+            fireConfetti();
+        }
+
+        // --- VERIFICAÇÃO FASE ---
+        function checkPhaseEnd() {
+            const acc = phaseTotalAttempts === 0 ? 0 : (phaseCorrectAttempts / phaseTotalAttempts) * 100;
+            if (acc >= 80) {
+                if (gameSubState === 'SYLLABLE_PHASE') showPhaseSuccessModal(); else showLevelUp();
+            } else {
+                showRetryModal();
+            }
+        }
+        function advanceToFullWordPhase() { document.getElementById('phaseSuccessModal').classList.add('hidden'); startFullWordPhase(); }
+        function restartCurrentPhase() {
+            document.getElementById('retryModal').classList.add('hidden');
+            if (gameSubState === 'SYLLABLE_PHASE') startSyllablePhase(); else startFullWordPhase();
+        }
+        function showPhaseSuccessModal() { document.getElementById('sndWin').play(); document.getElementById('phaseSuccessModal').classList.remove('hidden'); }
+        function showLevelUp() { document.getElementById('sndWin').play(); const next = levels[currentLevel + 1]; document.getElementById('unlockedLetterDisplay').textContent = next ? `Letra ${next.letter}` : "Fim!"; document.getElementById('levelUpModal').classList.remove('hidden'); }
+        function showRetryModal() { document.getElementById('sndLose').play(); document.getElementById('retryModal').classList.remove('hidden'); }
+        function closeModalAndNextLevel() { document.getElementById('levelUpModal').classList.add('hidden'); initLevel(currentLevel + 1); }
+
+        // --- TECLADO AZUL ---
+        function renderKeyboard() {
+            const layout = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
+            const container = document.getElementById('keyboardContainer');
+            container.innerHTML = '';
+            layout.forEach(row => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = "flex justify-center gap-1 md:gap-2 mb-2";
+                row.split('').forEach(char => {
+                    const btn = document.createElement('button');
+                    btn.textContent = char;
+                    btn.id = `key-${char}`;
+                    // Tecla padrão: branca com sombra cinza
+                    let btnClass = "key w-8 h-12 md:w-14 md:h-16 bg-white rounded-lg font-bold text-gray-400 border-b-4 border-gray-300 text-xl md:text-2xl";
                     
+                    // Se aprendida: Azul
+                    if (learnedLetters.has(char)) {
+                        btnClass = "key key-learned w-8 h-12 md:w-14 md:h-16 rounded-lg font-bold text-xl md:text-2xl transform scale-105";
+                    }
+                    btn.className = btnClass;
+                    btn.onclick = (e) => { e.preventDefault(); handleInput(char); highlightKey(char); };
                     rowDiv.appendChild(btn);
                 });
-                kbContainer.appendChild(rowDiv);
+                container.appendChild(rowDiv);
             });
         }
-
-        // --- INPUT HANDLING (Físico e Virtual) ---
-        document.addEventListener('keydown', (e) => {
-            const key = e.key.toUpperCase();
-            if (ALLOWED_KEYS.includes(key)) {
-                handleInput(key);
-                // Efeito visual na tecla virtual
-                const virtualKey = document.querySelector(`.key[data-key="${key}"]`);
-                if (virtualKey) {
-                    virtualKey.classList.add('pressed');
-                    setTimeout(() => virtualKey.classList.remove('pressed'), 150);
-                }
-            }
-        });
-
-        function handleInput(char) {
-            if (document.getElementById('next-btn').style.display === 'block') return; // Jogo pausado
-
-            // 1. Verificar se a letra está correta na posição atual
-            const expectedChar = targetSyllableClean[currentTyped.length];
-            
-            if (char === expectedChar) {
-                // Acertou a letra
-                currentTyped += char;
-                updateDisplay();
-                playTone('high');
-                
-                // Verificou se completou a sílaba
-                if (currentTyped === targetSyllableClean) {
-                    completeSyllable();
-                }
-            } else {
-                // Errou a letra
-                playTone('low');
-                const activeSyllableEl = document.querySelector('.syllable.missing');
-                if (activeSyllableEl) {
-                    activeSyllableEl.classList.add('shake');
-                    setTimeout(() => activeSyllableEl.classList.remove('shake'), 400);
-                }
+        function highlightKey(char) {
+            const btn = document.getElementById(`key-${char}`);
+            if (btn) {
+                btn.classList.add('active-press');
+                setTimeout(() => btn.classList.remove('active-press'), 150);
             }
         }
 
-        function updateDisplay() {
-            const missingEl = document.querySelector('.syllable.missing');
-            if (missingEl) {
-                // Mostra o que já foi digitado + underlines para o que falta
-                let displayTxt = currentTyped;
-                const remaining = targetSyllableClean.length - currentTyped.length;
-                for(let i=0; i<remaining; i++) displayTxt += "_";
-                missingEl.innerText = displayTxt;
-            }
-        }
-
-        function completeSyllable() {
-            const missingEl = document.querySelector('.syllable.missing');
-            // Coloca a sílaba original (com acento se tiver)
-            missingEl.innerText = currentWordObj.syllables[missingSyllableIndex];
-            missingEl.classList.remove('missing');
-            missingEl.classList.add('filled');
-            
-            // Vitória
-            triggerConfetti();
-            document.getElementById('next-btn').style.display = 'block';
-            
-            // Tocar som da palavra
-            setTimeout(() => {
-                const palavra = currentWordObj.syllables.join("");
-                playAudio(palavra);
-            }, 300);
-        }
-
-        // --- LÓGICA DO JOGO ---
-        function initGame() {
-            shuffleArray(database);
-            loadLevel();
-        }
-
-        function loadLevel() {
-            if (currentLevel >= database.length) {
-                currentLevel = 0;
-                shuffleArray(database);
-            }
-
-            document.getElementById('next-btn').style.display = 'none';
-            currentWordObj = database[currentLevel];
-            
-            // Escolher uma sílaba aleatória para esconder
-            // Preferência: esconder sílabas que contenham as letras permitidas (o banco só tem essas, mas ok)
-            missingSyllableIndex = Math.floor(Math.random() * currentWordObj.syllables.length);
-            
-            // Preparar alvo limpo (sem acentos) para comparação de digitação
-            const rawSyllable = currentWordObj.syllables[missingSyllableIndex];
-            targetSyllableClean = rawSyllable.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
-            
-            currentTyped = "";
-
-            renderUI();
-        }
-
-        function renderUI() {
-            const imgArea = document.getElementById('target-image');
-            const wordArea = document.getElementById('word-area');
-
-            // Renderizar Imagem
-            if (currentWordObj.type === 'emoji') {
-                imgArea.innerHTML = currentWordObj.image;
-            } else {
-                imgArea.innerHTML = `<img src="${currentWordObj.image}" onerror="this.parentElement.innerText='🖼️'">`;
-            }
-
-            // Renderizar Palavra
-            wordArea.innerHTML = '';
-            currentWordObj.syllables.forEach((syl, idx) => {
-                const span = document.createElement('span');
-                span.classList.add('syllable');
-                if (idx === missingSyllableIndex) {
-                    span.classList.add('missing');
-                    // Cria underlines baseados no tamanho da sílaba
-                    let underlines = "";
-                    for(let i=0; i<targetSyllableClean.length; i++) underlines += "_";
-                    span.innerText = underlines;
-                } else {
-                    span.innerText = syl;
-                }
-                wordArea.appendChild(span);
-            });
-        }
-
-        function nextLevel() {
-            currentLevel++;
-            loadLevel();
-        }
-
-        // --- ÁUDIO ROBUSTO ---
-        function initAudio() {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if (AudioContext) {
-                globalAudioCtx = new AudioContext();
-                // Resume se suspenso
-                if (globalAudioCtx.state === 'suspended') globalAudioCtx.resume();
-            }
-        }
-
-        function playTone(type) {
-            if (!globalAudioCtx) return;
-            const osc = globalAudioCtx.createOscillator();
-            const gain = globalAudioCtx.createGain();
-            
-            if (type === 'high') { // Acerto
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(600, globalAudioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(1000, globalAudioCtx.currentTime + 0.1);
-            } else { // Erro
-                osc.type = 'sawtooth';
-                osc.frequency.value = 150;
-                gain.gain.value = 0.5;
-            }
-
-            osc.connect(gain);
-            gain.connect(globalAudioCtx.destination);
-            osc.start();
-            gain.gain.exponentialRampToValueAtTime(0.0001, globalAudioCtx.currentTime + 0.2);
-            osc.stop(globalAudioCtx.currentTime + 0.2);
-        }
-
-        function playAudio(name) {
-            // Normalização rigorosa para encontrar o arquivo
-            let cleanName = name.toLowerCase()
-                                .normalize("NFD")
-                                .replace(/[\u0300-\u036f]/g, "")
-                                .trim();
-            const path = `audios/${cleanName}.mp3`;
-            const audio = new Audio(path);
-            
-            // Fallback se não encontrar
-            audio.onerror = () => { console.log("Áudio não encontrado, usando bip."); playTone('high'); };
-            
-            audio.play().catch(e => console.log(e));
-        }
-
-        // --- UTILITÁRIOS ---
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
-
-        // --- CONFETES ---
+        // --- LÓGICA DE CONFETES (Canvas Simples) ---
         const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
-        let confettiParticles = [];
-        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resizeCanvas); resizeCanvas();
+        let particles = [];
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
 
-        function triggerConfetti() {
-            confettiParticles = [];
+        function fireConfetti() {
             for (let i = 0; i < 100; i++) {
-                confettiParticles.push({
-                    x: window.innerWidth / 2, y: window.innerHeight / 2,
-                    vx: (Math.random() - 0.5) * 20, vy: (Math.random() - 0.5) * 20,
-                    color: `hsl(${Math.random() * 360}, 100%, 50%)`, size: Math.random() * 12 + 6, life: 120
+                particles.push({
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight / 2,
+                    vx: (Math.random() - 0.5) * 15,
+                    vy: (Math.random() - 0.5) * 15,
+                    size: Math.random() * 8 + 4,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+                    life: 100
                 });
             }
-            animateConfetti();
+            requestAnimationFrame(animateConfetti);
         }
 
         function animateConfetti() {
-            if (confettiParticles.length === 0) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            confettiParticles.forEach((p, index) => {
-                p.x += p.vx; p.y += p.vy; p.vy += 0.5; p.life--;
-                ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, p.size, p.size);
-                if (p.life <= 0) confettiParticles.splice(index, 1);
+            particles = particles.filter(p => p.life > 0);
+            
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.2; // gravidade
+                p.life--;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
             });
-            requestAnimationFrame(animateConfetti);
+
+            if (particles.length > 0) {
+                requestAnimationFrame(animateConfetti);
+            }
         }
     </script>
 </body>
