@@ -47,31 +47,63 @@
             border-color: #d1d5db;
         }
 
-        /* --- ESTILOS DO TECLADO --- */
+        /* --- NOVO ESTILO DO TECLADO (BASEADO NO SEU EXEMPLO) --- */
+        #keyboardContainer {
+            width: 100%;
+            max-width: 1000px; /* Largo para iPad */
+            padding: 10px 0 30px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px; /* Mais espaço entre linhas */
+            margin: 0 auto;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 8px; /* Espaço entre teclas */
+        }
+
         .key {
+            /* DIMENSÕES RESPONSIVAS IDÊNTICAS AO SEU EXEMPLO */
+            width: 8.5vw; 
+            max-width: 85px; 
+            height: 72px; 
+            
+            border-radius: 12px;
+            font-size: 2.2rem; /* Fonte grande */
+            font-weight: bold;
+            cursor: pointer;
             transition: transform 0.1s, box-shadow 0.1s, background-color 0.2s;
-            box-shadow: 0 4px 0 #9ca3af;
             touch-action: manipulation;
             user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            /* Estilo Padrão (Branco/Cinza) */
+            background-color: #fff;
+            color: #9ca3af; /* Cinza claro para letras não aprendidas */
+            border-bottom: 4px solid #d1d5db; /* Borda cinza */
+            box-shadow: 0 4px 0 #9ca3af;
         }
+
         .key:active, .key.active-press {
-            transform: translateY(4px);
-            box-shadow: 0 0 0 #9ca3af;
-            background-color: #bfdbfe !important;
+            transform: translateY(6px);
+            box-shadow: none !important;
+            border-bottom: 0 !important;
         }
         
+        /* Estilo para Teclas Aprendidas (Azul) */
         .key-learned {
-            background-color: #eff6ff;
-            color: #1e40af;
-            border-bottom: 4px solid #3b82f6;
-            box-shadow: 0 4px 0 #1d4ed8;
+            background-color: #eff6ff; /* Azul bem claro fundo */
+            color: #1e40af; /* Azul texto */
+            border-bottom: 4px solid #3b82f6; /* Borda azul */
+            box-shadow: 0 6px 0 #1d4ed8; /* Sombra azul forte */
         }
+
         .key-learned:active, .key-learned.active-press {
-            background-color: #60a5fa !important;
-            color: white;
-            box-shadow: 0 0 0 #1d4ed8;
-            border-bottom: 0;
-            transform: translateY(4px);
+            background-color: #bfdbfe !important;
         }
 
         /* --- ÁREA DE IMAGEM --- */
@@ -198,7 +230,7 @@
         </div>
     </div>
 
-    <div id="keyboardContainer" class="hidden mt-2 w-full max-w-5xl select-none pb-4 px-1">
+    <div id="keyboardContainer" class="hidden select-none">
         </div>
 
     <div id="phaseSuccessModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 backdrop-blur-sm">
@@ -290,11 +322,9 @@
 
         // --- UTILITÁRIOS ÁUDIO/ARQUIVO ---
         function getAudioFilename(word) {
-            // Remove acentos e minúsculas para encontrar o arquivo de áudio (ex: "BAÚ" -> "bau.mp3")
             return word.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") + ".mp3";
         }
         function getSyllableFilename(word) {
-             // Remove acentos da sílaba também (ex: "PÉ" -> "pe.mp3")
             return word.substring(0, 2).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") + ".mp3";
         }
         function getIntroSyllableFilename(syllable) {
@@ -482,7 +512,6 @@
 
             const imgContainer = document.getElementById('imageContainer');
             imgContainer.innerHTML = '';
-            // Renderiza Imagem ou até 3 Emojis (Font grande para caber 3)
             if (currentItem.image) {
                 const img = document.createElement('img');
                 img.src = pathImg + currentItem.image;
@@ -490,7 +519,6 @@
                 img.onerror = () => { imgContainer.innerHTML = `<span class="text-6xl md:text-8xl">${currentItem.emoji}</span>`; };
                 imgContainer.appendChild(img);
             } else {
-                // Ajusta tamanho da fonte se tiver muitos emojis
                 const fontSize = currentItem.emoji.length > 4 ? "text-5xl" : "text-6xl md:text-8xl";
                 imgContainer.innerHTML = `<span class="${fontSize}">${currentItem.emoji}</span>`;
             }
@@ -498,7 +526,7 @@
             const instruction = document.getElementById('phaseInstruction');
             if (gameSubState === 'SYLLABLE_PHASE') {
                 instruction.textContent = "Complete a sílaba:";
-                playWordAudio(); // AGORA TOCA A PALAVRA INTEIRA
+                playWordAudio();
             } else { 
                 instruction.textContent = "Escreva a palavra:";
                 playWordAudio();
@@ -530,14 +558,12 @@
             player.play().catch(()=>{});
         }
         function playSyllableAudio() {
-            // Mantive a função caso queira usar futuramente, mas no jogo agora chamamos playWordAudio
             const player = document.getElementById('audioPlayer');
             player.src = pathAudio + getSyllableFilename(currentItem.word);
             player.play().catch(() => playWordAudio());
         }
         function playCurrentAudio() {
             if (gameState !== 'GAME') return;
-            // AGORA SEMPRE TOCA A PALAVRA NO JOGO (SEJA NA FASE DA SILABA OU DA PALAVRA)
             playWordAudio(); 
         }
 
@@ -595,18 +621,13 @@
             document.getElementById('nextButton').classList.remove('hidden');
             document.getElementById('nextButton').focus();
             
-            // Toca som de vitória
             document.getElementById('sndWin').play();
-            
-            // TOCA A PALAVRA DEPOIS DE ACERTAR (com pequeno atraso para não encavalar com o som de vitória)
             setTimeout(() => {
                 playWordAudio();
             }, 500);
 
             score += 10;
             document.getElementById('scoreDisplay').textContent = score;
-            
-            // Disparar Confetes!
             fireConfetti();
         }
 
@@ -629,28 +650,29 @@
         function showRetryModal() { document.getElementById('sndLose').play(); document.getElementById('retryModal').classList.remove('hidden'); }
         function closeModalAndNextLevel() { document.getElementById('levelUpModal').classList.add('hidden'); initLevel(currentLevel + 1); }
 
-        // --- TECLADO AZUL ---
+        // --- TECLADO GIGANTE E RESPONSIVO ---
         function renderKeyboard() {
             const layout = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
             const container = document.getElementById('keyboardContainer');
             container.innerHTML = '';
+            
+            // Removemos as classes do Tailwind do container e aplicamos via CSS (veja style block)
+            
             layout.forEach(row => {
                 const rowDiv = document.createElement('div');
-                rowDiv.className = "flex justify-center gap-1 md:gap-2 mb-2";
+                rowDiv.className = "keyboard-row"; // Classe CSS definida no style
                 row.split('').forEach(char => {
                     const btn = document.createElement('button');
                     btn.textContent = char;
                     btn.id = `key-${char}`;
                     
-                    // --- TAMANHOS DE TECLA ATUALIZADOS ---
-                    // Mobile: w-8 h-14, text-2xl (mais alto)
-                    // Desktop (md): w-16 h-20, text-3xl (bem maior)
-                    let btnClass = "key w-8 h-14 md:w-16 md:h-20 bg-white rounded-lg font-bold text-gray-400 border-b-4 border-gray-300 text-2xl md:text-3xl";
+                    // A classe .key agora tem o estilo responsivo (vw) definido no CSS
+                    let btnClass = "key"; 
                     
-                    // Se aprendida: Azul
                     if (learnedLetters.has(char)) {
-                        btnClass = "key key-learned w-8 h-14 md:w-16 md:h-20 rounded-lg font-bold text-2xl md:text-3xl transform scale-105";
+                        btnClass += " key-learned";
                     }
+                    
                     btn.className = btnClass;
                     btn.onclick = (e) => { e.preventDefault(); handleInput(char); highlightKey(char); };
                     rowDiv.appendChild(btn);
@@ -666,7 +688,7 @@
             }
         }
 
-        // --- LÓGICA DE CONFETES (Canvas Simples) ---
+        // --- CONFETES ---
         const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -698,7 +720,7 @@
             particles.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
-                p.vy += 0.2; // gravidade
+                p.vy += 0.2;
                 p.life--;
                 ctx.fillStyle = p.color;
                 ctx.beginPath();
