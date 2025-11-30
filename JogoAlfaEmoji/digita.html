@@ -198,7 +198,7 @@
         </div>
     </div>
 
-    <div id="keyboardContainer" class="hidden mt-2 w-full max-w-4xl select-none pb-4 px-2">
+    <div id="keyboardContainer" class="hidden mt-2 w-full max-w-5xl select-none pb-4 px-1">
         </div>
 
     <div id="phaseSuccessModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 backdrop-blur-sm">
@@ -261,13 +261,13 @@
         };
 
         const database = {
-            0: { items: [{ word: "OI", emoji: "👋" }, { word: "AI", emoji: "🤕🗣" }, { word: "EU", image: "eu.png", emoji: "🙋" }, { word: "AU", emoji: "🐶🗣" }] },
-            1: { items: [{ word: "ABA", image: "aba.png", emoji: "🖼️" }, { word: "BAÚ", image: "bau.png", emoji: "📦" }, { word: "BABÁ", image: "baba.png", emoji: "👶" }, { word: "BOI", emoji: "🐂" }, { word: "BEBÊ", emoji: "👶" }, { word: "OBA", emoji: "🙌" }, { word: "BOIA", emoji: "🛟" }] },
-            2: { items: [{ word: "TATU", image: "tatu.png", emoji: "🦔" }, { word: "TUBA", image: "tuba.png", emoji: "🎺" }, { word: "TUTU", image: "tutu.png", emoji: "🩰" }, { word: "BOTE", image: "bote.png", emoji: "🛶" }, { word: "TÁBUA", image: "tabua.png", emoji: "🪵" }, { word: "BOTA", emoji: "👢" }, { word: "TIA", emoji: "👩" }, { word: "OITO", emoji: "8️⃣" }, { word: "TEIA", emoji: "🕸️" }] },
-            3: { items: [{ word: "PATA", image: "pata.png", emoji: "🐾" }, { word: "APITO", image: "apito.png", emoji: "🎺" }, { word: "TAPETE", image: "tapete.png", emoji: "🧶" }, { word: "PIPA", emoji: "🪁" }, { word: "PATO", emoji: "🦆" }, { word: "PÉ", emoji: "🦶" }] },
-            4: { items: [{ word: "DADO", emoji: "🎲" }, { word: "DEDO", emoji: "☝️" }, { word: "DIA", emoji: "☀️" }, { word: "BODE", emoji: "🐐" }, { word: "IDADE", emoji: "🔢🎂" }] },
-            5: { items: [{ word: "FADA", emoji: "🧚" }, { word: "FIFE", emoji: "🪈" }, { word: "FOFO", emoji: "🧸" }, { word: "BIFE", emoji: "🥩" }, { word: "FITA", emoji: "🎗" }, { word: "FOTO", emoji: "📷" }, { word: "FIO", emoji: "🧵" }] },
-            6: { items: [{ word: "VOVÓ", emoji: "👵" }, { word: "UVA", emoji: "🍇" }, { word: "AVE", emoji: "🦅" }, { word: "OVO", emoji: "🥚" }, { word: "VIVA", emoji: "🎉" }] },
+            0: { items: [{ word: "OI", emoji: "👋" }, { word: "AI", emoji: "🤕" }, { word: "EU", emoji: "🙋" }, { word: "AU", emoji: "🐶" }] },
+            1: { items: [{ word: "ABA", image: "aba.png", emoji: "🖼️" }, { word: "BAÚ", image: "bau.png", emoji: "📦" }, { word: "BABÁ", image: "baba.png", emoji: "👶" }, { word: "BOI", emoji: "🐂" }, { word: "BEBÊ", emoji: "👶" }, { word: "BIA", emoji: "👧" }, { word: "OBA", emoji: "🙌" }, { word: "BOIA", emoji: "🛟" }] },
+            2: { items: [{ word: "TATU", image: "tatu.png", emoji: "🦔" }, { word: "TUBA", image: "tuba.png", emoji: "🎺" }, { word: "TUTU", image: "tutu.png", emoji: "🩰" }, { word: "BOTE", image: "bote.png", emoji: "🛶" }, { word: "TÁBUA", image: "tabua.png", emoji: "🪵" }, { word: "BOTA", emoji: "👢" }, { word: "TITO", emoji: "👦" }, { word: "TETO", emoji: "🏠" }, { word: "TITIA", emoji: "👩" }, { word: "OITO", emoji: "8️⃣" }, { word: "TEIA", emoji: "🕸️" }] },
+            3: { items: [{ word: "PATA", image: "pata.png", emoji: "🐾" }, { word: "APITO", image: "apito.png", emoji: "🎺" }, { word: "TAPETE", image: "tapete.png", emoji: "🧶" }, { word: "PAPA", emoji: "🥣" }, { word: "PIPA", emoji: "🪁" }, { word: "PATO", emoji: "🦆" }, { word: "PÉ", emoji: "🦶" }, { word: "PAI", emoji: "👨" }, { word: "PIÃO", emoji: "🧸" }] },
+            4: { items: [{ word: "DADO", emoji: "🎲" }, { word: "DEDO", emoji: "☝️" }, { word: "DIA", emoji: "☀️" }, { word: "DIDA", emoji: "👦" }, { word: "BODE", emoji: "🐐" }, { word: "DUDU", emoji: "👦" }, { word: "DEDÃO", emoji: "👍" }, { word: "IDADE", emoji: "🎂" }] },
+            5: { items: [{ word: "FADA", emoji: "🧚" }, { word: "FIFE", emoji: "🪈" }, { word: "FOFO", emoji: "🧸" }, { word: "BIFE", emoji: "🥩" }, { word: "FITA", emoji: "🎀" }, { word: "FOTO", emoji: "📷" }, { word: "FIO", emoji: "🧵" }] },
+            6: { items: [{ word: "VOVÓ", emoji: "👵" }, { word: "UVA", emoji: "🍇" }, { word: "AVE", emoji: "🦅" }, { word: "OVO", emoji: "🥚" }, { word: "VIVA", emoji: "🎉" }, { word: "PAVÃO", emoji: "🦚" }, { word: "VITO", emoji: "👦" }] },
             7: { items: [{ word: "MAMÃO", emoji: "🥭" }, { word: "MIAU", emoji: "🐈" }, { word: "EMA", emoji: "🐦" }, { word: "MEIA", emoji: "🧦" }, { word: "MAPA", emoji: "🗺️" }, { word: "UMA", emoji: "1️⃣" }, { word: "MIMA", emoji: "🫂" }] },
             8: { items: [{ word: "ANA", emoji: "👧" }, { word: "ANO", emoji: "📅" }, { word: "NAVE", emoji: "🚀" }, { word: "NOVE", emoji: "9️⃣" }, { word: "BONÉ", emoji: "🧢" }, { word: "BANANA", emoji: "🍌" }, { word: "MENINO", emoji: "👦" }] },
             9: { items: [{ word: "LUA", emoji: "🌙" }, { word: "LOBO", emoji: "🐺" }, { word: "BOLA", emoji: "⚽" }, { word: "BALA", emoji: "🍬" }, { word: "LEÃO", emoji: "🦁" }, { word: "LULA", emoji: "🦑" }, { word: "MULA", emoji: "🐴" }] }
@@ -641,12 +641,15 @@
                     const btn = document.createElement('button');
                     btn.textContent = char;
                     btn.id = `key-${char}`;
-                    // Tecla padrão: branca com sombra cinza
-                    let btnClass = "key w-8 h-12 md:w-14 md:h-16 bg-white rounded-lg font-bold text-gray-400 border-b-4 border-gray-300 text-xl md:text-2xl";
+                    
+                    // --- TAMANHOS DE TECLA ATUALIZADOS ---
+                    // Mobile: w-8 h-14, text-2xl (mais alto)
+                    // Desktop (md): w-16 h-20, text-3xl (bem maior)
+                    let btnClass = "key w-8 h-14 md:w-16 md:h-20 bg-white rounded-lg font-bold text-gray-400 border-b-4 border-gray-300 text-2xl md:text-3xl";
                     
                     // Se aprendida: Azul
                     if (learnedLetters.has(char)) {
-                        btnClass = "key key-learned w-8 h-12 md:w-14 md:h-16 rounded-lg font-bold text-xl md:text-2xl transform scale-105";
+                        btnClass = "key key-learned w-8 h-14 md:w-16 md:h-20 rounded-lg font-bold text-2xl md:text-3xl transform scale-105";
                     }
                     btn.className = btnClass;
                     btn.onclick = (e) => { e.preventDefault(); handleInput(char); highlightKey(char); };
