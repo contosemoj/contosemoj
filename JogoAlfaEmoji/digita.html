@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jogo de Digitar - Alfabetização</title>
+    <title>Jogo de Digitar - Design Ajustado</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
@@ -11,9 +11,7 @@
         body {
             font-family: 'Fredoka', sans-serif;
             background-color: #f0f9ff;
-            background-image: radial-gradient(#bae6fd 2px, transparent 2px);
-            background-size: 30px 30px;
-            overflow-x: hidden;
+            overflow: hidden; /* App Style */
         }
         
         /* --- ESTILOS DO JOGO --- */
@@ -47,128 +45,108 @@
             border-color: #d1d5db;
         }
 
-        /* --- NOVO ESTILO DO TECLADO --- */
+        /* --- MONITOR / IMAGEM --- */
+        .image-monitor {
+            background: white;
+            border: 4px solid #3b82f6;
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- TECLADO GIGANTE --- */
+        #keyboardArea {
+            /* Ocupa toda a largura da tela */
+            width: 100vw; 
+            background: white;
+            border-top: 4px solid #e5e7eb;
+            padding: 10px 0 20px 0;
+            z-index: 50;
+        }
+
         #keyboardContainer {
             width: 100%;
-            max-width: 1000px;
-            padding: 10px 0 30px 0;
+            max-width: 1200px; /* Limite para telas muito largas */
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin: 0 auto;
         }
 
         .keyboard-row {
             display: flex;
             justify-content: center;
             gap: 8px;
+            padding: 0 10px;
         }
 
         .key {
-            width: 8.5vw; 
-            max-width: 85px; 
-            height: 72px; 
+            flex: 1; /* Estica para ocupar espaço */
+            max-width: 100px; /* Limite máximo */
+            height: 75px; /* Altura generosa */
             
-            border-radius: 12px;
-            font-size: 2.2rem;
+            border-radius: 16px;
+            font-size: 2.5rem;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.1s, box-shadow 0.1s, background-color 0.2s;
+            transition: transform 0.1s, background-color 0.2s;
             touch-action: manipulation;
-            user-select: none;
             display: flex;
             align-items: center;
             justify-content: center;
             
             background-color: #fff;
             color: #9ca3af;
-            border-bottom: 4px solid #d1d5db;
-            box-shadow: 0 4px 0 #9ca3af;
+            border-bottom: 5px solid #d1d5db;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .key:active, .key.active-press {
-            transform: translateY(6px);
-            box-shadow: none !important;
+            transform: translateY(5px);
             border-bottom: 0 !important;
+            background-color: #e5e7eb;
         }
         
         .key-learned {
             background-color: #eff6ff;
             color: #1e40af;
-            border-bottom: 4px solid #3b82f6;
-            box-shadow: 0 6px 0 #1d4ed8;
+            border-bottom: 5px solid #3b82f6;
+        }
+        .key-learned:active {
+            background-color: #bfdbfe;
         }
 
-        .key-learned:active, .key-learned.active-press {
-            background-color: #bfdbfe !important;
-        }
-
-        /* --- ÁREA DE IMAGEM --- */
-        .image-monitor {
-            background: white;
-            border: 4px solid #3b82f6;
-            border-radius: 1rem;
-            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            position: relative;
-        }
-        .image-monitor:active {
-            transform: scale(0.98);
-        }
-        .sound-hint {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            color: #3b82f6;
-            opacity: 0.6;
-        }
-
-        /* --- SÍLABAS INTRO --- */
-        .syllable-card {
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .syllable-card:hover {
-            transform: scale(1.1) rotate(2deg);
-            color: #2563eb;
-            border-color: #2563eb;
-        }
-
-        /* --- CONFETES --- */
-        #confetti-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        /* --- Layout novo para o topo --- */
-        .top-stats-container {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 10px 20px;
-            margin-bottom: 10px;
-        }
-
-        .stat-box {
-            background: white;
-            padding: 10px 15px;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border-bottom: 4px solid;
+        /* --- SIDEBARS CURTAS --- */
+        .sidebar-short {
+            width: 80px; /* Estreito */
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            padding: 10px;
+            /* Não tem altura fixa, se ajusta ao container superior */
+        }
+        
+        .sidebar-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            opacity: 0.8; /* Levemente apagado para não chamar atenção */
+        }
+
+        /* --- LAYOUT SUPERIOR (Jogo + Laterais) --- */
+        .upper-section {
+            display: flex;
+            flex: 1; /* Ocupa o espaço que sobra acima do teclado */
+            width: 100%;
+            min-height: 0; /* Permite encolher se necessário */
         }
 
         @keyframes shake {
@@ -178,119 +156,72 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-start select-none pt-2">
+<body class="h-screen w-full flex flex-col bg-blue-50">
 
-    <canvas id="confetti-canvas"></canvas>
+    <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
 
-    <div class="top-stats-container">
-        <div class="stat-box border-blue-200">
-            <span class="text-xs text-gray-500 font-bold uppercase">Fase</span>
-            <span id="levelDisplay" class="text-xl md:text-2xl font-bold text-blue-600">...</span>
-        </div>
-
-        <div class="flex gap-3">
-             <div class="stat-box border-gray-200 hidden md:flex">
-                <span class="text-[10px] text-gray-500 font-bold uppercase">Precisão</span>
-                <span id="accuracyDisplay" class="text-lg font-bold text-green-500">100%</span>
-             </div>
-            <div class="stat-box border-yellow-200 flex-row gap-2 items-center">
-                <span class="text-xl">⭐</span>
-                <span id="scoreDisplay" class="text-2xl font-bold text-yellow-500">0</span>
-            </div>
-        </div>
+    <div class="w-full h-3 bg-gray-200 shrink-0">
+        <div id="progressBar" class="h-full bg-green-500 transition-all duration-500" style="width: 0%"></div>
     </div>
 
-    <div id="introArea" class="hidden bg-white rounded-3xl shadow-xl p-8 max-w-3xl w-full text-center border-4 border-yellow-300 mt-2 mx-4">
-        <h2 id="introTitle" class="text-2xl font-bold text-blue-600 mb-6">Vamos conhecer a família?</h2>
-        <div class="flex justify-center gap-4 text-5xl md:text-6xl font-bold text-gray-700 mb-8 flex-wrap" id="introContainer">
-            </div>
-        <button onclick="endIntro()" class="bg-green-500 text-white text-xl font-bold py-3 px-8 rounded-xl shadow-[0_4px_0_rgb(21,128,61)] active:translate-y-1 hover:scale-105 transition transform">
-            Continuar ➔
-        </button>
-    </div>
-
-    <div id="presentationArea" class="hidden bg-white rounded-3xl shadow-xl p-6 max-w-3xl w-full text-center border-4 border-purple-300 mt-2 mx-4">
-        <h2 class="text-xl md:text-2xl font-bold text-purple-600 mb-4">Observe as palavras:</h2>
+    <div class="upper-section relative">
         
-        <div id="presContent" class="flex flex-col items-center gap-4 justify-center">
-            <div class="image-monitor w-64 h-48 md:w-80 md:h-56 bg-white mx-auto">
-                <div id="presImageContainer" class="w-full h-full flex items-center justify-center p-4"></div>
+        <aside class="sidebar-short border-r border-blue-100 hidden md:flex bg-white/50">
+            <div class="sidebar-card">
+                <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Fase</span>
+                <div id="sideLevel" class="text-3xl font-bold text-blue-400">1</div>
             </div>
-            <div id="presWord" class="text-4xl md:text-5xl font-bold text-gray-700 tracking-widest mt-2"></div>
-        </div>
+        </aside>
 
-        <button id="presNextBtn" onclick="nextPresentationItem()" class="mt-6 bg-purple-500 text-white text-xl font-bold py-3 px-8 rounded-xl shadow-[0_4px_0_rgb(107,33,168)] active:translate-y-1 hover:scale-105 transition transform">
-            Próximo ➔
-        </button>
+        <main class="flex-1 flex flex-col items-center justify-center p-4 relative">
+            
+            <div id="overlayArea" class="hidden absolute inset-0 bg-white/95 z-40 flex flex-col items-center justify-center p-8 rounded-xl">
+                 <div id="introContent" class="text-center w-full max-w-2xl"></div>
+            </div>
+
+            <div id="phaseInstruction" class="text-lg font-bold text-blue-400 mb-2"></div>
+
+            <div class="image-monitor max-w-3xl h-full max-h-[45vh] w-full mb-4 cursor-pointer" onclick="playCurrentAudio()">
+                <div id="imageContainer" class="w-full h-full flex items-center justify-center p-4">
+                    </div>
+            </div>
+
+            <div id="inputContainer" class="flex flex-wrap justify-center gap-3 min-h-[70px]">
+                </div>
+            
+            <div id="feedbackMessage" class="h-6 text-lg font-bold text-green-600 mt-1"></div>
+
+             <button id="nextButton" onclick="nextGameItem()" class="hidden absolute bottom-4 z-50 bg-green-500 hover:bg-green-400 text-white text-xl font-bold py-2 px-12 rounded-full shadow-xl animate__animated animate__bounceIn">
+                Próximo ➔
+            </button>
+        </main>
+
+        <aside class="sidebar-short border-l border-blue-100 hidden md:flex bg-white/50">
+            <div class="sidebar-card mb-4">
+                <span class="text-lg">⭐</span>
+                <div id="sideScore" class="text-xl font-bold text-gray-400">0</div>
+            </div>
+            <div class="sidebar-card">
+                <span class="text-[10px] text-gray-400 uppercase">Acertos</span>
+                <div id="sideAccuracy" class="text-sm font-bold text-gray-400">100%</div>
+            </div>
+        </aside>
     </div>
 
-    <div id="gameArea" class="hidden bg-white rounded-3xl shadow-xl p-4 max-w-3xl w-full text-center border-4 border-white relative mt-0 flex flex-col items-center mx-4">
-        
-        <div class="absolute top-0 left-0 w-full h-2 bg-gray-100 rounded-t-3xl overflow-hidden">
-            <div id="progressBar" class="h-full bg-green-500 transition-all duration-500" style="width: 0%"></div>
-        </div>
+    <footer id="keyboardArea" class="shrink-0 shadow-[0_-5px_15px_rgba(0,0,0,0.05)]">
+        <div id="keyboardContainer">
+            </div>
+    </footer>
 
-        <div id="phaseInstruction" class="text-lg md:text-xl font-bold text-blue-500 mb-2 mt-2 min-h-[1.75rem]"></div>
-
-        <div class="image-monitor w-full max-w-sm h-40 md:h-52 mb-4" onclick="playCurrentAudio()">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 sound-hint" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-            </svg>
-            <div id="imageContainer" class="w-full h-full flex items-center justify-center p-2"></div>
-        </div>
-
-        <div id="inputContainer" class="flex flex-wrap justify-center gap-2 mb-4 min-h-[60px]"></div>
-
-        <div class="h-14 flex items-center justify-center relative w-full mb-2">
-            <div id="feedbackMessage" class="text-xl md:text-2xl font-bold text-gray-600 absolute transition-opacity duration-300"></div>
-            <button id="nextButton" onclick="nextGameItem()" class="hidden z-10 bg-green-500 hover:bg-green-400 text-white text-xl font-bold py-2 px-8 rounded-xl shadow-[0_4px_0_rgb(21,128,61)] active:translate-y-1 active:shadow-none animate__animated animate__bounceIn">
-                Próxima ➔
-            </button>
-        </div>
-    </div>
-
-    <div id="keyboardContainer" class="hidden select-none">
-        </div>
-
-    <div id="phaseSuccessModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 backdrop-blur-sm">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl text-center max-w-sm mx-4 animate__animated animate__zoomIn border-4 border-blue-400">
-            <div class="text-7xl mb-4">🌟</div>
-            <h2 class="text-3xl font-bold text-blue-600 mb-2">Muito Bem!</h2>
-            <p class="text-gray-600 mb-6 text-lg">Você completou as sílabas!</p>
-            <p class="text-gray-500 mb-6">Agora vamos escrever as <b>palavras inteiras</b>?</p>
-            <button onclick="advanceToFullWordPhase()" class="w-full bg-blue-500 hover:bg-blue-400 text-white text-xl font-bold py-4 px-8 rounded-xl shadow-[0_4px_0_rgb(30,58,138)] active:translate-y-1 transform transition hover:scale-105">
-                Vamos lá! 🚀
-            </button>
-        </div>
-    </div>
-
-    <div id="levelUpModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 backdrop-blur-sm">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl text-center max-w-sm mx-4 animate__animated animate__zoomIn border-4 border-yellow-400">
-            <div class="text-7xl mb-4">🏆</div>
-            <h2 class="text-3xl font-bold text-blue-600 mb-2">Fase Completa!</h2>
-            <p class="text-gray-600 mb-6 text-lg">Você mandou muito bem!</p>
-            <p class="text-gray-500 mb-6">Desbloqueou: <span id="unlockedLetterDisplay" class="font-bold text-2xl text-green-600"></span></p>
-            <button onclick="closeModalAndNextLevel()" class="w-full bg-yellow-400 hover:bg-yellow-300 text-yellow-900 text-xl font-bold py-4 px-8 rounded-xl shadow-[0_4px_0_rgb(161,98,7)] active:translate-y-1 transform transition hover:scale-105">
-                Próxima Fase 🚀
-            </button>
-        </div>
-    </div>
-
-    <div id="retryModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 backdrop-blur-sm">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl text-center max-w-sm mx-4 animate__animated animate__shakeX border-4 border-orange-400">
-            <div class="text-7xl mb-4">💪</div>
-            <h2 class="text-3xl font-bold text-orange-600 mb-2">Vamos praticar mais?</h2>
-            <p class="text-gray-600 mb-6 text-lg">Precisamos acertar pelo menos <b>80%</b> para passar.</p>
-            <button onclick="restartCurrentPhase()" class="w-full bg-orange-400 hover:bg-orange-300 text-white text-xl font-bold py-4 px-8 rounded-xl shadow-[0_4px_0_rgb(194,65,12)] active:translate-y-1 transform transition hover:scale-105">
-                Tentar de Novo 🔄
-            </button>
-        </div>
+    <div id="modalOverlay" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 backdrop-blur-sm">
+        <div id="modalContent" class="bg-white p-8 rounded-3xl shadow-2xl text-center max-w-sm mx-4 border-4 animate__animated animate__zoomIn"></div>
     </div>
 
     <audio id="audioPlayer"></audio>
     <audio id="sndCorrect" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
-    <audio id="sndError" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
-    <audio id="sndWin" src="https://actions.google.com/sounds/v1/cartoon/clown_horn_surprise.ogg"></audio>
+    <audio id="sndError" src=""></audio>
+    <audio id="sndWordWin" src="https://actions.google.com/sounds/v1/cartoon/magic_chime.ogg"></audio>
+    <audio id="sndLevelWin" src="https://actions.google.com/sounds/v1/science_fiction/musical_alert.ogg"></audio>
     <audio id="sndLose" src="https://actions.google.com/sounds/v1/cartoon/cartoon_whistle.ogg"></audio>
 
     <script>
@@ -324,11 +255,10 @@
             9: { items: [{ word: "LUA", emoji: "🌙" }, { word: "LOBO", emoji: "🐺" }, { word: "BOLA", emoji: "⚽" }, { word: "BALA", emoji: "🍬" }, { word: "LULA", emoji: "🦑" }] }
         };
 
-        // --- ESTADO ---
         let currentLevel = 0;
         let score = 0;
         let learnedLetters = new Set();
-        let gameState = 'INTRO'; 
+        let gameState = 'INTRO';
         let gameSubState = 'SYLLABLE_PHASE';
         let phaseTotalAttempts = 0; 
         let phaseCorrectAttempts = 0;
@@ -339,26 +269,16 @@
         let presentationIndex = 0;
         let targetIndices = []; 
 
-        // --- UTILITÁRIOS ÁUDIO/ARQUIVO ---
-        function getAudioFilename(word) {
-            return word.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") + ".mp3";
-        }
-        function getSyllableFilename(word) {
-            return word.substring(0, 2).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") + ".mp3";
-        }
-        function getIntroSyllableFilename(syllable) {
-            return syllable.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") + ".mp3";
-        }
+        // --- UTILITÁRIOS ---
+        function getAudioFilename(word) { return word.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") + ".mp3"; }
+        function getSyllableFilename(word) { return word.substring(0, 2).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") + ".mp3"; }
+        function getIntroSyllableFilename(syllable) { return syllable.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") + ".mp3"; }
         function findSyllableIndices(word, levelLetter) {
             const indices = [];
             const regex = new RegExp(`(${levelLetter})[AEOIUÁÉÍÓÚÃÕÂÊÔ]`, 'i');
             const match = word.match(regex);
-            if (match && match.index !== undefined) {
-                indices.push(match.index);
-                indices.push(match.index + 1);
-            } else {
-                if (word.toUpperCase().startsWith(levelLetter)) indices.push(0, 1);
-            }
+            if (match && match.index !== undefined) { indices.push(match.index, match.index + 1); }
+            else if (word.toUpperCase().startsWith(levelLetter)) { indices.push(0, 1); }
             return indices;
         }
 
@@ -366,142 +286,105 @@
             initLevel(0);
             resizeCanvas();
             window.addEventListener('resize', resizeCanvas);
-            
             document.addEventListener('keydown', (e) => {
                 if (gameState !== 'GAME') return;
                 const key = e.key.toUpperCase();
                 if (/^[A-ZÁÉÍÓÚÂÊÔÃÕÇ]$/.test(key) || (key >= 'A' && key <= 'Z')) {
                     handleInput(key);
                     highlightKey(key);
-                } else if (e.key === "Enter") {
-                    if (!document.getElementById('nextButton').classList.contains('hidden')) {
-                        nextGameItem();
-                    }
+                } else if (e.key === "Enter" && !document.getElementById('nextButton').classList.contains('hidden')) {
+                    nextGameItem();
                 }
             });
         };
 
+        function updateUI() {
+            document.getElementById('sideLevel').textContent = currentLevel;
+            document.getElementById('sideScore').textContent = score;
+            const acc = phaseTotalAttempts === 0 ? 100 : Math.round((phaseCorrectAttempts / phaseTotalAttempts) * 100);
+            document.getElementById('sideAccuracy').textContent = acc + "%";
+        }
+
         function initLevel(level) {
             currentLevel = level;
             if (!database[level]) { alert("Fim do Jogo!"); currentLevel = 0; }
-            
             learnedLetters = new Set();
-            for(let i = 0; i <= currentLevel; i++) {
-                if(levels[i]) levels[i].unlock.forEach(l => learnedLetters.add(l));
-            }
-
-            document.getElementById('levelDisplay').textContent = `${level} - ${levels[currentLevel].letter}`;
-            hideAllScreens();
+            for(let i = 0; i <= currentLevel; i++) if(levels[i]) levels[i].unlock.forEach(l => learnedLetters.add(l));
+            
+            updateUI();
             presentationQueue = [...database[currentLevel].items];
             startIntro();
         }
 
-        function hideAllScreens() {
-            document.getElementById('introArea').classList.add('hidden');
-            document.getElementById('presentationArea').classList.add('hidden');
-            document.getElementById('gameArea').classList.add('hidden');
-            document.getElementById('keyboardContainer').classList.add('hidden');
-            document.getElementById('levelUpModal').classList.add('hidden');
-            document.getElementById('retryModal').classList.add('hidden');
-            document.getElementById('phaseSuccessModal').classList.add('hidden');
+        function showOverlay(contentHTML) {
+            const overlay = document.getElementById('overlayArea');
+            document.getElementById('introContent').innerHTML = contentHTML;
+            overlay.classList.remove('hidden');
         }
+        function hideOverlay() { document.getElementById('overlayArea').classList.add('hidden'); }
 
-        function updateAccuracyDisplay() {
-            if (phaseTotalAttempts === 0) {
-                document.getElementById('accuracyDisplay').textContent = "100%";
-                document.getElementById('accuracyDisplay').className = "text-xl font-bold text-green-500";
-                return;
-            }
-            const acc = Math.round((phaseCorrectAttempts / phaseTotalAttempts) * 100);
-            document.getElementById('accuracyDisplay').textContent = acc + "%";
-            if(acc >= 80) document.getElementById('accuracyDisplay').className = "text-xl font-bold text-green-500";
-            else if(acc >= 60) document.getElementById('accuracyDisplay').className = "text-xl font-bold text-yellow-500";
-            else document.getElementById('accuracyDisplay').className = "text-xl font-bold text-red-500";
-        }
-
-        // --- INTRO & APRESENTAÇÃO ---
+        // --- INTRO ---
         function startIntro() {
             gameState = 'INTRO';
-            document.getElementById('introArea').classList.remove('hidden');
-            
-            const titleElem = document.getElementById('introTitle');
-            if (currentLevel === 0) titleElem.textContent = "Vamos lembrar as vogais?";
-            else titleElem.textContent = `Família da letra ${levels[currentLevel].letter}`;
-
             const syllables = levels[currentLevel].syllables || [];
-            const container = document.getElementById('introContainer');
-            container.innerHTML = '';
-
-            syllables.forEach((syl, i) => {
-                const span = document.createElement('span');
-                span.textContent = syl;
-                span.className = "syllable-card inline-block animate__animated animate__bounceIn text-gray-700 bg-white border-2 border-blue-100 rounded-lg px-4 py-2 shadow-sm m-2";
-                span.style.animationDelay = `${i * 0.2}s`;
-                span.onclick = () => {
-                    const audio = new Audio(pathAudio + getIntroSyllableFilename(syl));
-                    audio.play().catch(e=>{});
-                    span.classList.remove('animate__bounceIn');
-                    void span.offsetWidth;
-                    span.classList.add('animate__rubberBand', 'text-blue-500', 'border-blue-500');
-                    setTimeout(() => span.classList.remove('text-blue-500', 'border-blue-500'), 500);
-                };
-                container.appendChild(span);
+            const title = currentLevel === 0 ? "Vogais" : `Família do ${levels[currentLevel].letter}`;
+            
+            let html = `<h2 class="text-3xl font-bold text-blue-500 mb-6">${title}</h2><div class="flex justify-center gap-4 flex-wrap mb-8">`;
+            syllables.forEach((syl) => {
+                html += `<button onclick="playIntroSyllable('${syl}')" class="text-3xl font-bold bg-white text-blue-500 border-2 border-blue-200 rounded-xl px-5 py-3 shadow hover:scale-105 transition">${syl}</button>`;
             });
+            html += `</div><button onclick="endIntro()" class="bg-green-500 text-white text-xl font-bold py-3 px-8 rounded-full shadow-lg hover:bg-green-400">Jogar ➔</button>`;
+            showOverlay(html);
         }
-        function endIntro() { document.getElementById('introArea').classList.add('hidden'); startPresentation(); }
+        window.playIntroSyllable = (syl) => { new Audio(pathAudio + getIntroSyllableFilename(syl)).play().catch(()=>{}); };
+        window.endIntro = () => { startPresentation(); };
 
+        // --- APRESENTAÇÃO ---
         function startPresentation() {
             gameState = 'PRESENTATION';
             presentationIndex = 0;
-            document.getElementById('presentationArea').classList.remove('hidden');
             showPresentationItem();
         }
+
         function showPresentationItem() {
             if (presentationIndex >= presentationQueue.length) {
-                document.getElementById('presentationArea').classList.add('hidden');
                 if (currentLevel === 0) startFullWordPhase(); else startSyllablePhase();
                 return;
             }
             const item = presentationQueue[presentationIndex];
-            const imgContainer = document.getElementById('presImageContainer');
-            imgContainer.innerHTML = '';
             
-            if (item.image) {
-                const img = document.createElement('img');
-                img.src = pathImg + item.image;
-                img.className = "max-h-full max-w-full object-contain animate__animated animate__fadeIn drop-shadow-xl";
-                img.onerror = () => { imgContainer.innerHTML = `<span class="text-7xl md:text-8xl animate__animated animate__fadeIn">${item.emoji}</span>`; };
-                imgContainer.appendChild(img);
-            } else {
-                imgContainer.innerHTML = `<span class="text-7xl md:text-8xl animate__animated animate__fadeIn">${item.emoji}</span>`;
-            }
-            document.getElementById('presWord').textContent = item.word;
-            const player = document.getElementById('audioPlayer');
-            player.src = pathAudio + getAudioFilename(item.word);
-            player.play().catch(()=>{});
+            let mediaHtml = item.image ? 
+                `<img src="${pathImg + item.image}" class="max-h-56 mx-auto drop-shadow-md" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"> <span style="display:none" class="text-7xl">${item.emoji}</span>` : 
+                `<span class="text-8xl">${item.emoji}</span>`;
+
+            let html = `
+                <div class="bg-white border-4 border-purple-200 rounded-2xl p-4 mb-4 shadow-sm w-full">${mediaHtml}</div>
+                <div class="text-4xl font-bold text-gray-600 tracking-widest mb-6">${item.word}</div>
+                <button onclick="nextPresentationItem()" class="bg-purple-500 text-white text-lg font-bold py-3 px-8 rounded-full shadow hover:scale-105 transition">Próximo ➔</button>
+            `;
+            showOverlay(html);
+            new Audio(pathAudio + getAudioFilename(item.word)).play().catch(()=>{});
         }
-        function nextPresentationItem() { presentationIndex++; showPresentationItem(); }
+        window.nextPresentationItem = () => { presentationIndex++; showPresentationItem(); };
 
         // --- JOGO ---
         function startSyllablePhase() {
             gameState = 'GAME'; gameSubState = 'SYLLABLE_PHASE';
             resetPhaseStats();
-            document.getElementById('gameArea').classList.remove('hidden');
-            document.getElementById('keyboardContainer').classList.remove('hidden');
+            hideOverlay();
             renderKeyboard();
             nextGameItem();
         }
         function startFullWordPhase() {
             gameState = 'GAME'; gameSubState = 'FULLWORD_PHASE';
             resetPhaseStats();
-            document.getElementById('gameArea').classList.remove('hidden');
-            document.getElementById('keyboardContainer').classList.remove('hidden');
+            hideOverlay();
             renderKeyboard();
             nextGameItem();
         }
         function resetPhaseStats() {
             phaseTotalAttempts = 0; phaseCorrectAttempts = 0;
-            updateAccuracyDisplay();
+            updateUI();
             gameQueue = [...database[currentLevel].items].sort(() => Math.random() - 0.5);
         }
 
@@ -511,51 +394,35 @@
             const total = database[currentLevel].items.length;
             const progress = ((total - gameQueue.length) / total) * 100;
             document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            targetIndices = (gameSubState === 'SYLLABLE_PHASE') 
+                ? findSyllableIndices(currentItem.word, levels[currentLevel].letter)
+                : Array.from({length: currentItem.word.length}, (_, i) => i);
+            if (targetIndices.length === 0) targetIndices = Array.from({length: currentItem.word.length}, (_, i) => i);
 
-            if (gameSubState === 'SYLLABLE_PHASE') {
-                targetIndices = findSyllableIndices(currentItem.word, levels[currentLevel].letter);
-                if (targetIndices.length === 0) {
-                     targetIndices = []; for(let i=0; i<currentItem.word.length; i++) targetIndices.push(i);
-                }
-            } else {
-                targetIndices = []; for(let i=0; i<currentItem.word.length; i++) targetIndices.push(i);
-            }
             setupGameRound();
         }
 
         function setupGameRound() {
-            currentBoxIndex = targetIndices.length > 0 ? targetIndices[0] : 0;
+            currentBoxIndex = targetIndices[0];
             document.getElementById('nextButton').classList.add('hidden');
             document.getElementById('feedbackMessage').textContent = '';
-            document.getElementById('inputContainer').innerHTML = '';
-
+            
             const imgContainer = document.getElementById('imageContainer');
-            imgContainer.innerHTML = '';
             if (currentItem.image) {
-                const img = document.createElement('img');
-                img.src = pathImg + currentItem.image;
-                img.className = "max-h-full max-w-full object-contain drop-shadow-lg";
-                img.onerror = () => { imgContainer.innerHTML = `<span class="text-6xl md:text-8xl">${currentItem.emoji}</span>`; };
-                imgContainer.appendChild(img);
+                imgContainer.innerHTML = `<img src="${pathImg + currentItem.image}" class="max-h-full max-w-full object-contain animate__animated animate__fadeIn" onerror="this.outerHTML='<span class=\\'text-8xl\\'>${currentItem.emoji}</span>'">`;
             } else {
-                // ALTERAÇÃO: Forçando tamanho grande para o emoji na fase do jogo (Igual apresentação)
-                const fontSize = "text-7xl md:text-8xl"; 
-                imgContainer.innerHTML = `<span class="${fontSize}">${currentItem.emoji}</span>`;
+                imgContainer.innerHTML = `<span class="text-8xl animate__animated animate__fadeIn">${currentItem.emoji}</span>`;
             }
 
-            const instruction = document.getElementById('phaseInstruction');
-            if (gameSubState === 'SYLLABLE_PHASE') {
-                instruction.textContent = "Complete a sílaba:";
-                playWordAudio();
-            } else { 
-                instruction.textContent = "Escreva a palavra:";
-                playWordAudio();
-            }
+            document.getElementById('phaseInstruction').textContent = (gameSubState === 'SYLLABLE_PHASE') ? "Complete:" : "Escreva:";
+            playWordAudio();
             createBoxes(currentItem.word);
         }
 
         function createBoxes(word) {
             const container = document.getElementById('inputContainer');
+            container.innerHTML = '';
             for (let i = 0; i < word.length; i++) {
                 const div = document.createElement('div');
                 div.className = 'letter-box w-12 h-14 md:w-16 md:h-20 border-4 rounded-xl flex items-center justify-center text-3xl md:text-5xl font-bold shadow-sm';
@@ -571,26 +438,9 @@
             updateActiveBox();
         }
 
-        // --- ÁUDIO ---
-        function playWordAudio() {
-            const player = document.getElementById('audioPlayer');
-            player.src = pathAudio + getAudioFilename(currentItem.word);
-            player.play().catch(()=>{});
-        }
-        function playSyllableAudio() {
-            const player = document.getElementById('audioPlayer');
-            player.src = pathAudio + getSyllableFilename(currentItem.word);
-            player.play().catch(() => playWordAudio());
-        }
-        function playCurrentAudio() {
-            if (gameState !== 'GAME') return;
-            playWordAudio(); 
-        }
-
-        // --- INPUT E LÓGICA ---
         function handleInput(char) {
             if (!document.getElementById('nextButton').classList.contains('hidden')) return;
-            while (currentBoxIndex < currentItem.word.length && !targetIndices.includes(currentBoxIndex)) { currentBoxIndex++; }
+            while (currentBoxIndex < currentItem.word.length && !targetIndices.includes(currentBoxIndex)) currentBoxIndex++;
             if (currentBoxIndex >= currentItem.word.length) return;
 
             phaseTotalAttempts++;
@@ -604,34 +454,26 @@
                 box.textContent = targetChar;
                 box.classList.remove('active-box');
                 box.classList.add('correct', 'animate__animated', 'animate__bounceIn');
-                document.getElementById('sndCorrect').currentTime = 0;
+                document.getElementById('sndCorrect').currentTime = 0; 
                 document.getElementById('sndCorrect').play();
                 
                 currentBoxIndex++;
-                while (currentBoxIndex < currentItem.word.length && !targetIndices.includes(currentBoxIndex)) { currentBoxIndex++; }
+                while (currentBoxIndex < currentItem.word.length && !targetIndices.includes(currentBoxIndex)) currentBoxIndex++;
 
-                if (currentBoxIndex >= currentItem.word.length) {
-                    itemComplete();
-                } else {
-                    updateActiveBox();
-                }
+                if (currentBoxIndex >= currentItem.word.length) itemComplete();
+                else updateActiveBox();
             } else {
                 const box = document.getElementById(`box-${currentBoxIndex}`);
                 box.classList.add('incorrect');
-                document.getElementById('sndError').currentTime = 0;
-                
-                // ALTERAÇÃO: Removido o som de erro para evitar estímulo
-                // document.getElementById('sndError').play(); 
-                
                 setTimeout(() => box.classList.remove('incorrect'), 400);
             }
-            updateAccuracyDisplay();
+            updateUI();
         }
 
         function updateActiveBox() {
             document.querySelectorAll('.letter-box').forEach(b => b.classList.remove('active-box'));
             let tempIndex = currentBoxIndex;
-            while (tempIndex < currentItem.word.length && !targetIndices.includes(tempIndex)) { tempIndex++; }
+            while (tempIndex < currentItem.word.length && !targetIndices.includes(tempIndex)) tempIndex++;
             if (tempIndex < currentItem.word.length) {
                 const current = document.getElementById(`box-${tempIndex}`);
                 if (current) current.classList.add('active-box');
@@ -640,59 +482,56 @@
 
         function itemComplete() {
             document.getElementById('feedbackMessage').textContent = "MUITO BEM! 🎉";
-            document.getElementById('feedbackMessage').className = "text-2xl md:text-3xl font-bold text-green-600 animate__animated animate__fadeInUp";
             document.getElementById('nextButton').classList.remove('hidden');
-            document.getElementById('nextButton').focus();
-            
-            document.getElementById('sndWin').play();
-            setTimeout(() => {
-                playWordAudio();
-            }, 500);
-
+            document.getElementById('sndWordWin').currentTime = 0;
+            document.getElementById('sndWordWin').play();
+            setTimeout(playWordAudio, 800);
             score += 10;
-            document.getElementById('scoreDisplay').textContent = score;
+            updateUI();
             fireConfetti();
         }
 
-        // --- VERIFICAÇÃO FASE ---
         function checkPhaseEnd() {
             const acc = phaseTotalAttempts === 0 ? 0 : (phaseCorrectAttempts / phaseTotalAttempts) * 100;
+            const modalContent = document.getElementById('modalContent');
+            const modalOverlay = document.getElementById('modalOverlay');
+            modalOverlay.classList.remove('hidden');
+
             if (acc >= 80) {
-                if (gameSubState === 'SYLLABLE_PHASE') showPhaseSuccessModal(); else showLevelUp();
+                document.getElementById('sndLevelWin').play();
+                if (gameSubState === 'SYLLABLE_PHASE') {
+                     modalContent.className = "bg-white p-6 rounded-3xl text-center max-w-sm border-4 border-blue-400 animate__animated animate__zoomIn";
+                     modalContent.innerHTML = `<h2 class="text-2xl font-bold text-blue-600 mb-2">Muito Bem!</h2><p class="mb-4 text-gray-500">Vamos para as palavras inteiras?</p><button onclick="advanceToFullWordPhase()" class="w-full bg-blue-500 text-white font-bold py-3 rounded-full shadow-lg">Vamos! 🚀</button>`;
+                } else {
+                     const next = levels[currentLevel + 1];
+                     modalContent.className = "bg-white p-6 rounded-3xl text-center max-w-sm border-4 border-yellow-400 animate__animated animate__zoomIn";
+                     modalContent.innerHTML = `<h2 class="text-2xl font-bold text-yellow-600 mb-2">Fase Completa!</h2><p class="mb-4 text-gray-500">Você desbloqueou: <b>${next ? next.letter : 'Fim'}</b></p><button onclick="closeModalAndNextLevel()" class="w-full bg-yellow-400 text-yellow-900 font-bold py-3 rounded-full shadow-lg">Próxima Fase 🏆</button>`;
+                }
             } else {
-                showRetryModal();
+                document.getElementById('sndLose').play();
+                modalContent.className = "bg-white p-6 rounded-3xl text-center max-w-sm border-4 border-orange-400 animate__animated animate__shakeX";
+                modalContent.innerHTML = `<h2 class="text-2xl font-bold text-orange-600 mb-2">Tente de Novo</h2><p class="mb-4 text-gray-500">Precisamos treinar mais um pouquinho.</p><button onclick="restartCurrentPhase()" class="w-full bg-orange-400 text-white font-bold py-3 rounded-full shadow-lg">Recomeçar 🔄</button>`;
             }
         }
-        function advanceToFullWordPhase() { document.getElementById('phaseSuccessModal').classList.add('hidden'); startFullWordPhase(); }
-        function restartCurrentPhase() {
-            document.getElementById('retryModal').classList.add('hidden');
-            if (gameSubState === 'SYLLABLE_PHASE') startSyllablePhase(); else startFullWordPhase();
-        }
-        function showPhaseSuccessModal() { document.getElementById('sndWin').play(); document.getElementById('phaseSuccessModal').classList.remove('hidden'); }
-        function showLevelUp() { document.getElementById('sndWin').play(); const next = levels[currentLevel + 1]; document.getElementById('unlockedLetterDisplay').textContent = next ? `Letra ${next.letter}` : "Fim!"; document.getElementById('levelUpModal').classList.remove('hidden'); }
-        function showRetryModal() { document.getElementById('sndLose').play(); document.getElementById('retryModal').classList.remove('hidden'); }
-        function closeModalAndNextLevel() { document.getElementById('levelUpModal').classList.add('hidden'); initLevel(currentLevel + 1); }
 
-        // --- TECLADO GIGANTE E RESPONSIVO ---
+        window.advanceToFullWordPhase = () => { document.getElementById('modalOverlay').classList.add('hidden'); startFullWordPhase(); };
+        window.closeModalAndNextLevel = () => { document.getElementById('modalOverlay').classList.add('hidden'); initLevel(currentLevel + 1); };
+        window.restartCurrentPhase = () => { document.getElementById('modalOverlay').classList.add('hidden'); if(gameSubState === 'SYLLABLE_PHASE') startSyllablePhase(); else startFullWordPhase(); };
+
+        // --- TECLADO ---
         function renderKeyboard() {
             const layout = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
             const container = document.getElementById('keyboardContainer');
             container.innerHTML = '';
-            
             layout.forEach(row => {
                 const rowDiv = document.createElement('div');
-                rowDiv.className = "keyboard-row"; 
+                rowDiv.className = "keyboard-row";
                 row.split('').forEach(char => {
                     const btn = document.createElement('button');
                     btn.textContent = char;
                     btn.id = `key-${char}`;
-                    
-                    let btnClass = "key"; 
-                    
-                    if (learnedLetters.has(char)) {
-                        btnClass += " key-learned";
-                    }
-                    
+                    let btnClass = "key";
+                    if (learnedLetters.has(char)) btnClass += " key-learned";
                     btn.className = btnClass;
                     btn.onclick = (e) => { e.preventDefault(); handleInput(char); highlightKey(char); };
                     rowDiv.appendChild(btn);
@@ -702,55 +541,25 @@
         }
         function highlightKey(char) {
             const btn = document.getElementById(`key-${char}`);
-            if (btn) {
-                btn.classList.add('active-press');
-                setTimeout(() => btn.classList.remove('active-press'), 150);
-            }
+            if (btn) { btn.classList.add('active-press'); setTimeout(() => btn.classList.remove('active-press'), 150); }
         }
 
-        // --- CONFETES ---
+        function playWordAudio() { new Audio(pathAudio + getAudioFilename(currentItem.word)).play().catch(()=>{}); }
+        window.playCurrentAudio = () => { if(gameState === 'GAME') playWordAudio(); };
+
         const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         function fireConfetti() {
-            for (let i = 0; i < 100; i++) {
-                particles.push({
-                    x: window.innerWidth / 2,
-                    y: window.innerHeight / 2,
-                    vx: (Math.random() - 0.5) * 15,
-                    vy: (Math.random() - 0.5) * 15,
-                    size: Math.random() * 8 + 4,
-                    color: `hsl(${Math.random() * 360}, 100%, 50%)`,
-                    life: 100
-                });
-            }
+            for (let i = 0; i < 100; i++) particles.push({ x: window.innerWidth/2, y: window.innerHeight/2, vx: (Math.random()-0.5)*15, vy: (Math.random()-0.5)*15, size: Math.random()*8+4, color: `hsl(${Math.random()*360},100%,50%)`, life: 100 });
             requestAnimationFrame(animateConfetti);
         }
-
         function animateConfetti() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles = particles.filter(p => p.life > 0);
-            
-            particles.forEach(p => {
-                p.x += p.vx;
-                p.y += p.vy;
-                p.vy += 0.2;
-                p.life--;
-                ctx.fillStyle = p.color;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            if (particles.length > 0) {
-                requestAnimationFrame(animateConfetti);
-            }
+            particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.2; p.life--; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill(); });
+            if (particles.length > 0) requestAnimationFrame(animateConfetti);
         }
     </script>
 </body>
