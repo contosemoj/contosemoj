@@ -3,26 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Letrando TIX">
     
-    <title>Jogo Letrando - Modo Dicas</title>
+    <title>Jogo Letrando - Final</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     
     <style>
-        /* --- BLOQUEIOS E BASES --- */
+        /* --- BLOQUEIOS GERAIS --- */
         body {
             font-family: 'Fredoka', sans-serif;
             background-color: #f0f9ff;
             overflow: hidden; 
+            /* Impede seleção e menus do iOS */
             -webkit-user-select: none; user-select: none;
             -webkit-touch-callout: none;
             overscroll-behavior: none;
             touch-action: manipulation;
         }
-        button { touch-action: manipulation; }
         
         /* --- ANIMAÇÃO DE DICA (PULSO) --- */
         @keyframes pulse-yellow {
@@ -32,17 +34,16 @@
         }
 
         .hint-active {
-            background-color: #fef08a !important; /* Amarelo Claro */
-            border-color: #eab308 !important; /* Borda Amarela Escura */
+            background-color: #fef08a !important; 
+            border-color: #eab308 !important; 
             border-bottom-width: 6px !important;
             color: #854d0e !important;
             animation: pulse-yellow 1.5s infinite;
-            z-index: 60; /* Fica acima das outras */
-            opacity: 1 !important;
+            z-index: 60; opacity: 1 !important;
         }
 
         .hint-inactive {
-            opacity: 0.35; /* Deixa as outras teclas apagadas */
+            opacity: 0.35; 
             transform: scale(0.95);
             filter: grayscale(80%);
             transition: all 0.5s ease;
@@ -90,7 +91,7 @@
     <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
 
     <div class="w-full h-12 bg-white border-b border-gray-200 flex items-center justify-between px-4 shrink-0 z-50">
-        <div class="text-sm text-gray-400 font-bold uppercase">TIX Letrando Maker</div>
+        <div class="text-sm text-gray-400 font-bold uppercase">Letrando Maker</div>
         
         <button id="hintToggleBtn" onclick="toggleHints()" class="flex items-center gap-2 px-4 py-1 rounded-full bg-gray-100 text-gray-500 font-bold border-2 border-gray-200 transition-all active:scale-95">
             <span>💡 Dicas:</span>
@@ -154,15 +155,29 @@
     <audio id="audioPlayer"></audio>
     <audio id="sndCorrect" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
     <audio id="sndWordWin" src="https://actions.google.com/sounds/v1/cartoon/magic_chime.ogg"></audio>
-    <audio id="sndLevelWin" src="https://actions.google.com/sounds/v1/science_fiction/musical_alert.ogg"></audio>
+    
+    <audio id="sndLevelWin" src="audios/fimfase.mp3"></audio>
+    
     <audio id="sndLose" src="https://actions.google.com/sounds/v1/cartoon/cartoon_whistle.ogg"></audio>
 
     <script>
+        // --- BLOQUEIO DE ZOOM FORCE BRUTE (Para Safari) ---
+        // Impede o gesto de pinça (dois dedos)
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
+        document.addEventListener('gesturechange', function(e) {
+            e.preventDefault();
+        }); 
+        document.addEventListener('gestureend', function(e) {
+            e.preventDefault();
+        });
+
+        // --- RESTO DO CÓDIGO ---
         const pathAudio = "audios/";
         const pathImg = "img/";
         
-        // --- CONTROLE DE DICAS ---
-        let hintsEnabled = false; // Começa desligado (ou mude para true)
+        let hintsEnabled = false;
 
         function toggleHints() {
             hintsEnabled = !hintsEnabled;
@@ -178,7 +193,7 @@
                 btn.classList.remove('bg-yellow-100', 'text-yellow-700', 'border-yellow-400');
                 txt.textContent = "OFF";
             }
-            updateKeyboardHints(); // Atualiza visual na hora
+            updateKeyboardHints();
         }
 
         const levels = {
@@ -244,33 +259,23 @@
             document.getElementById('sideAccuracy').textContent = acc + "%";
         }
 
-        // --- SISTEMA DE DICAS VISUAIS ---
         function updateKeyboardHints() {
-            // Remove dicas antigas
             document.querySelectorAll('.key').forEach(k => {
                 k.classList.remove('hint-active', 'hint-inactive');
             });
 
-            // Se dica desligada ou não estiver no jogo, sai
             if (!hintsEnabled || gameState !== 'GAME' || !currentItem) return;
-            
-            // Se botão "Próximo" tá na tela, não dá dica
             if (!document.getElementById('nextButton').classList.contains('hidden')) return;
 
-            // Encontra a letra alvo atual
-            // Pega o índice correto (considera se a palavra tem letras que pulam)
             let tempIndex = currentBoxIndex;
             while (tempIndex < currentItem.word.length && !targetIndices.includes(tempIndex)) tempIndex++;
             
-            if (tempIndex >= currentItem.word.length) return; // Acabou a palavra
+            if (tempIndex >= currentItem.word.length) return; 
 
             const targetChar = currentItem.word[tempIndex].normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-            // Aplica estilos
             document.querySelectorAll('.key').forEach(k => {
-                // Normaliza a tecla do teclado virtual (remove acentos pra comparar)
                 const keyChar = k.textContent.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                
                 if (keyChar === targetChar) {
                     k.classList.add('hint-active');
                 } else {
@@ -298,7 +303,7 @@
 
         function startIntro() {
             gameState = 'INTRO';
-            updateKeyboardHints(); // Limpa dicas
+            updateKeyboardHints(); 
             const syllables = levels[currentLevel].syllables || [];
             const title = currentLevel === 0 ? "Vogais" : `Família do ${levels[currentLevel].letter}`;
             let html = `<h2 class="text-3xl font-bold text-blue-500 mb-6">${title}</h2><div class="flex justify-center gap-3 flex-wrap mb-8">`;
@@ -345,7 +350,7 @@
             document.getElementById('phaseInstruction').textContent = (gameSubState === 'SYLLABLE_PHASE') ? "Complete:" : "Escreva:";
             playWordAudio();
             createBoxes(currentItem.word);
-            updateKeyboardHints(); // CHAMA A DICA NO INÍCIO DA RODADA
+            updateKeyboardHints(); 
         }
 
         function createBoxes(word) {
@@ -384,7 +389,7 @@
                 if (currentBoxIndex >= currentItem.word.length) itemComplete();
                 else {
                     updateActiveBox();
-                    updateKeyboardHints(); // ATUALIZA DICA PARA PRÓXIMA LETRA
+                    updateKeyboardHints(); 
                 }
             } else {
                 const box = document.getElementById(`box-${currentBoxIndex}`); box.classList.add('incorrect');
@@ -406,7 +411,7 @@
             document.getElementById('sndWordWin').currentTime = 0; document.getElementById('sndWordWin').play();
             setTimeout(playWordAudio, 800);
             score += 10; updateUI(); fireConfetti();
-            updateKeyboardHints(); // LIMPA DICAS AO GANHAR
+            updateKeyboardHints(); 
         }
 
         function checkPhaseEnd() {
@@ -450,7 +455,7 @@
                 });
                 container.appendChild(rowDiv);
             });
-            updateKeyboardHints(); // Atualiza logo que renderiza
+            updateKeyboardHints(); 
         }
         function highlightKey(char) { const btn = document.getElementById(`key-${char}`); if (btn) { btn.classList.add('active-press'); setTimeout(() => btn.classList.remove('active-press'), 150); } }
 
