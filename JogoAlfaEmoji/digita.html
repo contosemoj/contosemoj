@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Letrando TIX">
     
-    <title>Jogo Letrando - Final</title>
+    <title>Jogo Letrando - Final Ajustado</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
@@ -19,14 +19,13 @@
             font-family: 'Fredoka', sans-serif;
             background-color: #f0f9ff;
             overflow: hidden; 
-            /* Impede seleção e menus do iOS */
             -webkit-user-select: none; user-select: none;
             -webkit-touch-callout: none;
             overscroll-behavior: none;
             touch-action: manipulation;
         }
         
-        /* --- ANIMAÇÃO DE DICA (PULSO) --- */
+        /* --- ANIMAÇÃO DE DICA --- */
         @keyframes pulse-yellow {
             0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); transform: scale(1.05); }
             70% { box-shadow: 0 0 0 15px rgba(250, 204, 21, 0); transform: scale(1.1); }
@@ -82,8 +81,11 @@
         .sidebar-card { display: flex; flex-direction: column; align-items: center; text-align: center; opacity: 0.8; }
         .upper-section { display: flex; flex: 1; width: 100%; min-height: 0; }
         
+        #overlayArea { overflow-y: auto; }
+        
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        @media (max-height: 600px) { .key { height: 50px; font-size: 1.5rem; } .image-monitor { max-height: 35vh; } }
+        /* Ajustei max-height para sobrar espaço para botão e mensagem */
+        @media (max-height: 600px) { .key { height: 45px; font-size: 1.4rem; } .image-monitor { max-height: 30vh; } }
     </style>
 </head>
 <body class="h-screen w-full flex flex-col bg-blue-50">
@@ -111,25 +113,31 @@
             </div>
         </aside>
 
-        <main class="flex-1 flex flex-col items-center justify-center p-2 relative">
+        <main class="flex-1 flex flex-col items-center p-2 relative w-full h-full justify-between">
             
             <div id="overlayArea" class="hidden absolute inset-0 bg-white/95 z-40 flex flex-col items-center justify-center p-8 rounded-xl backdrop-blur-sm">
                  <div id="introContent" class="text-center w-full max-w-2xl"></div>
             </div>
 
-            <div id="phaseInstruction" class="text-lg font-bold text-blue-400 mb-2"></div>
+            <div class="w-full flex flex-col items-center justify-center flex-1 min-h-0">
+                <div id="phaseInstruction" class="text-lg font-bold text-blue-400 mb-1 shrink-0"></div>
 
-            <div class="image-monitor max-w-2xl h-full max-h-[40vh] w-full mb-4 cursor-pointer hover:border-blue-400 transition" onclick="playCurrentAudio()">
-                <div id="imageContainer" class="w-full h-full flex items-center justify-center p-4"></div>
-                <div class="absolute bottom-2 right-2 bg-blue-100 p-2 rounded-full opacity-50">🔊</div>
+                <div class="image-monitor max-w-2xl h-full max-h-[35vh] w-full mb-2 cursor-pointer hover:border-blue-400 transition shrink" onclick="playCurrentAudio()">
+                    <div id="imageContainer" class="w-full h-full flex items-center justify-center p-4"></div>
+                    <div class="absolute bottom-2 right-2 bg-blue-100 p-2 rounded-full opacity-50">🔊</div>
+                </div>
+
+                <div id="inputContainer" class="flex flex-wrap justify-center gap-2 md:gap-3 min-h-[60px] shrink-0"></div>
             </div>
 
-            <div id="inputContainer" class="flex flex-wrap justify-center gap-2 md:gap-3 min-h-[60px]"></div>
-            <div id="feedbackMessage" class="h-8 text-xl font-bold text-green-600 mt-2 flex items-center"></div>
+            <div class="w-full flex flex-col items-center justify-end pb-2 h-24 shrink-0">
+                
+                <div id="feedbackMessage" class="h-8 text-xl font-bold text-green-600 flex items-center justify-center transition-all"></div>
 
-             <button id="nextButton" onclick="nextGameItem()" class="hidden absolute bottom-6 z-50 bg-green-500 hover:bg-green-400 text-white text-2xl font-bold py-3 px-16 rounded-full shadow-2xl animate__animated animate__bounceIn border-4 border-green-600">
-                Próximo ➔
-            </button>
+                <button id="nextButton" onclick="nextGameItem()" class="hidden mt-1 relative z-50 bg-green-500 hover:bg-green-400 text-white text-2xl font-bold py-2 px-12 rounded-full shadow-xl animate__animated animate__bounceIn border-4 border-green-600">
+                    Próximo ➔
+                </button>
+            </div>
         </main>
 
         <aside class="sidebar-short border-l border-blue-100 hidden md:flex bg-white/50">
@@ -155,25 +163,14 @@
     <audio id="audioPlayer"></audio>
     <audio id="sndCorrect" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
     <audio id="sndWordWin" src="https://actions.google.com/sounds/v1/cartoon/magic_chime.ogg"></audio>
-    
     <audio id="sndLevelWin" src="audios/fimfase.mp3"></audio>
-    
     <audio id="sndLose" src="https://actions.google.com/sounds/v1/cartoon/cartoon_whistle.ogg"></audio>
 
     <script>
-        // --- BLOQUEIO DE ZOOM FORCE BRUTE (Para Safari) ---
-        // Impede o gesto de pinça (dois dedos)
-        document.addEventListener('gesturestart', function(e) {
-            e.preventDefault();
-        });
-        document.addEventListener('gesturechange', function(e) {
-            e.preventDefault();
-        }); 
-        document.addEventListener('gestureend', function(e) {
-            e.preventDefault();
-        });
+        document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
+        document.addEventListener('gesturechange', function(e) { e.preventDefault(); }); 
+        document.addEventListener('gestureend', function(e) { e.preventDefault(); });
 
-        // --- RESTO DO CÓDIGO ---
         const pathAudio = "audios/";
         const pathImg = "img/";
         
