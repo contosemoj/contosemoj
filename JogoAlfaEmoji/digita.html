@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Digita TEA">
-    <title>Digita TEA - Full Screen</title>
+    <title>Digita TEA - Modo Aprender</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
@@ -69,7 +69,18 @@
                 </div>
             </div>
 
-            <div class="mb-2">
+            <div class="flex items-center justify-between mb-6 border-t border-blue-200 pt-4">
+                <div>
+                    <span class="text-xl font-bold text-gray-600">🎓 Modo Aprender</span>
+                    <span class="block text-xs text-gray-400 mt-1">Joga com dicas, depois sem.</span>
+                </div>
+                <div class="relative inline-block w-16 align-middle select-none transition duration-200 ease-in">
+                    <input type="checkbox" name="toggleProgressive" id="toggleProgressive" class="toggle-checkbox absolute block w-8 h-8 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-500 ease-in-out border-gray-300 left-0"/>
+                    <label for="toggleProgressive" class="toggle-label block overflow-hidden h-8 rounded-full bg-gray-300 cursor-pointer"></label>
+                </div>
+            </div>
+
+            <div class="mb-2 border-t border-blue-200 pt-4">
                 <span class="text-xl font-bold text-gray-600 block mb-2">🎯 Progressão</span>
                 <select id="difficultySelect" class="w-full p-3 text-lg rounded-xl border-4 border-blue-200 text-gray-600 font-bold bg-white focus:outline-none focus:border-blue-400 appearance-none text-center">
                     <option value="0">Muito Fácil (Sempre Passa)</option>
@@ -181,6 +192,8 @@
         };
 
         let configHints = false;
+        let isProgressiveMode = false; // Novo: Se modo aprender está ativo
+        let isSecondPass = false;      // Novo: Se estamos na volta sem dicas
         let difficultyThreshold = 70;
         let currentLevel = 0;
         let score = 0;
@@ -196,8 +209,12 @@
         let phaseTotalAttempts = 0;
 
         function finishSetup() {
-            const checkbox = document.getElementById('toggleHints');
-            configHints = checkbox.checked;
+            const checkboxHints = document.getElementById('toggleHints');
+            configHints = checkboxHints.checked;
+
+            const checkboxProg = document.getElementById('toggleProgressive');
+            isProgressiveMode = checkboxProg.checked; // Lê configuração do modo aprender
+
             const diffSelect = document.getElementById('difficultySelect');
             difficultyThreshold = parseInt(diffSelect.value);
             document.getElementById('screenSetup').classList.add('hidden');
@@ -218,6 +235,7 @@
 
         function initLevel(lvl) {
             currentLevel = lvl;
+            isSecondPass = false; // Reinicia controle de voltas
             if (!database[currentLevel]) {
                 alert("Parabéns! Fim do Jogo.");
                 window.location.reload();
@@ -280,8 +298,17 @@
 
         function prepareGameQueue() {
             gameQueue = [...database[currentLevel].items].sort(() => Math.random() - 0.5);
-            phaseTotalAttempts = 0;
-            phaseCorrectAttempts = 0;
+            
+            // Lógica do Modo Aprender: Força dicas na primeira volta
+            if (isProgressiveMode && !isSecondPass) {
+                configHints = true;
+            }
+            
+            // Só zera as estatísticas se NÃO for a segunda volta, para acumular
+            if (!isSecondPass) {
+                phaseTotalAttempts = 0;
+                phaseCorrectAttempts = 0;
+            }
             updateStatsUI();
         }
 
@@ -318,7 +345,22 @@
         }
 
         function nextGameItem() {
-            if (gameQueue.length === 0) { checkEndPhase(); return; }
+            // Verifica se a fila acabou
+            if (gameQueue.length === 0) { 
+                // VERIFICAÇÃO DO MODO APRENDER
+                if (isProgressiveMode && !isSecondPass) {
+                    isSecondPass = true; // Ativa flag da segunda volta
+                    configHints = false; // Desativa dicas
+                    showIntermission();  // Mostra tela de transição
+                    return;
+                }
+
+                // Final normal da fase
+                checkEndPhase(); 
+                isSecondPass = false; // Reset de segurança
+                return; 
+            }
+
             currentItem = gameQueue.pop();
             const total = database[currentLevel].items.length;
             const progress = ((total - gameQueue.length) / total) * 100;
@@ -335,8 +377,40 @@
             renderGameRound();
         }
 
+        // --- NOVA FUNÇÃO: Tela de Transição ---
+        function showIntermission() {
+            const html = `
+                <div class="bg-blue-100 border-4 border-blue-300 rounded-full p-8 mb-6 shadow-sm inline-block animate__animated animate__bounceIn">
+                    <span class="text-8xl">🙈</span>
+                </div>
+                <h2 class="text-4xl font-bold text-blue-600 mb-4 animate__animated animate__fadeIn">Agora sem ajuda!</h2>
+                <p class="text-xl text-gray-500 max-w-md mx-auto mb-8">Você consegue fazer de novo sem as cores?</p>
+                
+                <button onclick="startSecondPass()" class="bg-blue-500 hover:bg-blue-400 text-white text-2xl font-bold py-4 px-10 rounded-2xl shadow-[0_6px_0_rgb(37,99,235)] active:shadow-none active:translate-y-2 transition-all uppercase tracking-widest">
+                    VAMOS LÁ!
+                </button>
+            `;
+            document.getElementById('presentationTitle').textContent = "DESAFIO";
+            document.getElementById('presentationContent').innerHTML = html;
+            showScreen('PRESENTATION');
+        }
+
+        // --- NOVA FUNÇÃO: Inicia a Segunda Volta ---
+        function startSecondPass() {
+            // Recarrega palavras
+            gameQueue = [...database[currentLevel].items].sort(() => Math.random() - 0.5);
+            
+            // Zera estatísticas desta fase para a avaliação final ser justa
+            phaseTotalAttempts = 0;
+            phaseCorrectAttempts = 0;
+            updateStatsUI();
+
+            showScreen('GAME');
+            renderKeyboard(); // Renderiza teclado (agora sem dicas)
+            nextGameItem();
+        }
+
         function renderGameRound() {
-            // Oculta Overlay de sucesso
             document.getElementById('successOverlay').classList.add('hidden');
             
             const imgContainer = document.getElementById('gameImageContainer');
@@ -369,7 +443,6 @@
         }
 
         function handleInput(char) {
-            // Se o overlay de sucesso está visível, ignora input
             if (!document.getElementById('successOverlay').classList.contains('hidden')) return;
             if (currentBoxIndex >= currentItem.word.length) return;
             
@@ -413,7 +486,6 @@
         }
 
         function roundWon() {
-            // Mostra Overlay de Sucesso
             const overlay = document.getElementById('successOverlay');
             overlay.classList.remove('hidden');
             
