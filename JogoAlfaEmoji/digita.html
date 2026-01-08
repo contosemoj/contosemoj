@@ -223,13 +223,124 @@
                 type: "context", 
                 introTitle: "Quem faz esse som?", 
                 unlock: [], 
-                syllables: ['MIAU','AU','MU','PIU','BÉ'], 
+                syllables: ['MIAU','AUAU','MUU','PIU','BÉ'], 
                 color: "bg-amber-100 border-amber-300 text-amber-800" 
             },
 
-            // Fases seguintes re-numeradas
             9: { title: "Letra N", unlock: ['N'], syllables: ['NA','NE','NI','NO','NU'], color: "bg-indigo-100 border-indigo-300 text-indigo-600" },
-            10: { title: "Letra L", unlock: ['L'], syllables: ['LA','LE','LI','LO','LU'], color: "bg-lime-100 border-lime-300 text-lime-600" }
+            10: { title: "Letra L", unlock: ['L'], syllables: ['LA','LE','LI','LO','LU'], color: "bg-lime-100 border-lime-300 text-lime-600" },
+
+            // --- FASES ANTERIORES ---
+            11: { title: "Letra J", unlock: ['J'], syllables: ['JA','JE','JI','JO','JU'], color: "bg-cyan-100 border-cyan-300 text-cyan-600" },
+            12: { title: "Letra C", unlock: ['C'], syllables: ['CA','CO','CU'], color: "bg-rose-100 border-rose-300 text-rose-600" },
+            13: { title: "Letra S", unlock: ['S'], syllables: ['SA','SE','SI','SO','SU'], color: "bg-sky-100 border-sky-300 text-sky-600" },
+            14: { title: "Letra R", unlock: ['R'], syllables: ['RA','RE','RI','RO','RU'], color: "bg-fuchsia-100 border-fuchsia-300 text-fuchsia-600" },
+            
+            // FASE ESPECIAL: CORES
+            15: { 
+                title: "Cores", 
+                type: "context", 
+                introTitle: "Que cor é essa?", 
+                unlock: [], 
+                syllables: ['AZUL', 'ROSA', 'VERDE'], 
+                color: "bg-violet-100 border-violet-300 text-violet-600" 
+            },
+
+            16: { title: "Letra G", unlock: ['G'], syllables: ['GA','GO','GU'], color: "bg-emerald-100 border-emerald-300 text-emerald-600" },
+            17: { title: "Letra Z", unlock: ['Z'], syllables: ['ZA','ZE','ZI','ZO','ZU'], color: "bg-slate-100 border-slate-300 text-slate-600" },
+            18: { title: "Letra X", unlock: ['X'], syllables: ['XA','XE','XI','XO','XU'], color: "bg-zinc-100 border-zinc-300 text-zinc-600" },
+
+            // --- NOVAS FASES (EXPANSÃO) ---
+            19: { title: "Letra H", unlock: ['H'], syllables: ['HA','HE','HI','HO','HU'], color: "bg-amber-100 border-amber-300 text-amber-600" },
+            20: { title: "Letra Q", unlock: ['Q'], syllables: ['QUA','QUE','QUI'], color: "bg-teal-200 border-teal-400 text-teal-800" },
+            21: { title: "Letra K", unlock: ['K'], syllables: ['KA','KE','KI','KO','KU'], color: "bg-red-200 border-red-400 text-red-800" },
+            22: { title: "Letra W", unlock: ['W'], syllables: ['WA','WE','WI','WO','WU'], color: "bg-blue-200 border-blue-400 text-blue-800" },
+            23: { title: "Letra Y", unlock: ['Y'], syllables: ['YA','YE','YI','YO','YU'], color: "bg-purple-200 border-purple-400 text-purple-800" },
+
+            // FASES ESPECIAIS DE CONTEXTO
+            24: { 
+                title: "Frutas", 
+                type: "context", 
+                introTitle: "Que fruta é essa?", 
+                unlock: [], 
+                syllables: ['UVA', 'MAÇÃ', 'PERA'], 
+                color: "bg-green-100 border-green-300 text-green-700" 
+            },
+            25: { 
+                title: "Corpo", 
+                type: "context", 
+                introTitle: "Corpo Humano", 
+                unlock: [], 
+                syllables: ['MÃO', 'PÉ', 'BOCA'], 
+                color: "bg-orange-100 border-orange-300 text-orange-700" 
+            },
+
+            // --- EXPANSÃO ADICIONAL (Dígrafos e Contextos) ---
+            26: { title: "CH", unlock: ['C','H'], syllables: ['CHA','CHE','CHI','CHO','CHU'], color: "bg-teal-100 border-teal-300 text-teal-700" },
+            27: { title: "LH", unlock: ['L','H'], syllables: ['LHA','LHE','LHI','LHO','LHU'], color: "bg-lime-100 border-lime-300 text-lime-700" },
+            28: { title: "NH", unlock: ['N','H'], syllables: ['NHA','NHE','NHI','NHO','NHU'], color: "bg-indigo-100 border-indigo-300 text-indigo-700" },
+            
+            29: { 
+                title: "Transportes", 
+                type: "context", 
+                introTitle: "Meios de Transporte", 
+                unlock: [], 
+                syllables: ['CARRO', 'TREM', 'MOTO'], 
+                color: "bg-blue-100 border-blue-300 text-blue-700" 
+            },
+            30: { 
+                title: "Escola", 
+                type: "context", 
+                introTitle: "Material Escolar", 
+                unlock: [], 
+                syllables: ['LÁPIS', 'MESA', 'LIVRO'], 
+                color: "bg-yellow-100 border-yellow-300 text-yellow-700" 
+            },
+
+            // --- FIM DA EXPANSÃO ANTERIOR ---
+
+            // --- NOVA EXPANSÃO: MAIS DÍGRAFOS E CONTEXTOS ---
+            31: { title: "RR", unlock: ['R'], syllables: ['RRA','RRE','RRI','RRO','RRU'], color: "bg-rose-200 border-rose-400 text-rose-800" },
+            32: { title: "SS", unlock: ['S'], syllables: ['SSA','SSE','SSI','SSO','SSU'], color: "bg-slate-200 border-slate-400 text-slate-800" },
+            33: { title: "Cedilha Ç", unlock: ['Ç'], syllables: ['ÇA','ÇO','ÇU'], color: "bg-fuchsia-200 border-fuchsia-400 text-fuchsia-800" },
+            
+            34: { 
+                title: "Casa", 
+                type: "context", 
+                introTitle: "Objetos de Casa", 
+                unlock: [], 
+                syllables: ['SOFÁ', 'CAMA', 'PORTA'], 
+                color: "bg-orange-50 border-orange-300 text-orange-800" 
+            },
+            35: { 
+                title: "Sentimentos", 
+                type: "context", 
+                introTitle: "Como você está?", 
+                unlock: [], 
+                syllables: ['FELIZ', 'TRISTE', 'AMOR'], 
+                color: "bg-yellow-200 border-yellow-400 text-yellow-800" 
+            },
+
+            // --- EXPANSÃO FINAL (ATÉ 40) ---
+            36: { title: "AR ER IR", unlock: ['R'], syllables: ['AR','ER','IR','OR','UR'], color: "bg-orange-200 border-orange-400 text-orange-800" },
+            37: { title: "AL EL IL", unlock: ['L'], syllables: ['AL','EL','IL','OL','UL'], color: "bg-blue-200 border-blue-400 text-blue-800" },
+            38: { title: "AN EN IN", unlock: ['N'], syllables: ['AN','EN','IN','ON','UN'], color: "bg-purple-200 border-purple-400 text-purple-800" },
+            39: { 
+                title: "Natureza", 
+                type: "context", 
+                introTitle: "Natureza", 
+                unlock: [], 
+                syllables: ['SOL', 'MAR', 'FLOR'], 
+                color: "bg-green-200 border-green-400 text-green-800" 
+            },
+            40: { 
+                title: "Ações", 
+                type: "context", 
+                introTitle: "O que estão fazendo?", 
+                unlock: [], 
+                syllables: ['PULAR', 'CORRER', 'RIR'], 
+                color: "bg-pink-200 border-pink-400 text-pink-800" 
+            }
         };
 
         const database = {
@@ -244,15 +355,65 @@
             
             // CONTEÚDO DA FASE 8 - ANIMAIS
             8: { items: [
-                { word: "MIAU", emoji: "🐈🔊" },
-                { word: "AU", emoji: "🐶🔊" },
-                { word: "MU", emoji: "🐄🔊" },
-                { word: "PIU", emoji: "🐥🔊" },
-                { word: "BÉ", emoji: "🐐🔊" }
+                { word: "MIAU", emoji: "🐈" },
+                { word: "AUAU", emoji: "🐕" },
+                { word: "MUU", emoji: "🐄" },
+                { word: "PIU", emoji: "🐥" },
+                { word: "BÉ", emoji: "🐑" }
             ]},
             
             9: { items: [{ word: "MENINA", emoji: "👧" }, { word: "NOVE", emoji: "9️⃣" }, { word: "BONÉ", emoji: "🧢" }, { word: "BANANA", emoji: "🍌" }, { word: "MENINO", emoji: "👦" }] },
-            10: { items: [{ word: "LUA", emoji: "🌙" }, { word: "LOBO", emoji: "🐺" }, { word: "BOLA", emoji: "⚽" }, { word: "BALA", emoji: "🍬" }, { word: "LULA", emoji: "🦑" }] }
+            10: { items: [{ word: "LUA", emoji: "🌙" }, { word: "LOBO", emoji: "🐺" }, { word: "BOLA", emoji: "⚽" }, { word: "BALA", emoji: "🍬" }, { word: "LULA", emoji: "🦑" }] },
+
+            // NOVOS ITEMS
+            11: { items: [{ word: "BEIJO", emoji: "💋" }, { word: "LOJA", emoji: "🏪" }, { word: "JUBA", emoji: "🦁" }, { word: "JIPE", emoji: "🚙" }, { word: "JILÓ", emoji: "🍈" }] },
+            12: { items: [{ word: "CAMA", emoji: "🛏️" }, { word: "COLA", emoji: "🧴" }, { word: "CUBO", emoji: "🧊" }, { word: "COPO", emoji: "🥛" }, { word: "BOCA", emoji: "👄" }, { word: "PIPOCA", emoji: "🍿" }] },
+            13: { items: [{ word: "SAPO", emoji: "🐸" }, { word: "SOPA", emoji: "🍲" }, { word: "SELO", emoji: "✉️" }, { word: "SAIA", emoji: "👗" }, { word: "SUCO", emoji: "🧃" }] },
+            14: { items: [{ word: "RATO", emoji: "🐁" }, { word: "REI", emoji: "👑" }, { word: "RIO", emoji: "🌊" }, { word: "RUA", emoji: "🛣️" }, { word: "ROBÔ", emoji: "🤖" }] },
+            
+            // CORES
+            15: { items: [{ word: "AZUL", emoji: "🔵" }, { word: "ROSA", emoji: "🌸" }, { word: "VERDE", emoji: "🟢" }, { word: "LILÁS", emoji: "🟣" }]},
+
+            16: { items: [{ word: "GATO", emoji: "🐈" }, { word: "GALO", emoji: "🐓" }, { word: "GOTA", emoji: "💧" }, { word: "FOGO", emoji: "🔥" }, { word: "FIGO", emoji: "🍈" }] },
+            17: { items: [{ word: "ZERO", emoji: "0️⃣" }, { word: "DOZE", emoji: "1️⃣2️⃣" }, { word: "AZUL", emoji: "🔵" }, { word: "BUZINA", emoji: "📢" }] },
+            18: { items: [{ word: "XALE", emoji: "🧣" }, { word: "LIXO", emoji: "🗑️" }, { word: "CAIXA", emoji: "📦" }, { word: "PEIXE", emoji: "🐟" }, { word: "ROXO", emoji: "🟣" }] },
+            
+            // --- NOVAS FASES (DATABASE) ---
+            19: { items: [{ word: "HARPA", emoji: "🎵" }, { word: "HÉLICE", emoji: "🚁" }, { word: "HIENA", emoji: "🐕" }, { word: "HOTEL", emoji: "🏨" }, { word: "HOJE", emoji: "📅" }] },
+            20: { items: [{ word: "LEQUE", emoji: "🪭" }, { word: "QUIABO", emoji: "🥗" }, { word: "CAQUI", emoji: "🍅" }, { word: "QUEIJO", emoji: "🧀" }, { word: "AQUI", emoji: "📍" }] },
+            21: { items: [{ word: "KIWI", emoji: "🥝" }, { word: "KART", emoji: "🏎️" }, { word: "KARATÊ", emoji: "🥋" }, { word: "KETCHUP", emoji: "🌭" }] },
+            22: { items: [{ word: "WAFER", emoji: "🍪" }, { word: "WIFI", emoji: "📶" }, { word: "WEBCAM", emoji: "📷" }, { word: "WOODY", emoji: "🤠" }] },
+            23: { items: [{ word: "YOGA", emoji: "🧘" }, { word: "YAKISOBA", emoji: "🍜" }, { word: "YOUTUBE", emoji: "▶️" }, { word: "YURI", emoji: "👦🏻" }] },
+            
+            // CONTEXTO: FRUTAS
+            24: { items: [{ word: "MAÇÃ", emoji: "🍎" }, { word: "PERA", emoji: "🍐" }, { word: "UVA", emoji: "🍇" }, { word: "CAJU", emoji: "🥜" }, { word: "LIMÃO", emoji: "🍋" }] },
+            // CONTEXTO: CORPO HUMANO
+            25: { items: [{ word: "MÃO", emoji: "✋" }, { word: "PÉ", emoji: "🦶" }, { word: "BOCA", emoji: "👄" }, { word: "OLHO", emoji: "👁️" }, { word: "NARIZ", emoji: "👃" }] },
+            
+            // --- EXPANSÃO ADICIONAL (ITEMS) ---
+            26: { items: [{ word: "CHAVE", emoji: "🔑" }, { word: "CHUVA", emoji: "🌧️" }, { word: "CHÃO", emoji: "👇" }, { word: "CHÁ", emoji: "☕" }, { word: "CHINELO", emoji: "🩴" }] },
+            27: { items: [{ word: "ILHA", emoji: "🏝️" }, { word: "MILHO", emoji: "🌽" }, { word: "OLHO", emoji: "👁️" }, { word: "FOLHA", emoji: "🍃" }, { word: "ORELHA", emoji: "👂" }] },
+            28: { items: [{ word: "NINHO", emoji: "🪺" }, { word: "UNHA", emoji: "💅" }, { word: "SONHO", emoji: "😴" }, { word: "BANHO", emoji: "🛁" }, { word: "ARANHA", emoji: "🕷️" }] },
+            // CONTEXTO: TRANSPORTES
+            29: { items: [{ word: "CARRO", emoji: "🚗" }, { word: "AVIÃO", emoji: "✈️" }, { word: "TREM", emoji: "🚂" }, { word: "MOTO", emoji: "🏍️" }, { word: "ÔNIBUS", emoji: "🚌" }] },
+            // CONTEXTO: ESCOLA
+            30: { items: [{ word: "LÁPIS", emoji: "✏️" }, { word: "LIVRO", emoji: "📖" }, { word: "COLA", emoji: "🧴" }, { word: "MESA", emoji: "🪑" }, { word: "MOCHILA", emoji: "🎒" }] },
+
+            // --- NOVOS ITEMS (ATÉ 35) ---
+            31: { items: [{ word: "CARRO", emoji: "🚗" }, { word: "JARRA", emoji: "🏺" }, { word: "FERRO", emoji: "♨️" }, { word: "GORRO", emoji: "🎅" }, { word: "SERROTE", emoji: "🪚" }] },
+            32: { items: [{ word: "OSSO", emoji: "🦴" }, { word: "PÁSSARO", emoji: "🐦" }, { word: "VASSOURA", emoji: "🧹" }, { word: "BÚSSOLA", emoji: "🧭" }, { word: "PÊSSEGO", emoji: "🍑" }] },
+            33: { items: [{ word: "LAÇO", emoji: "🎀" }, { word: "TAÇA", emoji: "🍷" }, { word: "POÇO", emoji: "🕳️" }, { word: "PALHAÇO", emoji: "🤡" }, { word: "CORAÇÃO", emoji: "❤️" }] },
+            // CONTEXTO: CASA
+            34: { items: [{ word: "SOFÁ", emoji: "🛋️" }, { word: "PORTA", emoji: "🚪" }, { word: "JANELA", emoji: "🪟" }, { word: "TETO", emoji: "🏠" }, { word: "PAREDE", emoji: "🧱" }] },
+            // CONTEXTO: SENTIMENTOS
+            35: { items: [{ word: "FELIZ", emoji: "😊" }, { word: "TRISTE", emoji: "😢" }, { word: "BRAVO", emoji: "😠" }, { word: "MEDO", emoji: "😨" }, { word: "AMOR", emoji: "❤️" }] },
+
+             // --- NOVOS ITEMS (ATÉ 40) ---
+            36: { items: [{ word: "ARCO", emoji: "🏹" }, { word: "CARTA", emoji: "✉️" }, { word: "CIRCO", emoji: "🎪" }, { word: "PORTA", emoji: "🚪" }, { word: "URSO", emoji: "🐻" }] },
+            37: { items: [{ word: "ANEL", emoji: "💍" }, { word: "BALDE", emoji: "🪣" }, { word: "SOL", emoji: "☀️" }, { word: "BOLSA", emoji: "👜" }, { word: "PULGA", emoji: "🐜" }] },
+            38: { items: [{ word: "ANJO", emoji: "👼" }, { word: "DENTE", emoji: "🦷" }, { word: "PENTE", emoji: "🪮" }, { word: "ONÇA", emoji: "🐆" }, { word: "MUNDO", emoji: "🌍" }] },
+            39: { items: [{ word: "FLOR", emoji: "🌸" }, { word: "ÁRVORE", emoji: "🌳" }, { word: "MAR", emoji: "🌊" }, { word: "PEDRA", emoji: "🪨" }, { word: "VENTO", emoji: "🌬️" }] },
+            40: { items: [{ word: "PULAR", emoji: "🏃" }, { word: "COMER", emoji: "🍽️" }, { word: "BEBER", emoji: "🥤" }, { word: "DORMIR", emoji: "😴" }, { word: "RIR", emoji: "😂" }] }
         };
 
         // --- VARIÁVEIS DE ESTADO ---
@@ -401,9 +562,12 @@
             }
 
             const syllables = data.syllables || [];
+            // Ajuste no tamanho da fonte se tiver muitas sílabas
+            const fontSize = syllables.length > 5 ? 'text-4xl md:text-6xl' : 'text-5xl md:text-7xl';
+            
             let html = `<h2 class="text-5xl font-bold text-blue-500 mb-8 animate__animated animate__fadeInDown text-center">${title}</h2><div class="flex justify-center gap-4 flex-wrap mb-6">`;
             syllables.forEach((syl, idx) => {
-                html += `<div class="text-5xl md:text-7xl font-bold bg-white text-blue-500 border-4 border-blue-200 rounded-3xl px-6 py-4 shadow-lg animate__animated animate__zoomIn" style="animation-delay: ${idx*100}ms">${syl}</div>`;
+                html += `<div class="${fontSize} font-bold bg-white text-blue-500 border-4 border-blue-200 rounded-3xl px-6 py-4 shadow-lg animate__animated animate__zoomIn" style="animation-delay: ${idx*100}ms">${syl}</div>`;
             });
             html += `</div>`;
             document.getElementById('presentationTitle').textContent = "INTRODUÇÃO";
