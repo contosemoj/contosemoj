@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Digita TEA">
-    <title>Digita TEA - Modo Aprender</title>
+    <title>Digita TEA - Seletor de Fases</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
@@ -47,74 +47,114 @@
         .hint-active { background-color: #fef08a !important; border-color: #eab308 !important; transform: scale(1.05); color: #854d0e !important; opacity: 1 !important; }
         .hint-inactive { opacity: 0.3 !important; filter: grayscale(100%); pointer-events: none; }
 
+        /* Níveis */
+        .level-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .level-card:active {
+            transform: scale(0.95);
+        }
+        .level-locked {
+            filter: grayscale(100%);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        /* Scroll customizado para o grid de fases */
+        .level-grid-scroll::-webkit-scrollbar { width: 8px; }
+        .level-grid-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .level-grid-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .level-grid-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
 <body class="h-screen w-full flex flex-col bg-blue-50 relative">
 
     <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-[60]"></canvas>
 
-    <div id="screenSetup" class="absolute inset-0 z-[100] bg-white flex flex-col items-center justify-center p-6 animate__animated animate__fadeIn">
-        <h1 class="text-5xl font-bold text-blue-500 mb-2">Digita TEA</h1>
-        <p class="text-gray-400 mb-6 text-xl">Configurações do Jogo</p>
-
-        <div class="bg-blue-50 w-full max-w-sm rounded-3xl p-6 border-4 border-blue-100 shadow-sm">
-            
-            <div class="flex items-center justify-between mb-6">
-                <span class="text-xl font-bold text-gray-600">💡 Dicas Visuais</span>
-                <div class="relative inline-block w-16 align-middle select-none transition duration-200 ease-in">
-                    <input type="checkbox" name="toggle" id="toggleHints" class="toggle-checkbox absolute block w-8 h-8 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-500 ease-in-out border-gray-300 left-0"/>
-                    <label for="toggleHints" class="toggle-label block overflow-hidden h-8 rounded-full bg-gray-300 cursor-pointer"></label>
-                </div>
+    <!-- TELA DE SETUP / SELEÇÃO DE FASES -->
+    <div id="screenSetup" class="absolute inset-0 z-[100] bg-white flex flex-col animate__animated animate__fadeIn">
+        <!-- Cabeçalho -->
+        <div class="bg-blue-500 p-4 shadow-md z-10 shrink-0 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-white">Digita TEA 🚀</h1>
+                <p class="text-blue-100 text-sm">Selecione uma fase</p>
             </div>
-
-            <div class="flex items-center justify-between mb-6 border-t border-blue-200 pt-4">
-                <div>
-                    <span class="text-xl font-bold text-gray-600">🎓 Modo Aprender</span>
-                    <span class="block text-xs text-gray-400 mt-1">Joga com dicas, depois sem.</span>
-                </div>
-                <div class="relative inline-block w-16 align-middle select-none transition duration-200 ease-in">
-                    <input type="checkbox" name="toggleProgressive" id="toggleProgressive" class="toggle-checkbox absolute block w-8 h-8 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-500 ease-in-out border-gray-300 left-0"/>
-                    <label for="toggleProgressive" class="toggle-label block overflow-hidden h-8 rounded-full bg-gray-300 cursor-pointer"></label>
-                </div>
-            </div>
-
-            <div class="mb-2 border-t border-blue-200 pt-4">
-                <span class="text-xl font-bold text-gray-600 block mb-2">🎯 Progressão</span>
-                <select id="difficultySelect" class="w-full p-3 text-lg rounded-xl border-4 border-blue-200 text-gray-600 font-bold bg-white focus:outline-none focus:border-blue-400 appearance-none text-center">
-                    <option value="0">Muito Fácil (Sempre Passa)</option>
-                    <option value="50">Fácil (Acima de 50%)</option>
-                    <option value="70" selected>Médio (Acima de 70%)</option>
-                    <option value="80">Difícil (Acima de 80%)</option>
-                </select>
-            </div>
-            
-            <p class="text-xs text-gray-400 text-center mt-4">Configure a dificuldade para avançar de fase.</p>
+            <button onclick="resetProgress()" class="text-xs text-blue-200 bg-blue-600 px-2 py-1 rounded hover:bg-blue-700">
+                Limpar Dados
+            </button>
         </div>
 
-        <button onclick="finishSetup()" class="mt-8 w-full max-w-sm bg-green-500 hover:bg-green-400 text-white text-4xl font-bold py-6 rounded-2xl shadow-[0_8px_0_rgb(21,128,61)] active:shadow-none active:translate-y-2 transition-all uppercase tracking-widest">
-            COMEÇAR ➔
-        </button>
+        <!-- Conteúdo Principal com Scroll -->
+        <div class="flex-1 overflow-y-auto level-grid-scroll p-4 pb-24 bg-blue-50">
+            
+            <!-- Painel de Configurações -->
+            <div class="bg-white rounded-2xl p-4 mb-6 border-2 border-blue-100 shadow-sm mx-auto max-w-2xl">
+                <div class="flex flex-wrap gap-4 justify-center md:justify-between items-center">
+                    
+                    <!-- Dificuldade -->
+                    <div class="flex flex-col">
+                        <span class="text-sm font-bold text-gray-500 mb-1">Dificuldade para passar:</span>
+                        <select id="difficultySelect" class="p-2 rounded-lg border-2 border-blue-200 text-gray-600 font-bold bg-blue-50 text-sm">
+                            <option value="0">Muito Fácil (Passa Sempre)</option>
+                            <option value="50">Fácil (> 50%)</option>
+                            <option value="70" selected>Médio (> 70%)</option>
+                            <option value="80">Difícil (> 80%)</option>
+                        </select>
+                    </div>
+
+                    <!-- Botões Toggle -->
+                    <div class="flex gap-6">
+                        <div class="flex flex-col items-center">
+                            <span class="text-xs font-bold text-gray-400 mb-1">Dicas Visuais</span>
+                            <div class="relative inline-block w-12 align-middle select-none">
+                                <input type="checkbox" id="toggleHints" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 ease-in-out border-gray-300 left-0"/>
+                                <label for="toggleHints" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col items-center">
+                            <span class="text-xs font-bold text-gray-400 mb-1">Modo Aprender</span>
+                            <div class="relative inline-block w-12 align-middle select-none">
+                                <input type="checkbox" id="toggleProgressive" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 ease-in-out border-gray-300 left-0"/>
+                                <label for="toggleProgressive" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid de Fases -->
+            <div id="levelsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <!-- As fases serão geradas aqui via JavaScript -->
+            </div>
+        </div>
     </div>
 
-
+    <!-- TELA DE APRESENTAÇÃO / TRANSIÇÃO -->
     <div id="screenPresentation" class="hidden absolute inset-0 z-[50] bg-white flex flex-col items-center p-4">
-        <div class="w-full h-16 flex items-center justify-center border-b border-gray-100 shrink-0">
+        <div class="w-full h-16 flex items-center justify-between border-b border-gray-100 shrink-0 px-4">
+            <button onclick="goToMenu()" class="text-gray-400 hover:text-gray-600 font-bold text-sm bg-gray-100 px-3 py-1 rounded-lg">
+                ⬅ MENU
+            </button>
             <span id="presentationTitle" class="text-gray-400 font-bold uppercase tracking-widest">APRENDENDO</span>
+            <div class="w-16"></div> <!-- Espaçador para centralizar título -->
         </div>
         <div class="flex-1 flex flex-col items-center justify-center w-full max-w-3xl text-center overflow-y-auto" id="presentationContent"></div>
-        <div class="w-full shrink-0 py-6 flex justify-center bg-white border-t border-gray-100">
+        <div class="w-full shrink-0 py-6 flex flex-col gap-3 items-center bg-white border-t border-gray-100">
             <button onclick="advanceLinearFlow()" class="w-full max-w-md bg-green-500 text-white text-3xl font-bold py-5 px-8 rounded-2xl shadow-[0_6px_0_rgb(21,128,61)] active:shadow-none active:translate-y-2 transition-all uppercase tracking-widest animate__animated animate__pulse animate__infinite">
                 PRÓXIMO ➔
             </button>
         </div>
     </div>
 
-
+    <!-- TELA DO JOGO -->
     <div id="screenGame" class="hidden flex-col w-full h-full z-[10]">
         <div class="w-full h-14 bg-blue-50 border-b border-blue-100 flex items-center justify-between px-4 shrink-0 shadow-sm z-30">
-            <div class="text-sm text-blue-400 font-bold uppercase tracking-wider" id="gameLevelDisplay">Nível 0</div>
+            <button onclick="goToMenu()" class="text-blue-400 font-bold hover:bg-blue-100 p-2 rounded-lg transition-colors">
+                ⬅ Voltar
+            </button>
+            <div class="text-sm text-blue-400 font-bold uppercase tracking-wider hidden md:block" id="gameLevelDisplay">Nível 0</div>
             <div class="flex gap-3">
                 <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-full border border-blue-200 shadow-sm">
                     <span class="text-lg">⭐</span><span id="scoreDisplay" class="text-blue-600 font-bold">0</span>
@@ -155,6 +195,7 @@
         </footer>
     </div>
 
+    <!-- Áudios -->
     <audio id="sndCorrect" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
     <audio id="sndWordWin" src="https://actions.google.com/sounds/v1/cartoon/magic_chime.ogg"></audio>
     <audio id="sndLevelWin" src="audios/fimfase.mp3"></audio>
@@ -165,17 +206,30 @@
         const pathAudio = "audios/";
         const pathImg = "img/";
 
+        // --- DADOS DAS FASES ---
         const levels = {
-            0: { letter: "Vogais", unlock: ['A','E','I','O','U','Á','É','Í','Ó','Ú','Â','Ê','Ô','Ã','Õ'], syllables: ['A','E','I','O','U'] },
-            1: { letter: "B", unlock: ['B'], syllables: ['BA','BE','BI','BO','BU'] },
-            2: { letter: "T", unlock: ['T'], syllables: ['TA','TE','TI','TO','TU'] },
-            3: { letter: "P", unlock: ['P'], syllables: ['PA','PE','PI','PO','PU'] },
-            4: { letter: "D", unlock: ['D'], syllables: ['DA','DE','DI','DO','DU'] },
-            5: { letter: "F", unlock: ['F'], syllables: ['FA','FE','FI','FO','FU'] },
-            6: { letter: "V", unlock: ['V'], syllables: ['VA','VE','VI','VO','VU'] },
-            7: { letter: "M", unlock: ['M'], syllables: ['MA','ME','MI','MO','MU'] },
-            8: { letter: "N", unlock: ['N'], syllables: ['NA','NE','NI','NO','NU'] },
-            9: { letter: "L", unlock: ['L'], syllables: ['LA','LE','LI','LO','LU'] }
+            0: { title: "Vogais", unlock: ['A','E','I','O','U','Á','É','Í','Ó','Ú','Â','Ê','Ô','Ã','Õ'], syllables: ['A','E','I','O','U'], color: "bg-pink-100 border-pink-300 text-pink-600" },
+            1: { title: "Letra B", unlock: ['B'], syllables: ['BA','BE','BI','BO','BU'], color: "bg-blue-100 border-blue-300 text-blue-600" },
+            2: { title: "Letra T", unlock: ['T'], syllables: ['TA','TE','TI','TO','TU'], color: "bg-green-100 border-green-300 text-green-600" },
+            3: { title: "Letra P", unlock: ['P'], syllables: ['PA','PE','PI','PO','PU'], color: "bg-yellow-100 border-yellow-300 text-yellow-600" },
+            4: { title: "Letra D", unlock: ['D'], syllables: ['DA','DE','DI','DO','DU'], color: "bg-purple-100 border-purple-300 text-purple-600" },
+            5: { title: "Letra F", unlock: ['F'], syllables: ['FA','FE','FI','FO','FU'], color: "bg-red-100 border-red-300 text-red-600" },
+            6: { title: "Letra V", unlock: ['V'], syllables: ['VA','VE','VI','VO','VU'], color: "bg-teal-100 border-teal-300 text-teal-600" },
+            7: { title: "Letra M", unlock: ['M'], syllables: ['MA','ME','MI','MO','MU'], color: "bg-orange-100 border-orange-300 text-orange-600" },
+            
+            // FASE ESPECIAL DE CONTEXTO
+            8: { 
+                title: "Sons Animais", 
+                type: "context", 
+                introTitle: "Quem faz esse som?", 
+                unlock: [], 
+                syllables: ['MIAU','AU','MU','PIU','BÉ'], 
+                color: "bg-amber-100 border-amber-300 text-amber-800" 
+            },
+
+            // Fases seguintes re-numeradas
+            9: { title: "Letra N", unlock: ['N'], syllables: ['NA','NE','NI','NO','NU'], color: "bg-indigo-100 border-indigo-300 text-indigo-600" },
+            10: { title: "Letra L", unlock: ['L'], syllables: ['LA','LE','LI','LO','LU'], color: "bg-lime-100 border-lime-300 text-lime-600" }
         };
 
         const database = {
@@ -187,13 +241,24 @@
             5: { items: [{ word: "FADA", emoji: "🧚" }, { word: "BIFE", emoji: "🔪🥩" }, { word: "FITA", emoji: "🎗️" }, { word: "FOTO", emoji: "📷" }, { word: "FIO", emoji: "🧵" }] },
             6: { items: [{ word: "VOVÓ", emoji: "👵" }, { word: "UVA", emoji: "🍇" }, { word: "AVE", emoji: "🦅" }, { word: "OVO", emoji: "🥚" }, { word: "VIVA", emoji: "🎉" }] },
             7: { items: [ { word: "MIAU", emoji: "🐈🔊" }, { word: "MEIA", emoji: "🧦" }, { word: "MAPA", emoji: "🗺️" }, { word: "MU", emoji: "🐮🔊" } ] },
-            8: { items: [{ word: "MENINA", emoji: "👧" }, { word: "NOVE", emoji: "9️⃣" }, { word: "BONÉ", emoji: "🧢" }, { word: "BANANA", emoji: "🍌" }, { word: "MENINO", emoji: "👦" }] },
-            9: { items: [{ word: "LUA", emoji: "🌙" }, { word: "LOBO", emoji: "🐺" }, { word: "BOLA", emoji: "⚽" }, { word: "BALA", emoji: "🍬" }, { word: "LULA", emoji: "🦑" }] }
+            
+            // CONTEÚDO DA FASE 8 - ANIMAIS
+            8: { items: [
+                { word: "MIAU", emoji: "🐈🔊" },
+                { word: "AU", emoji: "🐶🔊" },
+                { word: "MU", emoji: "🐄🔊" },
+                { word: "PIU", emoji: "🐥🔊" },
+                { word: "BÉ", emoji: "🐐🔊" }
+            ]},
+            
+            9: { items: [{ word: "MENINA", emoji: "👧" }, { word: "NOVE", emoji: "9️⃣" }, { word: "BONÉ", emoji: "🧢" }, { word: "BANANA", emoji: "🍌" }, { word: "MENINO", emoji: "👦" }] },
+            10: { items: [{ word: "LUA", emoji: "🌙" }, { word: "LOBO", emoji: "🐺" }, { word: "BOLA", emoji: "⚽" }, { word: "BALA", emoji: "🍬" }, { word: "LULA", emoji: "🦑" }] }
         };
 
+        // --- VARIÁVEIS DE ESTADO ---
         let configHints = false;
-        let isProgressiveMode = false; // Novo: Se modo aprender está ativo
-        let isSecondPass = false;      // Novo: Se estamos na volta sem dicas
+        let isProgressiveMode = false;
+        let isSecondPass = false;
         let difficultyThreshold = 70;
         let currentLevel = 0;
         let score = 0;
@@ -208,26 +273,101 @@
         let phaseCorrectAttempts = 0;
         let phaseTotalAttempts = 0;
 
-        function finishSetup() {
-            const checkboxHints = document.getElementById('toggleHints');
-            configHints = checkboxHints.checked;
+        // --- SISTEMA DE PERSISTÊNCIA (SALVAR) ---
+        function getSavedProgress() {
+            const unlocked = localStorage.getItem('digita_max_level') || 0;
+            const records = JSON.parse(localStorage.getItem('digita_records') || '{}');
+            return { maxLevel: parseInt(unlocked), records: records };
+        }
 
-            const checkboxProg = document.getElementById('toggleProgressive');
-            isProgressiveMode = checkboxProg.checked; // Lê configuração do modo aprender
+        function saveProgress(level, accuracy) {
+            const progress = getSavedProgress();
+            if (level + 1 > progress.maxLevel) {
+                progress.maxLevel = level + 1;
+                localStorage.setItem('digita_max_level', progress.maxLevel);
+            }
+            const currentRecord = progress.records[level] || 0;
+            if (accuracy > currentRecord) {
+                progress.records[level] = Math.round(accuracy);
+                localStorage.setItem('digita_records', JSON.stringify(progress.records));
+            }
+        }
 
-            const diffSelect = document.getElementById('difficultySelect');
-            difficultyThreshold = parseInt(diffSelect.value);
-            document.getElementById('screenSetup').classList.add('hidden');
-            initLevel(0);
+        function resetProgress() {
+            if(confirm('Tem certeza que deseja apagar todo o progresso?')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // --- INICIALIZAÇÃO E MENU ---
+        window.onload = function() {
+            renderLevelGrid();
+        };
+
+        function goToMenu() {
+            showScreen('SETUP');
+            renderLevelGrid();
+        }
+
+        function renderLevelGrid() {
+            const grid = document.getElementById('levelsGrid');
+            grid.innerHTML = '';
+            const progress = getSavedProgress();
+            const totalLevels = Object.keys(levels).length;
+
+            for (let i = 0; i < totalLevels; i++) {
+                const isLocked = i > progress.maxLevel;
+                const record = progress.records[i] !== undefined ? progress.records[i] + '%' : null;
+                const levelData = levels[i];
+
+                const card = document.createElement('div');
+                card.className = `level-card bg-white border-b-4 rounded-2xl p-4 flex flex-col items-center justify-between min-h-[140px] shadow-sm cursor-pointer select-none ${isLocked ? 'level-locked bg-gray-100 border-gray-300' : levelData.color.replace('bg-', 'hover:bg-opacity-80 border-')}`;
+                
+                let titleDisplay = levelData.title;
+                if(titleDisplay.startsWith("Letra ")) titleDisplay = titleDisplay.replace('Letra ', '');
+
+                if (isLocked) {
+                    card.innerHTML = `
+                        <div class="text-gray-400 text-4xl mb-2">🔒</div>
+                        <div class="text-gray-400 font-bold text-lg">Fase ${i}</div>
+                        <div class="text-xs text-gray-400 font-bold uppercase mt-2">Bloqueada</div>
+                    `;
+                } else {
+                    card.onclick = () => startGameFromMenu(i);
+                    const recordHtml = record ? `<div class="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full font-bold shadow-sm">🏆 ${record}</div>` : `<div class="text-gray-300 text-xs font-bold">--%</div>`;
+                    
+                    card.innerHTML = `
+                        <div class="w-full flex justify-between items-start">
+                            <span class="text-gray-400 text-xs font-bold">Fase ${i}</span>
+                            ${recordHtml}
+                        </div>
+                        <div class="text-3xl md:text-4xl font-black mb-1 mt-2 text-center break-words leading-tight">${titleDisplay}</div>
+                        <div class="mt-auto w-full bg-black/5 h-1 rounded-full overflow-hidden">
+                            <div class="h-full bg-current opacity-30" style="width: ${progress.records[i] || 0}%"></div>
+                        </div>
+                    `;
+                    card.classList.add(levelData.color.split(' ')[1]); 
+                }
+                grid.appendChild(card);
+            }
+        }
+
+        function startGameFromMenu(lvl) {
+            configHints = document.getElementById('toggleHints').checked;
+            isProgressiveMode = document.getElementById('toggleProgressive').checked;
+            difficultyThreshold = parseInt(document.getElementById('difficultySelect').value);
+            initLevel(lvl);
         }
 
         function showScreen(screenName) {
             document.getElementById('screenSetup').classList.add('hidden');
             document.getElementById('screenPresentation').classList.add('hidden');
             document.getElementById('screenGame').classList.add('hidden');
-            if (screenName === 'PRESENTATION') {
-                document.getElementById('screenPresentation').classList.remove('hidden');
-            } else if (screenName === 'GAME') {
+            
+            if (screenName === 'SETUP') document.getElementById('screenSetup').classList.remove('hidden');
+            else if (screenName === 'PRESENTATION') document.getElementById('screenPresentation').classList.remove('hidden');
+            else if (screenName === 'GAME') {
                 document.getElementById('screenGame').classList.remove('hidden');
                 document.getElementById('screenGame').classList.add('flex');
             }
@@ -235,15 +375,15 @@
 
         function initLevel(lvl) {
             currentLevel = lvl;
-            isSecondPass = false; // Reinicia controle de voltas
+            isSecondPass = false;
             if (!database[currentLevel]) {
                 alert("Parabéns! Fim do Jogo.");
-                window.location.reload();
+                goToMenu();
                 return;
             }
             learnedLetters = new Set();
             for(let i=0; i<=currentLevel; i++) {
-                if(levels[i]) levels[i].unlock.forEach(l => learnedLetters.add(l));
+                if(levels[i] && levels[i].unlock) levels[i].unlock.forEach(l => learnedLetters.add(l));
             }
             startIntroSyllables();
         }
@@ -251,11 +391,19 @@
         function startIntroSyllables() {
             flowState = 'INTRO';
             const data = levels[currentLevel];
-            const title = currentLevel === 0 ? "Vogais" : `Família do ${data.letter}`;
+            let title = "";
+            
+            // Título customizado para fases especiais
+            if (data.type === 'context') {
+                title = data.introTitle || data.title;
+            } else {
+                title = currentLevel === 0 ? "As Vogais" : `Família do ${data.title.replace('Letra ','')}`;
+            }
+
             const syllables = data.syllables || [];
-            let html = `<h2 class="text-5xl font-bold text-blue-500 mb-8 animate__animated animate__fadeInDown">${title}</h2><div class="flex justify-center gap-4 flex-wrap mb-6">`;
+            let html = `<h2 class="text-5xl font-bold text-blue-500 mb-8 animate__animated animate__fadeInDown text-center">${title}</h2><div class="flex justify-center gap-4 flex-wrap mb-6">`;
             syllables.forEach((syl, idx) => {
-                html += `<div class="text-6xl md:text-8xl font-bold bg-white text-blue-500 border-4 border-blue-200 rounded-3xl px-6 py-4 shadow-lg animate__animated animate__zoomIn" style="animation-delay: ${idx*100}ms">${syl}</div>`;
+                html += `<div class="text-5xl md:text-7xl font-bold bg-white text-blue-500 border-4 border-blue-200 rounded-3xl px-6 py-4 shadow-lg animate__animated animate__zoomIn" style="animation-delay: ${idx*100}ms">${syl}</div>`;
             });
             html += `</div>`;
             document.getElementById('presentationTitle').textContent = "INTRODUÇÃO";
@@ -272,7 +420,8 @@
 
         function showNextPresentationWord() {
             if (presentationIndex >= presentationQueue.length) {
-                if (currentLevel === 0) startWordGame();
+                // Se a fase for de contexto, pula direto para palavras (não tem fase de sílaba separada)
+                if (currentLevel === 0 || levels[currentLevel].type === 'context') startWordGame();
                 else startSyllableGame();
                 return;
             }
@@ -290,31 +439,30 @@
         function advanceLinearFlow() {
             if (flowState === 'INTRO') startPresentationWords();
             else if (flowState === 'PRES') { presentationIndex++; showNextPresentationWord(); }
-            else if (flowState === 'TRANSITION_TO_SYL') startSyllableGame();
+            else if (flowState === 'TRANSITION_TO_SYL') {
+                // Verifica se pula sílabas (contexto)
+                if (levels[currentLevel].type === 'context') startWordGame();
+                else startSyllableGame();
+            }
             else if (flowState === 'TRANSITION_TO_WORD') startWordGame();
             else if (flowState === 'END_PHASE') initLevel(currentLevel + 1);
-            else if (flowState === 'RETRY') { if (currentLevel === 0) startWordGame(); else startSyllableGame(); }
+            else if (flowState === 'RETRY') { 
+                if (currentLevel === 0 || levels[currentLevel].type === 'context') startWordGame(); 
+                else startSyllableGame(); 
+            }
         }
 
         function prepareGameQueue() {
             gameQueue = [...database[currentLevel].items].sort(() => Math.random() - 0.5);
-            
-            // Lógica do Modo Aprender: Força dicas na primeira volta
-            if (isProgressiveMode && !isSecondPass) {
-                configHints = true;
-            }
-            
-            // Só zera as estatísticas se NÃO for a segunda volta, para acumular
-            if (!isSecondPass) {
-                phaseTotalAttempts = 0;
-                phaseCorrectAttempts = 0;
-            }
+            if (isProgressiveMode && !isSecondPass) configHints = true;
+            if (!isSecondPass) { phaseTotalAttempts = 0; phaseCorrectAttempts = 0; }
             updateStatsUI();
         }
 
         function startSyllableGame() {
             flowState = 'GAME_SYL';
-            document.getElementById('gameLevelDisplay').textContent = levels[currentLevel].letter + " (Sílabas)";
+            const letter = levels[currentLevel].title.replace("Letra ", "");
+            document.getElementById('gameLevelDisplay').textContent = `Fase ${currentLevel} - ${letter} (Sílabas)`;
             prepareGameQueue();
             showScreen('GAME');
             renderKeyboard();
@@ -323,7 +471,16 @@
 
         function startWordGame() {
             flowState = 'GAME_WORD';
-            document.getElementById('gameLevelDisplay').textContent = levels[currentLevel].letter + " (Palavras)";
+            const lvlData = levels[currentLevel];
+            let titleText = "";
+            if (lvlData.type === 'context') {
+                titleText = `Fase ${currentLevel} - ${lvlData.title}`;
+            } else {
+                const letter = lvlData.title.replace("Letra ", "");
+                titleText = `Fase ${currentLevel} - ${letter} (Palavras)`;
+            }
+            
+            document.getElementById('gameLevelDisplay').textContent = titleText;
             prepareGameQueue();
             showScreen('GAME');
             renderKeyboard();
@@ -345,19 +502,15 @@
         }
 
         function nextGameItem() {
-            // Verifica se a fila acabou
             if (gameQueue.length === 0) { 
-                // VERIFICAÇÃO DO MODO APRENDER
                 if (isProgressiveMode && !isSecondPass) {
-                    isSecondPass = true; // Ativa flag da segunda volta
-                    configHints = false; // Desativa dicas
-                    showIntermission();  // Mostra tela de transição
+                    isSecondPass = true; 
+                    configHints = false; 
+                    showIntermission();
                     return;
                 }
-
-                // Final normal da fase
                 checkEndPhase(); 
-                isSecondPass = false; // Reset de segurança
+                isSecondPass = false;
                 return; 
             }
 
@@ -365,10 +518,12 @@
             const total = database[currentLevel].items.length;
             const progress = ((total - gameQueue.length) / total) * 100;
             document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            const levelLetter = levels[currentLevel].title.replace("Letra ", "").trim();
 
             if (flowState === 'GAME_SYL') {
                 document.getElementById('gameInstruction').textContent = "Complete a sílaba:";
-                targetIndices = findSyllableIndices(currentItem.word, levels[currentLevel].letter);
+                targetIndices = findSyllableIndices(currentItem.word, levelLetter);
                 if (targetIndices.length === 0) targetIndices = Array.from({length: currentItem.word.length}, (_, i) => i);
             } else {
                 document.getElementById('gameInstruction').textContent = "Escreva a palavra:";
@@ -377,7 +532,6 @@
             renderGameRound();
         }
 
-        // --- NOVA FUNÇÃO: Tela de Transição ---
         function showIntermission() {
             const html = `
                 <div class="bg-blue-100 border-4 border-blue-300 rounded-full p-8 mb-6 shadow-sm inline-block animate__animated animate__bounceIn">
@@ -385,7 +539,6 @@
                 </div>
                 <h2 class="text-4xl font-bold text-blue-600 mb-4 animate__animated animate__fadeIn">Agora sem ajuda!</h2>
                 <p class="text-xl text-gray-500 max-w-md mx-auto mb-8">Você consegue fazer de novo sem as cores?</p>
-                
                 <button onclick="startSecondPass()" class="bg-blue-500 hover:bg-blue-400 text-white text-2xl font-bold py-4 px-10 rounded-2xl shadow-[0_6px_0_rgb(37,99,235)] active:shadow-none active:translate-y-2 transition-all uppercase tracking-widest">
                     VAMOS LÁ!
                 </button>
@@ -395,18 +548,13 @@
             showScreen('PRESENTATION');
         }
 
-        // --- NOVA FUNÇÃO: Inicia a Segunda Volta ---
         function startSecondPass() {
-            // Recarrega palavras
             gameQueue = [...database[currentLevel].items].sort(() => Math.random() - 0.5);
-            
-            // Zera estatísticas desta fase para a avaliação final ser justa
             phaseTotalAttempts = 0;
             phaseCorrectAttempts = 0;
             updateStatsUI();
-
             showScreen('GAME');
-            renderKeyboard(); // Renderiza teclado (agora sem dicas)
+            renderKeyboard();
             nextGameItem();
         }
 
@@ -499,13 +647,14 @@
 
         function checkEndPhase() {
             const acc = phaseTotalAttempts === 0 ? 0 : (phaseCorrectAttempts / phaseTotalAttempts) * 100;
-            let title, msg, nextState;
+            let title, msg, nextState, buttonText = "PRÓXIMO ➔";
             
             if (acc < difficultyThreshold) {
                 document.getElementById('sndLose').play();
                 title = "Vamos tentar de novo?"; 
                 msg = `Você fez ${Math.round(acc)}%. Precisa de ${difficultyThreshold}% para passar.`; 
                 nextState = 'RETRY';
+                buttonText = "TENTAR DE NOVO ↺";
                 document.getElementById('presentationTitle').textContent = "REVISÃO";
             } else {
                 document.getElementById('sndLevelWin').play();
@@ -516,8 +665,9 @@
                 } else {
                     title = "Nível Concluído!";
                     const nextLvl = levels[currentLevel + 1];
-                    msg = nextLvl ? `Você desbloqueou: ${nextLvl.letter}` : "Você terminou o jogo!";
+                    msg = nextLvl ? `Você desbloqueou: ${nextLvl.title}` : "Você terminou o jogo!";
                     nextState = 'END_PHASE';
+                    saveProgress(currentLevel, acc);
                 }
                 document.getElementById('presentationTitle').textContent = "PARABÉNS";
             }
@@ -527,6 +677,16 @@
             const colorClass = isFail ? 'text-orange-500' : 'text-green-500';
             const borderClass = isFail ? 'border-orange-200' : 'border-green-200';
             const emoji = isFail ? '💪' : '⭐';
+
+            const actionBtn = document.querySelector('#screenPresentation button[onclick="advanceLinearFlow()"]');
+            actionBtn.textContent = buttonText;
+            if(isFail) {
+                 actionBtn.classList.replace('bg-green-500', 'bg-orange-500');
+                 actionBtn.classList.replace('shadow-[0_6px_0_rgb(21,128,61)]', 'shadow-[0_6px_0_rgb(249,115,22)]');
+            } else {
+                 actionBtn.classList.replace('bg-orange-500', 'bg-green-500');
+                 actionBtn.classList.replace('shadow-[0_6px_0_rgb(249,115,22)]', 'shadow-[0_6px_0_rgb(21,128,61)]');
+            }
 
             let html = `<div class="bg-white border-4 ${borderClass} rounded-full p-10 mb-6 shadow-sm inline-block"><span class="text-8xl">${emoji}</span></div><h2 class="text-4xl font-bold ${colorClass} mb-4">${title}</h2><p class="text-xl text-gray-500 max-w-md mx-auto">${msg}</p>`;
             document.getElementById('presentationContent').innerHTML = html;
@@ -584,8 +744,14 @@
             const indices = [];
             const regex = new RegExp(`(${levelLetter})[AEOIUÁÉÍÓÚÃÕÂÊÔ]`, 'i');
             const match = word.match(regex);
-            if (match && match.index !== undefined) { indices.push(match.index, match.index + 1); }
-            else if (word.toUpperCase().startsWith(levelLetter)) { indices.push(0, 1); }
+            
+            if (match && match.index !== undefined) { 
+                indices.push(match.index, match.index + 1); 
+            }
+            else if (word.toUpperCase().startsWith(levelLetter)) { 
+                indices.push(0, 1); 
+                if(word.length < 2) indices.push(0); 
+            }
             return indices;
         }
 
@@ -602,8 +768,4 @@
         function animateConfetti() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles = particles.filter(p => p.life > 0); particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.2; p.life--; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill(); }); if (particles.length > 0) requestAnimationFrame(animateConfetti); }
     </script>
 </body>
-
 </html>
-
-
-
