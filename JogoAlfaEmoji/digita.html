@@ -1,73 +1,171 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Digita TEA">
     <title>Digita TEA - Seletor de Fases</title>
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
     <style>
         body {
             font-family: 'Fredoka', sans-serif;
             background-color: #f0f9ff;
-            overflow: hidden; 
-            -webkit-user-select: none; user-select: none;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
             touch-action: manipulation;
         }
 
         /* --- TOGGLE SWITCH --- */
-        .toggle-checkbox:checked { right: 0; border-color: #22c55e; }
-        .toggle-checkbox:checked + .toggle-label { background-color: #22c55e; }
-        
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #22c55e;
+        }
+
+        .toggle-checkbox:checked+.toggle-label {
+            background-color: #22c55e;
+        }
+
         /* --- ESTILOS DO JOGO --- */
-        .letter-box { transition: all 0.2s; text-transform: uppercase; cursor: default; }
-        .correct { background-color: #86efac !important; border-color: #22c55e !important; color: #14532d; transform: scale(1.05); }
-        .incorrect { background-color: #fca5a5 !important; border-color: #ef4444 !important; animation: shake 0.4s ease-in-out; }
-        .active-box { border-color: #3b82f6 !important; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3); transform: scale(1.1); background-color: #fff; z-index: 10; }
-        .filled-static { background-color: #e5e7eb; color: #9ca3af; border-color: #d1d5db; }
+        .letter-box {
+            transition: all 0.2s;
+            text-transform: uppercase;
+            cursor: default;
+        }
+
+        .correct {
+            background-color: #86efac !important;
+            border-color: #22c55e !important;
+            color: #14532d;
+            transform: scale(1.05);
+        }
+
+        .incorrect {
+            background-color: #fca5a5 !important;
+            border-color: #ef4444 !important;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        .active-box {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+            transform: scale(1.1);
+            background-color: #fff;
+            z-index: 10;
+        }
+
+        .filled-static {
+            background-color: #e5e7eb;
+            color: #9ca3af;
+            border-color: #d1d5db;
+        }
 
         /* Teclado e Botões */
         .key {
-            flex: 1; max-width: 90px; height: 60px; border-radius: 12px;
-            font-size: 1.8rem; font-weight: bold; cursor: pointer;
+            flex: 1;
+            max-width: 90px;
+            height: 60px;
+            border-radius: 12px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            cursor: pointer;
             transition: transform 0.1s, background-color 0.2s;
-            display: flex; align-items: center; justify-content: center;
-            background-color: #fff; color: #9ca3af; border-bottom: 4px solid #d1d5db;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            color: #9ca3af;
+            border-bottom: 4px solid #d1d5db;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            touch-action: manipulation;
         }
-        .key:active, .key.active-press { transform: translateY(4px); border-bottom: 0 !important; background-color: #e5e7eb; }
-        .key-learned { background-color: #eff6ff; color: #1e40af; border-bottom: 4px solid #3b82f6; }
-        
+
+        .key:active,
+        .key.active-press {
+            transform: translateY(4px);
+            border-bottom: 0 !important;
+            background-color: #e5e7eb;
+        }
+
+        .key-learned {
+            background-color: #eff6ff;
+            color: #1e40af;
+            border-bottom: 4px solid #3b82f6;
+        }
+
         /* Dicas */
-        .hint-active { background-color: #fef08a !important; border-color: #eab308 !important; transform: scale(1.05); color: #854d0e !important; opacity: 1 !important; }
-        .hint-inactive { opacity: 0.3 !important; filter: grayscale(100%); pointer-events: none; }
+        .hint-active {
+            background-color: #fef08a !important;
+            border-color: #eab308 !important;
+            transform: scale(1.05);
+            color: #854d0e !important;
+            opacity: 1 !important;
+        }
+
+        .hint-inactive {
+            opacity: 0.3 !important;
+            filter: grayscale(100%);
+            pointer-events: none;
+        }
 
         /* Níveis */
         .level-card {
             transition: transform 0.2s, box-shadow 0.2s;
         }
+
         .level-card:active {
             transform: scale(0.95);
         }
+
         .level-locked {
             filter: grayscale(100%);
             opacity: 0.6;
             pointer-events: none;
         }
 
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
         /* Scroll customizado para o grid de fases */
-        .level-grid-scroll::-webkit-scrollbar { width: 8px; }
-        .level-grid-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-        .level-grid-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .level-grid-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .level-grid-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .level-grid-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .level-grid-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .level-grid-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
     </style>
 </head>
+
 <body class="h-screen w-full flex flex-col bg-blue-50 relative">
 
     <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-[60]"></canvas>
@@ -80,22 +178,24 @@
                 <h1 class="text-3xl font-bold text-white">Digita TEA 🚀</h1>
                 <p class="text-blue-100 text-sm">Selecione uma fase</p>
             </div>
-            <button onclick="resetProgress()" class="text-xs text-blue-200 bg-blue-600 px-2 py-1 rounded hover:bg-blue-700">
+            <button onclick="resetProgress()"
+                class="text-xs text-blue-200 bg-blue-600 px-2 py-1 rounded hover:bg-blue-700">
                 Limpar Dados
             </button>
         </div>
 
         <!-- Conteúdo Principal com Scroll -->
         <div class="flex-1 overflow-y-auto level-grid-scroll p-4 pb-24 bg-blue-50">
-            
+
             <!-- Painel de Configurações -->
             <div class="bg-white rounded-2xl p-4 mb-6 border-2 border-blue-100 shadow-sm mx-auto max-w-2xl">
                 <div class="flex flex-wrap gap-4 justify-center md:justify-between items-center">
-                    
+
                     <!-- Dificuldade -->
                     <div class="flex flex-col">
                         <span class="text-sm font-bold text-gray-500 mb-1">Dificuldade para passar:</span>
-                        <select id="difficultySelect" class="p-2 rounded-lg border-2 border-blue-200 text-gray-600 font-bold bg-blue-50 text-sm">
+                        <select id="difficultySelect"
+                            class="p-2 rounded-lg border-2 border-blue-200 text-gray-600 font-bold bg-blue-50 text-sm">
                             <option value="0">Muito Fácil (Passa Sempre)</option>
                             <option value="50">Fácil (> 50%)</option>
                             <option value="70" selected>Médio (> 70%)</option>
@@ -108,16 +208,20 @@
                         <div class="flex flex-col items-center">
                             <span class="text-xs font-bold text-gray-400 mb-1">Dicas Visuais</span>
                             <div class="relative inline-block w-12 align-middle select-none">
-                                <input type="checkbox" id="toggleHints" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 ease-in-out border-gray-300 left-0"/>
-                                <label for="toggleHints" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                <input type="checkbox" id="toggleHints"
+                                    class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 ease-in-out border-gray-300 left-0" />
+                                <label for="toggleHints"
+                                    class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                             </div>
                         </div>
 
                         <div class="flex flex-col items-center">
                             <span class="text-xs font-bold text-gray-400 mb-1">Modo Aprender</span>
                             <div class="relative inline-block w-12 align-middle select-none">
-                                <input type="checkbox" id="toggleProgressive" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 ease-in-out border-gray-300 left-0"/>
-                                <label for="toggleProgressive" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                <input type="checkbox" id="toggleProgressive"
+                                    class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 ease-in-out border-gray-300 left-0" />
+                                <label for="toggleProgressive"
+                                    class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                             </div>
                         </div>
                     </div>
@@ -134,15 +238,18 @@
     <!-- TELA DE APRESENTAÇÃO / TRANSIÇÃO -->
     <div id="screenPresentation" class="hidden absolute inset-0 z-[50] bg-white flex flex-col items-center p-4">
         <div class="w-full h-16 flex items-center justify-between border-b border-gray-100 shrink-0 px-4">
-            <button onclick="goToMenu()" class="text-gray-400 hover:text-gray-600 font-bold text-sm bg-gray-100 px-3 py-1 rounded-lg">
+            <button onclick="goToMenu()"
+                class="text-gray-400 hover:text-gray-600 font-bold text-sm bg-gray-100 px-3 py-1 rounded-lg">
                 ⬅ MENU
             </button>
             <span id="presentationTitle" class="text-gray-400 font-bold uppercase tracking-widest">APRENDENDO</span>
             <div class="w-16"></div> <!-- Espaçador para centralizar título -->
         </div>
-        <div class="flex-1 flex flex-col items-center justify-center w-full max-w-3xl text-center overflow-y-auto" id="presentationContent"></div>
+        <div class="flex-1 flex flex-col items-center justify-center w-full max-w-3xl text-center overflow-y-auto"
+            id="presentationContent"></div>
         <div class="w-full shrink-0 py-6 flex flex-col gap-3 items-center bg-white border-t border-gray-100">
-            <button onclick="advanceLinearFlow()" class="w-full max-w-md bg-green-500 text-white text-3xl font-bold py-5 px-8 rounded-2xl shadow-[0_6px_0_rgb(21,128,61)] active:shadow-none active:translate-y-2 transition-all uppercase tracking-widest animate__animated animate__pulse animate__infinite">
+            <button id="btnPresentationNext" onclick="advanceLinearFlow()"
+                class="w-full max-w-md bg-green-500 text-white text-3xl font-bold py-5 px-8 rounded-2xl shadow-[0_6px_0_rgb(21,128,61)] active:shadow-none active:translate-y-2 transition-all uppercase tracking-widest animate__animated animate__pulse animate__infinite">
                 PRÓXIMO ➔
             </button>
         </div>
@@ -150,17 +257,21 @@
 
     <!-- TELA DO JOGO -->
     <div id="screenGame" class="hidden flex-col w-full h-full z-[10]">
-        <div class="w-full h-14 bg-blue-50 border-b border-blue-100 flex items-center justify-between px-4 shrink-0 shadow-sm z-30">
-            <button onclick="goToMenu()" class="text-blue-400 font-bold hover:bg-blue-100 p-2 rounded-lg transition-colors">
+        <div
+            class="w-full h-14 bg-blue-50 border-b border-blue-100 flex items-center justify-between px-4 shrink-0 shadow-sm z-30">
+            <button onclick="goToMenu()"
+                class="text-blue-400 font-bold hover:bg-blue-100 p-2 rounded-lg transition-colors">
                 ⬅ Voltar
             </button>
-            <div class="text-sm text-blue-400 font-bold uppercase tracking-wider hidden md:block" id="gameLevelDisplay">Nível 0</div>
+            <div class="text-sm text-blue-400 font-bold uppercase tracking-wider hidden md:block" id="gameLevelDisplay">
+                Nível 0</div>
             <div class="flex gap-3">
                 <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-full border border-blue-200 shadow-sm">
                     <span class="text-lg">⭐</span><span id="scoreDisplay" class="text-blue-600 font-bold">0</span>
                 </div>
                 <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-full border border-green-200 shadow-sm">
-                    <span class="text-lg">🎯</span><span id="accuracyDisplay" class="text-green-600 font-bold">100%</span>
+                    <span class="text-lg">🎯</span><span id="accuracyDisplay"
+                        class="text-green-600 font-bold">100%</span>
                 </div>
             </div>
         </div>
@@ -170,11 +281,13 @@
         </div>
 
         <div class="flex-1 flex flex-col items-center justify-center p-2 relative overflow-hidden bg-white/50 w-full">
-            
-            <div id="gameInstruction" class="text-xl font-bold text-blue-400 mt-2 mb-2 text-center shrink-0">Escreva:</div>
+
+            <div id="gameInstruction" class="text-xl font-bold text-blue-400 mt-2 mb-2 text-center shrink-0">Escreva:
+            </div>
 
             <div class="flex-1 w-full flex items-center justify-center min-h-0 mb-4 px-4">
-                <div class="image-monitor w-full h-full max-w-2xl bg-white border-4 border-blue-400 rounded-3xl relative cursor-pointer hover:scale-[1.01] transition-transform shadow-lg flex items-center justify-center" onclick="playCurrentAudio()">
+                <div class="image-monitor w-full h-full max-w-2xl bg-white border-4 border-blue-400 rounded-3xl relative cursor-pointer hover:scale-[1.01] transition-transform shadow-lg flex items-center justify-center"
+                    onclick="playCurrentAudio()">
                     <div id="gameImageContainer" class="w-full h-full flex items-center justify-center p-4"></div>
                     <div class="absolute bottom-2 right-2 bg-blue-100 p-2 rounded-full opacity-60">🔊</div>
                 </div>
@@ -182,17 +295,37 @@
 
             <div id="inputContainer" class="flex flex-wrap justify-center gap-2 mb-4 shrink-0"></div>
 
-            <div id="successOverlay" class="hidden absolute inset-0 z-40 bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center animate__animated animate__fadeIn">
-                <div id="feedbackMessage" class="text-5xl md:text-6xl font-black text-green-500 mb-8 drop-shadow-sm animate__animated animate__rubberBand">MUITO BEM! 🎉</div>
-                <button onclick="nextGameItem()" class="bg-green-500 hover:bg-green-400 text-white text-3xl font-bold py-6 px-12 rounded-3xl shadow-[0_10px_0_rgb(21,128,61)] active:shadow-none active:translate-y-2 transition-all uppercase tracking-widest animate__animated animate__pulse animate__infinite">
+            <div id="successOverlay"
+                class="hidden absolute inset-0 z-40 bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center animate__animated animate__fadeIn">
+                <div id="feedbackMessage"
+                    class="text-5xl md:text-6xl font-black text-green-500 mb-8 drop-shadow-sm animate__animated animate__rubberBand">
+                    MUITO BEM! 🎉</div>
+                <button onclick="nextGameItem()"
+                    class="bg-green-500 hover:bg-green-400 text-white text-3xl font-bold py-6 px-12 rounded-3xl shadow-[0_10px_0_rgb(21,128,61)] active:shadow-none active:translate-y-2 transition-all uppercase tracking-widest animate__animated animate__pulse animate__infinite">
                     PRÓXIMO ➔
                 </button>
             </div>
         </div>
 
-        <footer id="keyboardArea" class="shrink-0 bg-white border-t border-gray-200 pb-4 pt-2 px-1 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] z-20">
+        <footer id="keyboardArea"
+            class="shrink-0 bg-white border-t border-gray-200 pb-4 pt-2 px-1 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] z-20">
             <div id="keyboardContainer" class="max-w-4xl mx-auto flex flex-col gap-2"></div>
         </footer>
+    </div>
+
+    <!-- TELA DE VÍDEO (PRÊMIO) -->
+    <div id="screenVideo"
+        class="hidden absolute inset-0 z-[200] bg-black/95 flex flex-col items-center justify-center p-4 animate__animated animate__fadeIn">
+        <div
+            class="w-full max-w-5xl aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl relative border-4 border-white/20">
+            <iframe id="videoFrame" class="w-full h-full" src="" title="YouTube video player" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        </div>
+        <button onclick="closeVideoReward()"
+            class="mt-8 bg-red-500 hover:bg-red-600 text-white text-2xl font-bold py-4 px-12 rounded-full shadow-lg transition-transform active:scale-95 hover:scale-105 uppercase tracking-widest flex items-center gap-3 animate__animated animate__bounceIn delay-1000">
+            <span>❌</span> FECHAR E CONTINUAR
+        </button>
     </div>
 
     <!-- Áudios -->
@@ -208,203 +341,221 @@
 
         // --- DADOS DAS FASES ---
         const levels = {
-            0: { title: "Vogais", unlock: ['A','E','I','O','U','Á','É','Í','Ó','Ú','Â','Ê','Ô','Ã','Õ'], syllables: ['A','E','I','O','U'], color: "bg-pink-100 border-pink-300 text-pink-600" },
-            1: { title: "Letra B", unlock: ['B'], syllables: ['BA','BE','BI','BO','BU'], color: "bg-blue-100 border-blue-300 text-blue-600" },
-            2: { title: "Letra T", unlock: ['T'], syllables: ['TA','TE','TI','TO','TU'], color: "bg-green-100 border-green-300 text-green-600" },
-            3: { title: "Letra P", unlock: ['P'], syllables: ['PA','PE','PI','PO','PU'], color: "bg-yellow-100 border-yellow-300 text-yellow-600" },
-            4: { title: "Letra D", unlock: ['D'], syllables: ['DA','DE','DI','DO','DU'], color: "bg-purple-100 border-purple-300 text-purple-600" },
-            5: { title: "Letra F", unlock: ['F'], syllables: ['FA','FE','FI','FO','FU'], color: "bg-red-100 border-red-300 text-red-600" },
-            6: { title: "Letra V", unlock: ['V'], syllables: ['VA','VE','VI','VO','VU'], color: "bg-teal-100 border-teal-300 text-teal-600" },
-            7: { title: "Letra M", unlock: ['M'], syllables: ['MA','ME','MI','MO','MU'], color: "bg-orange-100 border-orange-300 text-orange-600" },
-            
+            0: { title: "Vogais", unlock: ['A', 'E', 'I', 'O', 'U', 'Á', 'É', 'Í', 'Ó', 'Ú', 'Â', 'Ê', 'Ô', 'Ã', 'Õ'], syllables: ['A', 'E', 'I', 'O', 'U'], color: "bg-pink-100 border-pink-300 text-pink-600" },
+            1: { title: "Letra B", unlock: ['B'], syllables: ['BA', 'BE', 'BI', 'BO', 'BU'], color: "bg-blue-100 border-blue-300 text-blue-600" },
+            2: { title: "Letra T", unlock: ['T'], syllables: ['TA', 'TE', 'TI', 'TO', 'TU'], color: "bg-green-100 border-green-300 text-green-600" },
+            3: { title: "Letra P", unlock: ['P'], syllables: ['PA', 'PE', 'PI', 'PO', 'PU'], color: "bg-yellow-100 border-yellow-300 text-yellow-600" },
+            4: { title: "Letra D", unlock: ['D'], syllables: ['DA', 'DE', 'DI', 'DO', 'DU'], color: "bg-purple-100 border-purple-300 text-purple-600" },
+            5: { title: "Letra F", unlock: ['F'], syllables: ['FA', 'FE', 'FI', 'FO', 'FU'], color: "bg-red-100 border-red-300 text-red-600" },
+            6: { title: "Letra V", unlock: ['V'], syllables: ['VA', 'VE', 'VI', 'VO', 'VU'], color: "bg-teal-100 border-teal-300 text-teal-600" },
+            7: { title: "Letra M", unlock: ['M'], syllables: ['MA', 'ME', 'MI', 'MO', 'MU'], color: "bg-orange-100 border-orange-300 text-orange-600" },
+
             // FASE ESPECIAL DE CONTEXTO
-            8: { 
-                title: "Sons Animais", 
-                type: "context", 
-                introTitle: "Quem faz esse som?", 
-                unlock: [], 
-                syllables: ['MIAU','AUAU','MUU','PIU','BÉ'], 
-                color: "bg-amber-100 border-amber-300 text-amber-800" 
+            8: {
+                title: "Sons Animais",
+                type: "context",
+                introTitle: "Quem faz esse som?",
+                unlock: [],
+                syllables: ['MIAU', 'AUAU', 'MUU', 'PIU', 'BÉ'],
+                color: "bg-amber-100 border-amber-300 text-amber-800"
             },
 
-            9: { title: "Letra N", unlock: ['N'], syllables: ['NA','NE','NI','NO','NU'], color: "bg-indigo-100 border-indigo-300 text-indigo-600" },
-            10: { title: "Letra L", unlock: ['L'], syllables: ['LA','LE','LI','LO','LU'], color: "bg-lime-100 border-lime-300 text-lime-600" },
+            9: { title: "Letra N", unlock: ['N'], syllables: ['NA', 'NE', 'NI', 'NO', 'NU'], color: "bg-indigo-100 border-indigo-300 text-indigo-600" },
+            10: { title: "Letra L", unlock: ['L'], syllables: ['LA', 'LE', 'LI', 'LO', 'LU'], color: "bg-lime-100 border-lime-300 text-lime-600" },
 
             // --- FASES ANTERIORES ---
-            11: { title: "Letra J", unlock: ['J'], syllables: ['JA','JE','JI','JO','JU'], color: "bg-cyan-100 border-cyan-300 text-cyan-600" },
-            12: { title: "Letra C", unlock: ['C'], syllables: ['CA','CO','CU'], color: "bg-rose-100 border-rose-300 text-rose-600" },
-            13: { title: "Letra S", unlock: ['S'], syllables: ['SA','SE','SI','SO','SU'], color: "bg-sky-100 border-sky-300 text-sky-600" },
-            14: { title: "Letra R", unlock: ['R'], syllables: ['RA','RE','RI','RO','RU'], color: "bg-fuchsia-100 border-fuchsia-300 text-fuchsia-600" },
-            
+            11: { title: "Letra J", unlock: ['J'], syllables: ['JA', 'JE', 'JI', 'JO', 'JU'], color: "bg-cyan-100 border-cyan-300 text-cyan-600" },
+            12: { title: "Letra C", unlock: ['C'], syllables: ['CA', 'CO', 'CU'], color: "bg-rose-100 border-rose-300 text-rose-600" },
+            13: { title: "Letra S", unlock: ['S'], syllables: ['SA', 'SE', 'SI', 'SO', 'SU'], color: "bg-sky-100 border-sky-300 text-sky-600" },
+            14: { title: "Letra R", unlock: ['R'], syllables: ['RA', 'RE', 'RI', 'RO', 'RU'], color: "bg-fuchsia-100 border-fuchsia-300 text-fuchsia-600" },
+
             // FASE ESPECIAL: CORES
-            15: { 
-                title: "Cores", 
-                type: "context", 
-                introTitle: "Que cor é essa?", 
-                unlock: [], 
-                syllables: ['AZUL', 'ROSA', 'VERDE'], 
-                color: "bg-violet-100 border-violet-300 text-violet-600" 
+            15: {
+                title: "Cores",
+                type: "context",
+                introTitle: "Que cor é essa?",
+                unlock: [],
+                syllables: ['AZUL', 'ROSA', 'VERDE'],
+                color: "bg-violet-100 border-violet-300 text-violet-600"
             },
 
-            16: { title: "Letra G", unlock: ['G'], syllables: ['GA','GO','GU'], color: "bg-emerald-100 border-emerald-300 text-emerald-600" },
-            17: { title: "Letra Z", unlock: ['Z'], syllables: ['ZA','ZE','ZI','ZO','ZU'], color: "bg-slate-100 border-slate-300 text-slate-600" },
-            18: { title: "Letra X", unlock: ['X'], syllables: ['XA','XE','XI','XO','XU'], color: "bg-zinc-100 border-zinc-300 text-zinc-600" },
+            16: { title: "Letra G", unlock: ['G'], syllables: ['GA', 'GO', 'GU'], color: "bg-emerald-100 border-emerald-300 text-emerald-600" },
+            17: { title: "Letra Z", unlock: ['Z'], syllables: ['ZA', 'ZE', 'ZI', 'ZO', 'ZU'], color: "bg-slate-100 border-slate-300 text-slate-600" },
+            18: { title: "Letra X", unlock: ['X'], syllables: ['XA', 'XE', 'XI', 'XO', 'XU'], color: "bg-zinc-100 border-zinc-300 text-zinc-600" },
 
             // --- NOVAS FASES (EXPANSÃO) ---
-            19: { title: "Letra H", unlock: ['H'], syllables: ['HA','HE','HI','HO','HU'], color: "bg-amber-100 border-amber-300 text-amber-600" },
-            20: { title: "Letra Q", unlock: ['Q'], syllables: ['QUA','QUE','QUI'], color: "bg-teal-200 border-teal-400 text-teal-800" },
-            21: { title: "Letra K", unlock: ['K'], syllables: ['KA','KE','KI','KO','KU'], color: "bg-red-200 border-red-400 text-red-800" },
-            22: { title: "Letra W", unlock: ['W'], syllables: ['WA','WE','WI','WO','WU'], color: "bg-blue-200 border-blue-400 text-blue-800" },
-            23: { title: "Letra Y", unlock: ['Y'], syllables: ['YA','YE','YI','YO','YU'], color: "bg-purple-200 border-purple-400 text-purple-800" },
+            19: { title: "Letra H", unlock: ['H'], syllables: ['HA', 'HE', 'HI', 'HO', 'HU'], color: "bg-amber-100 border-amber-300 text-amber-600" },
+            20: { title: "Letra Q", unlock: ['Q'], syllables: ['QUA', 'QUE', 'QUI'], color: "bg-teal-200 border-teal-400 text-teal-800" },
+            21: { title: "Letra K", unlock: ['K'], syllables: ['KA', 'KE', 'KI', 'KO', 'KU'], color: "bg-red-200 border-red-400 text-red-800" },
+            22: { title: "Letra W", unlock: ['W'], syllables: ['WA', 'WE', 'WI', 'WO', 'WU'], color: "bg-blue-200 border-blue-400 text-blue-800" },
+            23: { title: "Letra Y", unlock: ['Y'], syllables: ['YA', 'YE', 'YI', 'YO', 'YU'], color: "bg-purple-200 border-purple-400 text-purple-800" },
 
             // FASES ESPECIAIS DE CONTEXTO
-            24: { 
-                title: "Frutas", 
-                type: "context", 
-                introTitle: "Que fruta é essa?", 
-                unlock: [], 
-                syllables: ['UVA', 'MAÇÃ', 'PERA'], 
-                color: "bg-green-100 border-green-300 text-green-700" 
+            24: {
+                title: "Frutas",
+                type: "context",
+                introTitle: "Que fruta é essa?",
+                unlock: [],
+                syllables: ['UVA', 'MAÇÃ', 'PERA'],
+                color: "bg-green-100 border-green-300 text-green-700"
             },
-            25: { 
-                title: "Corpo", 
-                type: "context", 
-                introTitle: "Corpo Humano", 
-                unlock: [], 
-                syllables: ['MÃO', 'PÉ', 'BOCA'], 
-                color: "bg-orange-100 border-orange-300 text-orange-700" 
+            25: {
+                title: "Corpo",
+                type: "context",
+                introTitle: "Corpo Humano",
+                unlock: [],
+                syllables: ['MÃO', 'PÉ', 'BOCA'],
+                color: "bg-orange-100 border-orange-300 text-orange-700"
             },
 
             // --- EXPANSÃO ADICIONAL (Dígrafos e Contextos) ---
-            26: { title: "CH", unlock: ['C','H'], syllables: ['CHA','CHE','CHI','CHO','CHU'], color: "bg-teal-100 border-teal-300 text-teal-700" },
-            27: { title: "LH", unlock: ['L','H'], syllables: ['LHA','LHE','LHI','LHO','LHU'], color: "bg-lime-100 border-lime-300 text-lime-700" },
-            28: { title: "NH", unlock: ['N','H'], syllables: ['NHA','NHE','NHI','NHO','NHU'], color: "bg-indigo-100 border-indigo-300 text-indigo-700" },
-            
-            29: { 
-                title: "Transportes", 
-                type: "context", 
-                introTitle: "Meios de Transporte", 
-                unlock: [], 
-                syllables: ['CARRO', 'TREM', 'MOTO'], 
-                color: "bg-blue-100 border-blue-300 text-blue-700" 
+            26: { title: "CH", unlock: ['C', 'H'], syllables: ['CHA', 'CHE', 'CHI', 'CHO', 'CHU'], color: "bg-teal-100 border-teal-300 text-teal-700" },
+            27: { title: "LH", unlock: ['L', 'H'], syllables: ['LHA', 'LHE', 'LHI', 'LHO', 'LHU'], color: "bg-lime-100 border-lime-300 text-lime-700" },
+            28: { title: "NH", unlock: ['N', 'H'], syllables: ['NHA', 'NHE', 'NHI', 'NHO', 'NHU'], color: "bg-indigo-100 border-indigo-300 text-indigo-700" },
+
+            29: {
+                title: "Transportes",
+                type: "context",
+                introTitle: "Meios de Transporte",
+                unlock: [],
+                syllables: ['CARRO', 'TREM', 'MOTO'],
+                color: "bg-blue-100 border-blue-300 text-blue-700"
             },
-            30: { 
-                title: "Escola", 
-                type: "context", 
-                introTitle: "Material Escolar", 
-                unlock: [], 
-                syllables: ['LÁPIS', 'MESA', 'LIVRO'], 
-                color: "bg-yellow-100 border-yellow-300 text-yellow-700" 
+            30: {
+                title: "Escola",
+                type: "context",
+                introTitle: "Material Escolar",
+                unlock: [],
+                syllables: ['LÁPIS', 'MESA', 'LIVRO'],
+                color: "bg-yellow-100 border-yellow-300 text-yellow-700"
             },
 
             // --- FIM DA EXPANSÃO ANTERIOR ---
 
             // --- NOVA EXPANSÃO: MAIS DÍGRAFOS E CONTEXTOS ---
-            31: { title: "RR", unlock: ['R'], syllables: ['RRA','RRE','RRI','RRO','RRU'], color: "bg-rose-200 border-rose-400 text-rose-800" },
-            32: { title: "SS", unlock: ['S'], syllables: ['SSA','SSE','SSI','SSO','SSU'], color: "bg-slate-200 border-slate-400 text-slate-800" },
-            33: { title: "Cedilha Ç", unlock: ['Ç'], syllables: ['ÇA','ÇO','ÇU'], color: "bg-fuchsia-200 border-fuchsia-400 text-fuchsia-800" },
-            
-            34: { 
-                title: "Casa", 
-                type: "context", 
-                introTitle: "Objetos de Casa", 
-                unlock: [], 
-                syllables: ['SOFÁ', 'CAMA', 'PORTA'], 
-                color: "bg-orange-50 border-orange-300 text-orange-800" 
+            31: { title: "RR", unlock: ['R'], syllables: ['RRA', 'RRE', 'RRI', 'RRO', 'RRU'], color: "bg-rose-200 border-rose-400 text-rose-800" },
+            32: { title: "SS", unlock: ['S'], syllables: ['SSA', 'SSE', 'SSI', 'SSO', 'SSU'], color: "bg-slate-200 border-slate-400 text-slate-800" },
+            33: { title: "Cedilha Ç", unlock: ['Ç'], syllables: ['ÇA', 'ÇO', 'ÇU'], color: "bg-fuchsia-200 border-fuchsia-400 text-fuchsia-800" },
+
+            34: {
+                title: "Casa",
+                type: "context",
+                introTitle: "Objetos de Casa",
+                unlock: [],
+                syllables: ['SOFÁ', 'CAMA', 'PORTA'],
+                color: "bg-orange-50 border-orange-300 text-orange-800"
             },
-            35: { 
-                title: "Sentimentos", 
-                type: "context", 
-                introTitle: "Como você está?", 
-                unlock: [], 
-                syllables: ['FELIZ', 'TRISTE', 'AMOR'], 
-                color: "bg-yellow-200 border-yellow-400 text-yellow-800" 
+            35: {
+                title: "Sentimentos",
+                type: "context",
+                introTitle: "Como você está?",
+                unlock: [],
+                syllables: ['FELIZ', 'TRISTE', 'AMOR'],
+                color: "bg-yellow-200 border-yellow-400 text-yellow-800"
             },
 
             // --- EXPANSÃO FINAL (ATÉ 40) ---
-            36: { title: "AR ER IR", unlock: ['R'], syllables: ['AR','ER','IR','OR','UR'], color: "bg-orange-200 border-orange-400 text-orange-800" },
-            37: { title: "AL EL IL", unlock: ['L'], syllables: ['AL','EL','IL','OL','UL'], color: "bg-blue-200 border-blue-400 text-blue-800" },
-            38: { title: "AN EN IN", unlock: ['N'], syllables: ['AN','EN','IN','ON','UN'], color: "bg-purple-200 border-purple-400 text-purple-800" },
-            39: { 
-                title: "Natureza", 
-                type: "context", 
-                introTitle: "Natureza", 
-                unlock: [], 
-                syllables: ['SOL', 'MAR', 'FLOR'], 
-                color: "bg-green-200 border-green-400 text-green-800" 
+            36: { title: "AR ER IR", unlock: ['R'], syllables: ['AR', 'ER', 'IR', 'OR', 'UR'], color: "bg-orange-200 border-orange-400 text-orange-800" },
+            37: { title: "AL EL IL", unlock: ['L'], syllables: ['AL', 'EL', 'IL', 'OL', 'UL'], color: "bg-blue-200 border-blue-400 text-blue-800" },
+            38: { title: "AN EN IN", unlock: ['N'], syllables: ['AN', 'EN', 'IN', 'ON', 'UN'], color: "bg-purple-200 border-purple-400 text-purple-800" },
+            39: {
+                title: "Natureza",
+                type: "context",
+                introTitle: "Natureza",
+                unlock: [],
+                syllables: ['SOL', 'MAR', 'FLOR'],
+                color: "bg-green-200 border-green-400 text-green-800"
             },
-            40: { 
-                title: "Ações", 
-                type: "context", 
-                introTitle: "O que estão fazendo?", 
-                unlock: [], 
-                syllables: ['PULAR', 'CORRER', 'RIR'], 
-                color: "bg-pink-200 border-pink-400 text-pink-800" 
+            40: {
+                title: "Ações",
+                type: "context",
+                introTitle: "O que estão fazendo?",
+                unlock: [],
+                syllables: ['PULAR', 'CORRER', 'RIR'],
+                color: "bg-pink-200 border-pink-400 text-pink-800"
             }
         };
 
         const database = {
-            0: { items: [
-				{ word: "OI", emoji: "👋" },
-				{ word: "AI", emoji: "🤕🗣️" },
-				{ word: "EU", image:"eu.png", emoji: "🙋" },
-				{ word: "AU", emoji: "🐶🔊" }] },
-            1: { items: [
-				{ word: "ABA", image: "aba.png", emoji: "🖼️" },
-				{ word: "BAÚ", image: "bau.png", emoji: "📦" },
-				{ word: "BABÁ", image: "baba.png", emoji: "👶" },
-				{ word: "BOI", emoji: "🐂" }, 
-				{ word: "BEBÊ", emoji: "👶" },
-				{ word: "OBA", emoji: "🙌" },
-				{ word: "BÉ", emoji: "🐐🔊" }] },
-            2: { items: [
-				{ word: "TATU", image: "tatu.png", emoji: "🦔" },
-				{ word: "TUBA", image: "tuba.png", emoji: "🎺" },
-				{ word: "TUTU", image: "tutu.png", emoji: "🩰" },
-				{ word: "BOTE", image: "bote.png", emoji: "🛶" },
-				{ word: "TÁBUA", image: "tabua.png", emoji: "🪵" },
-				{ word: "BOTA", emoji: "👢" },
-				{ word: "OITO", emoji: "8️⃣" },
-				{ word: "TEIA", emoji: "🕸️" }] },
-            3: { items: [
-				{ word: "PATA", image: "pata.png", emoji: "🐾" },
-				{ word: "APITO", image: "apito.png", emoji: "🎺" },
-				{ word: "PIU", emoji: "🐤🔊" },
-				{ word: "PIPA", emoji: "🪁" },
-				{ word: "PATO", emoji: "🦆" },
-				{ word: "PÉ", emoji: "🦶" }] },
-            4: { items: [
-				{ word: "DADO", emoji: "🎲" },
-				{ word: "DEDO", emoji: "☝️" },
-				{ word: "DIA", emoji: "📅☀️" },
-				{ word: "BODE", emoji: "🐐" }] },
-            5: { items: [
-				{ word: "FADA", emoji: "🧚" },
-				{ word: "BIFE", emoji: "🔪🥩" },
-				{ word: "FITA", emoji: "🎗️" },
-				{ word: "FOTO", emoji: "📷" },
-				{ word: "FIO", image: "fio.png", emoji: "🧵" }] },
-            6: { items: [
-				{ word: "VOVÓ", emoji: "👵" },
-				{ word: "UVA", emoji: "🍇" },
-				{ word: "AVE", image: "ave.png", emoji: "🦆🦉🐧" },
-				{ word: "OVO", emoji: "🥚" },
-				{ word: "VIVA", emoji: "🎉" }] },
-            7: { items: [ 
-				{ word: "MIAU", emoji: "🐈🔊" },
-				{ word: "MEIA", emoji: "🧦" },
-				{ word: "MAPA", emoji: "🗺️" },
-				{ word: "MUU", emoji: "🐮🔊" } ] },
-            
+            0: {
+                items: [
+                    { word: "OI", emoji: "👋" },
+                    { word: "AI", emoji: "🤕🗣️" },
+                    { word: "EU", image: "eu.png", emoji: "🙋" },
+                    { word: "AU", emoji: "🐶🔊" }]
+            },
+            1: {
+                items: [
+                    { word: "ABA", image: "aba.png", emoji: "🖼️" },
+                    { word: "BAÚ", image: "bau.png", emoji: "📦" },
+                    { word: "BABÁ", image: "baba.png", emoji: "👶" },
+                    { word: "BOI", emoji: "🐂" },
+                    { word: "BEBÊ", emoji: "👶" },
+                    { word: "OBA", emoji: "🙌" },
+                    { word: "BÉ", emoji: "🐐🔊" }]
+            },
+            2: {
+                items: [
+                    { word: "TATU", image: "tatu.png", emoji: "🦔" },
+                    { word: "TUBA", image: "tuba.png", emoji: "🎺" },
+                    { word: "TUTU", image: "tutu.png", emoji: "🩰" },
+                    { word: "BOTE", image: "bote.png", emoji: "🛶" },
+                    { word: "TÁBUA", image: "tabua.png", emoji: "🪵" },
+                    { word: "BOTA", emoji: "👢" },
+                    { word: "OITO", emoji: "8️⃣" },
+                    { word: "TEIA", emoji: "🕸️" }]
+            },
+            3: {
+                items: [
+                    { word: "PATA", image: "pata.png", emoji: "🐾" },
+                    { word: "APITO", image: "apito.png", emoji: "🎺" },
+                    { word: "PIU", emoji: "🐤🔊" },
+                    { word: "PIPA", emoji: "🪁" },
+                    { word: "PATO", emoji: "🦆" },
+                    { word: "PÉ", emoji: "🦶" }]
+            },
+            4: {
+                items: [
+                    { word: "DADO", emoji: "🎲" },
+                    { word: "DEDO", emoji: "☝️" },
+                    { word: "DIA", emoji: "📅☀️" },
+                    { word: "BODE", emoji: "🐐" }]
+            },
+            5: {
+                items: [
+                    { word: "FADA", emoji: "🧚" },
+                    { word: "BIFE", emoji: "🔪🥩" },
+                    { word: "FITA", emoji: "🎗️" },
+                    { word: "FOTO", emoji: "📷" },
+                    { word: "FIO", image: "fio.png", emoji: "🧵" }]
+            },
+            6: {
+                items: [
+                    { word: "VOVÓ", emoji: "👵" },
+                    { word: "UVA", emoji: "🍇" },
+                    { word: "AVE", image: "ave.png", emoji: "🦆🦉🐧" },
+                    { word: "OVO", emoji: "🥚" },
+                    { word: "VIVA", emoji: "🎉" }]
+            },
+            7: {
+                items: [
+                    { word: "MIAU", emoji: "🐈🔊" },
+                    { word: "MEIA", emoji: "🧦" },
+                    { word: "MAPA", emoji: "🗺️" },
+                    { word: "MUU", emoji: "🐮🔊" }]
+            },
+
             // CONTEÚDO DA FASE 8 - ANIMAIS
-            8: { items: [
-                { word: "MIAU", emoji: "🐈🔊" },
-                { word: "AU", emoji: "🐶🔊" },
-                { word: "MUU", emoji: "🐮🔊" },
-                { word: "PIU", emoji: "🐥🔊" },
-                { word: "BÉ", emoji: "🐐🔊" }
-            ]},
-            
+            8: {
+                items: [
+                    { word: "MIAU", emoji: "🐈🔊" },
+                    { word: "AU", emoji: "🐶🔊" },
+                    { word: "MUU", emoji: "🐮🔊" },
+                    { word: "PIU", emoji: "🐥🔊" },
+                    { word: "BÉ", emoji: "🐐🔊" }
+                ]
+            },
+
             9: { items: [{ word: "MENINA", emoji: "👧" }, { word: "NOVE", emoji: "9️⃣" }, { word: "BONÉ", emoji: "🧢" }, { word: "BANANA", emoji: "🍌" }, { word: "MENINO", emoji: "👦" }] },
             10: { items: [{ word: "LUA", emoji: "🌙" }, { word: "LOBO", emoji: "🐺" }, { word: "BOLA", emoji: "⚽" }, { word: "BALA", emoji: "🍬" }, { word: "LULA", emoji: "🦑" }] },
 
@@ -413,26 +564,26 @@
             12: { items: [{ word: "CAMA", emoji: "🛏️" }, { word: "COLA", emoji: "🧴" }, { word: "CUBO", emoji: "🧊" }, { word: "COPO", emoji: "🥛" }, { word: "BOCA", emoji: "👄" }, { word: "PIPOCA", emoji: "🍿" }] },
             13: { items: [{ word: "SAPO", emoji: "🐸" }, { word: "SOPA", emoji: "🍲" }, { word: "SELO", emoji: "✉️" }, { word: "SAIA", emoji: "👗" }, { word: "SUCO", emoji: "🧃" }] },
             14: { items: [{ word: "RATO", emoji: "🐁" }, { word: "REI", emoji: "👑" }, { word: "RIO", emoji: "🌊" }, { word: "RUA", emoji: "🛣️" }, { word: "ROBÔ", emoji: "🤖" }] },
-            
+
             // CORES
-            15: { items: [{ word: "AZUL", emoji: "🔵" }, { word: "ROSA", emoji: "🌸" }, { word: "VERDE", emoji: "🟢" }, { word: "LILÁS", emoji: "🟣" }]},
+            15: { items: [{ word: "AZUL", emoji: "🔵" }, { word: "ROSA", emoji: "🌸" }, { word: "VERDE", emoji: "🟢" }, { word: "LILÁS", emoji: "🟣" }] },
 
             16: { items: [{ word: "GATO", emoji: "🐈" }, { word: "GALO", emoji: "🐓" }, { word: "GOTA", emoji: "💧" }, { word: "FOGO", emoji: "🔥" }, { word: "FIGO", emoji: "🍈" }] },
             17: { items: [{ word: "ZERO", emoji: "0️⃣" }, { word: "DOZE", emoji: "1️⃣2️⃣" }, { word: "AZUL", emoji: "🔵" }, { word: "BUZINA", emoji: "📢" }] },
             18: { items: [{ word: "XALE", emoji: "🧣" }, { word: "LIXO", emoji: "🗑️" }, { word: "CAIXA", emoji: "📦" }, { word: "PEIXE", emoji: "🐟" }, { word: "ROXO", emoji: "🟣" }] },
-            
+
             // --- NOVAS FASES (DATABASE) ---
             19: { items: [{ word: "HARPA", emoji: "🎵" }, { word: "HÉLICE", emoji: "🚁" }, { word: "HIENA", emoji: "🐕" }, { word: "HOTEL", emoji: "🏨" }, { word: "HOJE", emoji: "📅" }] },
             20: { items: [{ word: "LEQUE", emoji: "🪭" }, { word: "QUIABO", emoji: "🥗" }, { word: "CAQUI", emoji: "🍅" }, { word: "QUEIJO", emoji: "🧀" }, { word: "AQUI", emoji: "📍" }] },
             21: { items: [{ word: "KIWI", emoji: "🥝" }, { word: "KART", emoji: "🏎️" }, { word: "KARATÊ", emoji: "🥋" }, { word: "KETCHUP", emoji: "🌭" }] },
             22: { items: [{ word: "WAFER", emoji: "🍪" }, { word: "WIFI", emoji: "📶" }, { word: "WEBCAM", emoji: "📷" }, { word: "WOODY", emoji: "🤠" }] },
             23: { items: [{ word: "YOGA", emoji: "🧘" }, { word: "YAKISOBA", emoji: "🍜" }, { word: "YOUTUBE", emoji: "▶️" }, { word: "YURI", emoji: "👦🏻" }] },
-            
+
             // CONTEXTO: FRUTAS
             24: { items: [{ word: "MAÇÃ", emoji: "🍎" }, { word: "PERA", emoji: "🍐" }, { word: "UVA", emoji: "🍇" }, { word: "CAJU", emoji: "🥜" }, { word: "LIMÃO", emoji: "🍋" }] },
             // CONTEXTO: CORPO HUMANO
             25: { items: [{ word: "MÃO", emoji: "✋" }, { word: "PÉ", emoji: "🦶" }, { word: "BOCA", emoji: "👄" }, { word: "OLHO", emoji: "👁️" }, { word: "NARIZ", emoji: "👃" }] },
-            
+
             // --- EXPANSÃO ADICIONAL (ITEMS) ---
             26: { items: [{ word: "CHAVE", emoji: "🔑" }, { word: "CHUVA", emoji: "🌧️" }, { word: "CHÃO", emoji: "👇" }, { word: "CHÁ", emoji: "☕" }, { word: "CHINELO", emoji: "🩴" }] },
             27: { items: [{ word: "ILHA", emoji: "🏝️" }, { word: "MILHO", emoji: "🌽" }, { word: "OLHO", emoji: "👁️" }, { word: "FOLHA", emoji: "🍃" }, { word: "ORELHA", emoji: "👂" }] },
@@ -451,7 +602,7 @@
             // CONTEXTO: SENTIMENTOS
             35: { items: [{ word: "FELIZ", emoji: "😊" }, { word: "TRISTE", emoji: "😢" }, { word: "BRAVO", emoji: "😠" }, { word: "MEDO", emoji: "😨" }, { word: "AMOR", emoji: "❤️" }] },
 
-             // --- NOVOS ITEMS (ATÉ 40) ---
+            // --- NOVOS ITEMS (ATÉ 40) ---
             36: { items: [{ word: "ARCO", emoji: "🏹" }, { word: "CARTA", emoji: "✉️" }, { word: "CIRCO", emoji: "🎪" }, { word: "PORTA", emoji: "🚪" }, { word: "URSO", emoji: "🐻" }] },
             37: { items: [{ word: "ANEL", emoji: "💍" }, { word: "BALDE", emoji: "🪣" }, { word: "SOL", emoji: "☀️" }, { word: "BOLSA", emoji: "👜" }, { word: "PULGA", emoji: "🐜" }] },
             38: { items: [{ word: "ANJO", emoji: "👼" }, { word: "DENTE", emoji: "🦷" }, { word: "PENTE", emoji: "🪮" }, { word: "ONÇA", emoji: "🐆" }, { word: "MUNDO", emoji: "🌍" }] },
@@ -466,7 +617,7 @@
         let difficultyThreshold = 70;
         let currentLevel = 0;
         let score = 0;
-        let flowState = 'SETUP'; 
+        let flowState = 'SETUP';
         let gameQueue = [];
         let currentItem = null;
         let currentBoxIndex = 0;
@@ -498,14 +649,14 @@
         }
 
         function resetProgress() {
-            if(confirm('Tem certeza que deseja apagar todo o progresso?')) {
+            if (confirm('Tem certeza que deseja apagar todo o progresso?')) {
                 localStorage.clear();
                 location.reload();
             }
         }
 
         // --- INICIALIZAÇÃO E MENU ---
-        window.onload = function() {
+        window.onload = function () {
             renderLevelGrid();
         };
 
@@ -527,9 +678,9 @@
 
                 const card = document.createElement('div');
                 card.className = `level-card bg-white border-b-4 rounded-2xl p-4 flex flex-col items-center justify-between min-h-[140px] shadow-sm cursor-pointer select-none ${isLocked ? 'level-locked bg-gray-100 border-gray-300' : levelData.color.replace('bg-', 'hover:bg-opacity-80 border-')}`;
-                
+
                 let titleDisplay = levelData.title;
-                if(titleDisplay.startsWith("Letra ")) titleDisplay = titleDisplay.replace('Letra ', '');
+                if (titleDisplay.startsWith("Letra ")) titleDisplay = titleDisplay.replace('Letra ', '');
 
                 if (isLocked) {
                     card.innerHTML = `
@@ -540,7 +691,7 @@
                 } else {
                     card.onclick = () => startGameFromMenu(i);
                     const recordHtml = record ? `<div class="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full font-bold shadow-sm">🏆 ${record}</div>` : `<div class="text-gray-300 text-xs font-bold">--%</div>`;
-                    
+
                     card.innerHTML = `
                         <div class="w-full flex justify-between items-start">
                             <span class="text-gray-400 text-xs font-bold">Fase ${i}</span>
@@ -551,7 +702,7 @@
                             <div class="h-full bg-current opacity-30" style="width: ${progress.records[i] || 0}%"></div>
                         </div>
                     `;
-                    card.classList.add(levelData.color.split(' ')[1]); 
+                    card.classList.add(levelData.color.split(' ')[1]);
                 }
                 grid.appendChild(card);
             }
@@ -568,13 +719,15 @@
             document.getElementById('screenSetup').classList.add('hidden');
             document.getElementById('screenPresentation').classList.add('hidden');
             document.getElementById('screenGame').classList.add('hidden');
-            
+            document.getElementById('screenVideo').classList.add('hidden');
+
             if (screenName === 'SETUP') document.getElementById('screenSetup').classList.remove('hidden');
             else if (screenName === 'PRESENTATION') document.getElementById('screenPresentation').classList.remove('hidden');
             else if (screenName === 'GAME') {
                 document.getElementById('screenGame').classList.remove('hidden');
                 document.getElementById('screenGame').classList.add('flex');
             }
+            else if (screenName === 'VIDEO') document.getElementById('screenVideo').classList.remove('hidden');
         }
 
         function initLevel(lvl) {
@@ -586,8 +739,8 @@
                 return;
             }
             learnedLetters = new Set();
-            for(let i=0; i<=currentLevel; i++) {
-                if(levels[i] && levels[i].unlock) levels[i].unlock.forEach(l => learnedLetters.add(l));
+            for (let i = 0; i <= currentLevel; i++) {
+                if (levels[i] && levels[i].unlock) levels[i].unlock.forEach(l => learnedLetters.add(l));
             }
             startIntroSyllables();
         }
@@ -596,25 +749,26 @@
             flowState = 'INTRO';
             const data = levels[currentLevel];
             let title = "";
-            
+
             // Título customizado para fases especiais
             if (data.type === 'context') {
                 title = data.introTitle || data.title;
             } else {
-                title = currentLevel === 0 ? "As Vogais" : `Família do ${data.title.replace('Letra ','')}`;
+                title = currentLevel === 0 ? "As Vogais" : `Família do ${data.title.replace('Letra ', '')}`;
             }
 
             const syllables = data.syllables || [];
             // Ajuste no tamanho da fonte se tiver muitas sílabas
             const fontSize = syllables.length > 5 ? 'text-4xl md:text-6xl' : 'text-5xl md:text-7xl';
-            
+
             let html = `<h2 class="text-5xl font-bold text-blue-500 mb-8 animate__animated animate__fadeInDown text-center">${title}</h2><div class="flex justify-center gap-4 flex-wrap mb-6">`;
             syllables.forEach((syl, idx) => {
-                html += `<div class="${fontSize} font-bold bg-white text-blue-500 border-4 border-blue-200 rounded-3xl px-6 py-4 shadow-lg animate__animated animate__zoomIn" style="animation-delay: ${idx*100}ms">${syl}</div>`;
+                html += `<div class="${fontSize} font-bold bg-white text-blue-500 border-4 border-blue-200 rounded-3xl px-6 py-4 shadow-lg animate__animated animate__zoomIn" style="animation-delay: ${idx * 100}ms">${syl}</div>`;
             });
             html += `</div>`;
             document.getElementById('presentationTitle').textContent = "INTRODUÇÃO";
             document.getElementById('presentationContent').innerHTML = html;
+            resetPresentationButton();
             showScreen('PRESENTATION');
         }
 
@@ -633,8 +787,8 @@
                 return;
             }
             const item = presentationQueue[presentationIndex];
-            let mediaHtml = item.image ? 
-                `<img src="${pathImg + item.image}" class="max-h-60 mx-auto drop-shadow-md animate__animated animate__jackInTheBox" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"> <span style="display:none" class="text-9xl animate__animated animate__jackInTheBox">${item.emoji}</span>` : 
+            let mediaHtml = item.image ?
+                `<img src="${pathImg + item.image}" class="max-h-60 mx-auto drop-shadow-md animate__animated animate__jackInTheBox" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"> <span style="display:none" class="text-9xl animate__animated animate__jackInTheBox">${item.emoji}</span>` :
                 `<span class="text-9xl animate__animated animate__jackInTheBox">${item.emoji}</span>`;
             let html = `<div class="bg-white border-4 border-purple-200 rounded-3xl p-8 mb-6 shadow-sm w-full max-w-lg mx-auto">${mediaHtml}</div><div class="text-7xl font-bold text-gray-600 tracking-widest uppercase mb-4 animate__animated animate__fadeInUp">${item.word}</div>`;
             document.getElementById('presentationTitle').textContent = "PALAVRAS NOVAS";
@@ -653,9 +807,9 @@
             }
             else if (flowState === 'TRANSITION_TO_WORD') startWordGame();
             else if (flowState === 'END_PHASE') initLevel(currentLevel + 1);
-            else if (flowState === 'RETRY') { 
-                if (currentLevel === 0 || levels[currentLevel].type === 'context') startWordGame(); 
-                else startSyllableGame(); 
+            else if (flowState === 'RETRY') {
+                if (currentLevel === 0 || levels[currentLevel].type === 'context') startWordGame();
+                else startSyllableGame();
             }
         }
 
@@ -686,7 +840,7 @@
                 const letter = lvlData.title.replace("Letra ", "");
                 titleText = `Fase ${currentLevel} - ${letter} (Palavras)`;
             }
-            
+
             document.getElementById('gameLevelDisplay').textContent = titleText;
             prepareGameQueue();
             showScreen('GAME');
@@ -699,9 +853,9 @@
             let acc = 100;
             if (phaseTotalAttempts > 0) acc = Math.round((phaseCorrectAttempts / phaseTotalAttempts) * 100);
             document.getElementById('accuracyDisplay').textContent = acc + "%";
-            
+
             const accEl = document.getElementById('accuracyDisplay');
-            if(acc < difficultyThreshold && difficultyThreshold > 0) {
+            if (acc < difficultyThreshold && difficultyThreshold > 0) {
                 accEl.classList.remove('text-green-600'); accEl.classList.add('text-orange-500');
             } else {
                 accEl.classList.remove('text-orange-500'); accEl.classList.add('text-green-600');
@@ -709,32 +863,32 @@
         }
 
         function nextGameItem() {
-            if (gameQueue.length === 0) { 
+            if (gameQueue.length === 0) {
                 if (isProgressiveMode && !isSecondPass) {
-                    isSecondPass = true; 
-                    configHints = false; 
+                    isSecondPass = true;
+                    configHints = false;
                     showIntermission();
                     return;
                 }
-                checkEndPhase(); 
+                checkEndPhase();
                 isSecondPass = false;
-                return; 
+                return;
             }
 
             currentItem = gameQueue.pop();
             const total = database[currentLevel].items.length;
             const progress = ((total - gameQueue.length) / total) * 100;
             document.getElementById('progressBar').style.width = `${progress}%`;
-            
+
             const levelLetter = levels[currentLevel].title.replace("Letra ", "").trim();
 
             if (flowState === 'GAME_SYL') {
                 document.getElementById('gameInstruction').textContent = "Complete a sílaba:";
                 targetIndices = findSyllableIndices(currentItem.word, levelLetter);
-                if (targetIndices.length === 0) targetIndices = Array.from({length: currentItem.word.length}, (_, i) => i);
+                if (targetIndices.length === 0) targetIndices = Array.from({ length: currentItem.word.length }, (_, i) => i);
             } else {
                 document.getElementById('gameInstruction').textContent = "Escreva a palavra:";
-                targetIndices = Array.from({length: currentItem.word.length}, (_, i) => i);
+                targetIndices = Array.from({ length: currentItem.word.length }, (_, i) => i);
             }
             renderGameRound();
         }
@@ -752,6 +906,7 @@
             `;
             document.getElementById('presentationTitle').textContent = "DESAFIO";
             document.getElementById('presentationContent').innerHTML = html;
+            resetPresentationButton(); // Should not matter as the button is inline? Wait, showIntermission uses presentationContent innerHTML which CONTANS a button.
             showScreen('PRESENTATION');
         }
 
@@ -767,14 +922,14 @@
 
         function renderGameRound() {
             document.getElementById('successOverlay').classList.add('hidden');
-            
+
             const imgContainer = document.getElementById('gameImageContainer');
             if (currentItem.image) {
                 imgContainer.innerHTML = `<img src="${pathImg + currentItem.image}" class="max-h-full max-w-full object-contain animate__animated animate__fadeIn" onerror="this.outerHTML='<span class=\\'text-8xl\\'>${currentItem.emoji}</span>'">`;
             } else {
                 imgContainer.innerHTML = `<span class="text-8xl animate__animated animate__fadeIn">${currentItem.emoji}</span>`;
             }
-            
+
             playAudio(currentItem.word);
 
             const container = document.getElementById('inputContainer');
@@ -800,7 +955,7 @@
         function handleInput(char) {
             if (!document.getElementById('successOverlay').classList.contains('hidden')) return;
             if (currentBoxIndex >= currentItem.word.length) return;
-            
+
             while (currentBoxIndex < currentItem.word.length && !targetIndices.includes(currentBoxIndex)) currentBoxIndex++;
             if (currentBoxIndex >= currentItem.word.length) return;
 
@@ -812,13 +967,13 @@
             if (normInput === normTarget) {
                 phaseCorrectAttempts++;
                 const box = document.getElementById(`box-${currentBoxIndex}`);
-                if(box) {
+                if (box) {
                     box.textContent = targetChar;
                     box.classList.remove('active-box');
                     box.classList.add('correct', 'animate__animated', 'animate__bounceIn');
                 }
-                
-                document.getElementById('sndCorrect').currentTime = 0; 
+
+                document.getElementById('sndCorrect').currentTime = 0;
                 document.getElementById('sndCorrect').play();
 
                 currentBoxIndex++;
@@ -832,7 +987,7 @@
                 }
             } else {
                 const box = document.getElementById(`box-${currentBoxIndex}`);
-                if(box) {
+                if (box) {
                     box.classList.add('incorrect');
                     setTimeout(() => box.classList.remove('incorrect'), 400);
                 }
@@ -843,8 +998,8 @@
         function roundWon() {
             const overlay = document.getElementById('successOverlay');
             overlay.classList.remove('hidden');
-            
-            document.getElementById('sndWordWin').currentTime = 0; 
+
+            document.getElementById('sndWordWin').currentTime = 0;
             document.getElementById('sndWordWin').play();
             score += 10;
             updateStatsUI();
@@ -855,19 +1010,19 @@
         function checkEndPhase() {
             const acc = phaseTotalAttempts === 0 ? 0 : (phaseCorrectAttempts / phaseTotalAttempts) * 100;
             let title, msg, nextState, buttonText = "PRÓXIMO ➔";
-            
+
             if (acc < difficultyThreshold) {
                 document.getElementById('sndLose').play();
-                title = "Vamos tentar de novo?"; 
-                msg = `Você fez ${Math.round(acc)}%. Precisa de ${difficultyThreshold}% para passar.`; 
+                title = "Vamos tentar de novo?";
+                msg = `Você fez ${Math.round(acc)}%. Precisa de ${difficultyThreshold}% para passar.`;
                 nextState = 'RETRY';
                 buttonText = "TENTAR DE NOVO ↺";
                 document.getElementById('presentationTitle').textContent = "REVISÃO";
             } else {
                 document.getElementById('sndLevelWin').play();
                 if (flowState === 'GAME_SYL') {
-                    title = "Sílabas Completas!"; 
-                    msg = "Agora vamos escrever as palavras inteiras."; 
+                    title = "Sílabas Completas!";
+                    msg = "Agora vamos escrever as palavras inteiras.";
                     nextState = 'TRANSITION_TO_WORD';
                 } else {
                     title = "Nível Concluído!";
@@ -878,21 +1033,27 @@
                 }
                 document.getElementById('presentationTitle').textContent = "PARABÉNS";
             }
-            
+
             flowState = nextState;
             const isFail = nextState === 'RETRY';
             const colorClass = isFail ? 'text-orange-500' : 'text-green-500';
             const borderClass = isFail ? 'border-orange-200' : 'border-green-200';
             const emoji = isFail ? '💪' : '⭐';
 
-            const actionBtn = document.querySelector('#screenPresentation button[onclick="advanceLinearFlow()"]');
-            actionBtn.textContent = buttonText;
-            if(isFail) {
-                 actionBtn.classList.replace('bg-green-500', 'bg-orange-500');
-                 actionBtn.classList.replace('shadow-[0_6px_0_rgb(21,128,61)]', 'shadow-[0_6px_0_rgb(249,115,22)]');
+            if (isFail) {
+                const actionBtn = document.getElementById('btnPresentationNext');
+                actionBtn.textContent = "TENTAR DE NOVO ↺";
+                actionBtn.classList.replace('bg-green-500', 'bg-orange-500');
+                actionBtn.classList.replace('shadow-[0_6px_0_rgb(21,128,61)]', 'shadow-[0_6px_0_rgb(249,115,22)]');
             } else {
-                 actionBtn.classList.replace('bg-orange-500', 'bg-green-500');
-                 actionBtn.classList.replace('shadow-[0_6px_0_rgb(249,115,22)]', 'shadow-[0_6px_0_rgb(21,128,61)]');
+                const actionBtn = document.getElementById('btnPresentationNext');
+                if (nextState === 'END_PHASE') {
+                    // Adicionar botão de prêmio apenas no final da fase
+                    actionBtn.textContent = "🎁 VER PRÊMIO";
+                    actionBtn.onclick = showVideoReward;
+                } else {
+                    resetPresentationButton();
+                }
             }
 
             let html = `<div class="bg-white border-4 ${borderClass} rounded-full p-10 mb-6 shadow-sm inline-block"><span class="text-8xl">${emoji}</span></div><h2 class="text-4xl font-bold ${colorClass} mb-4">${title}</h2><p class="text-xl text-gray-500 max-w-md mx-auto">${msg}</p>`;
@@ -900,9 +1061,20 @@
             showScreen('PRESENTATION');
         }
 
+        function resetPresentationButton() {
+            const btn = document.getElementById('btnPresentationNext');
+            if (btn) {
+                btn.textContent = "PRÓXIMO ➔";
+                btn.onclick = advanceLinearFlow;
+                btn.classList.remove('bg-orange-500', 'shadow-[0_6px_0_rgb(249,115,22)]');
+                btn.classList.add('bg-green-500', 'shadow-[0_6px_0_rgb(21,128,61)]');
+            }
+        }
+
+
         function renderKeyboard() {
             const layout = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
-            const container = document.getElementById('keyboardContainer'); 
+            const container = document.getElementById('keyboardContainer');
             container.innerHTML = '';
             layout.forEach(row => {
                 const rowDiv = document.createElement('div'); rowDiv.className = "flex justify-center gap-1";
@@ -923,10 +1095,10 @@
             document.querySelectorAll('.key').forEach(k => k.classList.remove('hint-active', 'hint-inactive'));
 
             if (!configHints || !currentItem || !document.getElementById('successOverlay').classList.contains('hidden')) return;
-            
+
             let tempIndex = currentBoxIndex;
             while (tempIndex < currentItem.word.length && !targetIndices.includes(tempIndex)) tempIndex++;
-            
+
             if (tempIndex < currentItem.word.length) {
                 const targetChar = currentItem.word[tempIndex].normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 document.querySelectorAll('.key').forEach(k => {
@@ -941,9 +1113,9 @@
             document.querySelectorAll('.letter-box').forEach(b => b.classList.remove('active-box'));
             let tempIndex = currentBoxIndex;
             while (tempIndex < currentItem.word.length && !targetIndices.includes(tempIndex)) tempIndex++;
-            if (tempIndex < currentItem.word.length) { 
-                const current = document.getElementById(`box-${tempIndex}`); 
-                if (current) current.classList.add('active-box'); 
+            if (tempIndex < currentItem.word.length) {
+                const current = document.getElementById(`box-${tempIndex}`);
+                if (current) current.classList.add('active-box');
             }
         }
 
@@ -951,28 +1123,44 @@
             const indices = [];
             const regex = new RegExp(`(${levelLetter})[AEOIUÁÉÍÓÚÃÕÂÊÔ]`, 'i');
             const match = word.match(regex);
-            
-            if (match && match.index !== undefined) { 
-                indices.push(match.index, match.index + 1); 
+
+            if (match && match.index !== undefined) {
+                indices.push(match.index, match.index + 1);
             }
-            else if (word.toUpperCase().startsWith(levelLetter)) { 
-                indices.push(0, 1); 
-                if(word.length < 2) indices.push(0); 
+            else if (word.toUpperCase().startsWith(levelLetter)) {
+                indices.push(0, 1);
+                if (word.length < 2) indices.push(0);
             }
             return indices;
         }
 
         function playAudio(text) {
             const fn = text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") + ".mp3";
-            new Audio(pathAudio + fn).play().catch(()=>{});
+            new Audio(pathAudio + fn).play().catch(() => { });
         }
-        window.playCurrentAudio = () => { if(currentItem) playAudio(currentItem.word); };
+        window.playCurrentAudio = () => { if (currentItem) playAudio(currentItem.word); };
 
         const canvas = document.getElementById('confetti-canvas'); const ctx = canvas.getContext('2d'); let particles = [];
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas); resizeCanvas();
-        function fireConfetti() { for (let i = 0; i < 100; i++) particles.push({ x: window.innerWidth/2, y: window.innerHeight/2, vx: (Math.random()-0.5)*15, vy: (Math.random()-0.5)*15, size: Math.random()*8+4, color: `hsl(${Math.random()*360},100%,50%)`, life: 100 }); requestAnimationFrame(animateConfetti); }
+        function fireConfetti() { for (let i = 0; i < 100; i++) particles.push({ x: window.innerWidth / 2, y: window.innerHeight / 2, vx: (Math.random() - 0.5) * 15, vy: (Math.random() - 0.5) * 15, size: Math.random() * 8 + 4, color: `hsl(${Math.random() * 360},100%,50%)`, life: 100 }); requestAnimationFrame(animateConfetti); }
         function animateConfetti() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles = particles.filter(p => p.life > 0); particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.2; p.life--; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill(); }); if (particles.length > 0) requestAnimationFrame(animateConfetti); }
+
+        function showVideoReward() {
+            // ID do vídeo: ZHKRxjwKnXM (Mundo Bita - Vento Ventania)
+            const videoId = "ZHKRxjwKnXM";
+            const iframe = document.getElementById('videoFrame');
+            // autoplay=1 para tocar ao abrir
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            showScreen('VIDEO');
+        }
+
+        function closeVideoReward() {
+            const iframe = document.getElementById('videoFrame');
+            iframe.src = ""; // Parar o vídeo
+            advanceLinearFlow(); // Continuar o fluxo
+        }
     </script>
 </body>
+
 </html>
